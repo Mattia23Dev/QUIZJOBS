@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { getAllExams } from '../../../apicalls/exams'
 import PageTitle from '../../../components/PageTitle'
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice'
+import './test-page.css';
 
 function HomePage() {
   const [exams, setExams] = useState([])
@@ -34,9 +35,11 @@ function HomePage() {
     getExams()
   },[])
   return (
-    user && <div>
-      <PageTitle title={`Hi ${user.name}, Welcome to Quiz Portal`}/>
-      <div className='divider'></div>
+    user && <div className='home-content'>
+      <div className='test-header'>
+        <PageTitle title={`Test`}/>
+        <button onClick={() => navigate('/admin/exams/add')}>Crea nuovo test</button>
+      </div>  
       <Row gutter={[16,16]} className="mt-2">
         {exams&&exams.map((exam,index)=>{
            return (

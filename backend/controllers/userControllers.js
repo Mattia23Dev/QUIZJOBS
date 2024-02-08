@@ -49,7 +49,7 @@ const login = async(req,res) => {
             const token = jwt.sign({
                 userid: user._id
             },process.env.JWT_SECRET,{
-                expiresIn: "1d"
+                expiresIn: "365d"
             })
             res.send({
               message: "User logged in successfully",

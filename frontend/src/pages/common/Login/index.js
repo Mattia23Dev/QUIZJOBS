@@ -16,7 +16,7 @@ function LoginPage() {
       if(response.success){
         message.success(response.message);
         localStorage.setItem("token",response.data)
-        window.location.href="/";
+        window.location.href="/admin/exams";
       }
       else{
         message.error(response.message)

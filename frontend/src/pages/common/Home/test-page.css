@@ -1,0 +1,13 @@
+.test-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.test-header button {
+    border: none;
+    cursor: pointer;
+    background-color: #0078E7;
+    padding: 6px 16px;
+    color: white;
+    border-radius: 5px;
+}

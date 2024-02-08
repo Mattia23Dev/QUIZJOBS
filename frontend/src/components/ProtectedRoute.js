@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { HideLoading, ShowLoading } from '../redux/loaderSlice'
 
-function ProtectedRoute({children}) {
+function ProtectedRoute({children, setLoginPopup}) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const user = useSelector(state=>state.users.user)
@@ -45,15 +45,15 @@ function ProtectedRoute({children}) {
   const adminMenu = [
     {
       title: "Home",
-      paths: ["/","/user/write-exam/:id"],
+      paths: ["/admin/exams", "/admin/exams/add", "/admin/exams/edit/:id", "/user/write-exam/:id"],
       icon: <i className="ri-home-line"></i>,
-      onClick: () => navigate("/")
+      onClick: () => navigate("/admin/exams")
     },
     {
       title: "Exams",
-      paths: ["/admin/exams", "/admin/exams/add", "/admin/exams/edit/:id"],
+      paths: ["/admin/test"],
       icon: <i className='ri-file-list-line'></i>,
-      onClick: () => navigate("/admin/exams")
+      onClick: () => navigate("/admin/test")
     },
     {
       title: "Reports",
@@ -72,8 +72,9 @@ function ProtectedRoute({children}) {
       paths: ["/logout"],
       icon: <i className='ri-logout-box-line'></i>,
       onClick: ()=>{
-        localStorage.removeItem("token")
-        navigate("/login");
+        //localStorage.removeItem("token")
+        //navigate("/login");
+        setLoginPopup(true);
       }
     }
   ]
@@ -129,14 +130,19 @@ function ProtectedRoute({children}) {
   }
   return (
     user && <div className='layout'>
-     <div className='flex gap-2 h-100'>
-       <div className='sidebar'>
+     <div className='flex h-100'>
+       <div className={!collapsed ? 'sidebar' : 'sidebar-close'}>
+          <div className='cursor-pointer'>
+            {!collapsed&&<i className="ri-close-line text-2xl flex items-center"
+            onClick={()=>setCollapsed(true)}></i>}
+            {collapsed&&<i className="ri-menu-2-line text-2xl flex items-center" onClick={()=>setCollapsed(false)}></i>}
+         </div>
          <div className='menu'>
             {menu.map((item,index)=>{
               return(
                 <div className={`menu-item ${getIsActiveOrNot(item.paths)&&"active-menu-item"}`} key={index} onClick={item.onClick}>
                     {item.icon}
-                    {!collapsed&&<span>{item.title}</span>}
+                    <span className={!collapsed ? '' : 'hide-menu-title'}>{item.title}</span>
                 </div>
               )
             })}
@@ -144,13 +150,13 @@ function ProtectedRoute({children}) {
        </div>
        <div className='body'>
          <div className='header flex justify-between'>
-         <div className='cursor-pointer'>
-          {!collapsed&&<i className="ri-close-line text-2xl flex items-center"
-          onClick={()=>setCollapsed(true)}></i>}
-          {collapsed&&<i className="ri-menu-2-line text-2xl flex items-center" onClick={()=>setCollapsed(false)}></i>}
+         <div className='cursor-pointer-mobile'>
+            {!collapsed&&<i className="ri-close-line text-2xl flex items-center"
+            onClick={()=>setCollapsed(true)}></i>}
+            {collapsed&&<i className="ri-menu-2-line text-2xl flex items-center" onClick={()=>setCollapsed(false)}></i>}
          </div>
-         <h1 className='text-2xl text-white flex items-center'>
-           Quiz Portal 
+         <h1 className='text-2xl flex items-center'>
+           SkillScan.ai 
          </h1>
          <div>
          <div className='flex justify-center items-center gap-1'>

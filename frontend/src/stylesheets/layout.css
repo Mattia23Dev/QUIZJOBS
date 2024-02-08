@@ -1,19 +1,34 @@
 .layout{
-  padding: 15px;
   height: 100vh;
 }
 
 .sidebar{
-  background-color: var(--primary);
-  padding: 10px;
-  border-radius: 5px;
-  color: white;
+  background-color: #fff;
+  padding: 10px 14px 10px 6px;
+  color: #5D7285;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  box-shadow: 20px 0px 10px 2px rgba(128, 128, 128, 0.23);
+  transition: 0.3s all;
+}
+.sidebar-close{
+  background-color: #fff;
+  padding: 10px 8px 10px 1px;
+  color: #5D7285;
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-shadow: 20px 0px 10px 2px rgba(128, 128, 128, 0.36);
+  transition: 0.3s all;
 }
-
+.layout .menu {
+  margin-top: 25px;
+}
 .menu-item{
     display: flex;
     align-items: center;
@@ -21,32 +36,76 @@
     margin: 5px;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
-    gap: 15px;
+    gap: 10px;
+    font-size: 20px !important;
+    width: 100%;
 }
-
+.menu-item span {
+  font-size: 14px;
+}
+.hide-menu-title{
+  display: none;
+  transition: 0.2s all;
+}
 .active-menu-item{
-    padding: 10px 20px;
-    border: 2px solid white;
+    padding: 8px 30px;
     border-radius: 5px;
+    background-color: #F0F6FF;
 }
-
+.page-title{
+  font-size: 22px;
+}
 .body{
-  width: 100% 
+  width: 100%;
+  background-color: #F0F6FF;
 }
-
+.home-content{
+  padding: 15px 10px 10px 15px;
+}
 .header{
-  background-color: var(--primary);
-  color: white !important;
+  background-color: #fff;
+  box-shadow: 15px 5px 10px 2px rgba(128, 128, 128, 0.216);
+  color: #5D7285 !important;
   width: 100%; 
-  padding: 10px;
-  border-radius: 5px;
+  padding: 15px;
 }
-
 .content{
-
+  padding: 15px;
 }
-
 
 .cursor-pointer{
     cursor: pointer;
+    margin-top: 5px;
+}
+.cursor-pointer-mobile{
+  display: none;
+}
+
+@media screen and (max-width: 600px) {
+  .sidebar{
+    background-color: #fff;
+    padding: 10px 14px 10px 6px;
+    color: #5D7285;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    box-shadow: 20px 0px 10px 2px rgba(128, 128, 128, 0.23);
+    transition: 0.3s all;
+    position: fixed;
+    width: 100%;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+  }
+  .sidebar-close{
+    transition: 0.3s all;
+    display: none;
+  }
+  .cursor-pointer-mobile{
+    display: block;
+  }
 }
