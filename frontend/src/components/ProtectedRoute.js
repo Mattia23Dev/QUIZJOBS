@@ -150,21 +150,21 @@ function ProtectedRoute({children, setLoginPopup}) {
        </div>
        <div className='body'>
          <div className='header flex justify-between'>
-         <div className='cursor-pointer-mobile'>
-            {!collapsed&&<i className="ri-close-line text-2xl flex items-center"
-            onClick={()=>setCollapsed(true)}></i>}
-            {collapsed&&<i className="ri-menu-2-line text-2xl flex items-center" onClick={()=>setCollapsed(false)}></i>}
-         </div>
-         <h1 className='text-2xl flex items-center'>
-           SkillScan.ai 
-         </h1>
-         <div>
-         <div className='flex justify-center items-center gap-1'>
-          <i className="ri-user-line"></i>
-          {user?.name}
-         </div>
-         <span>Role : {(user?.isAdmin)?"Admin":"User"}</span>
-         </div>
+          <div className='cursor-pointer-mobile'>
+              {!collapsed&&<i className="ri-close-line text-2xl flex items-center"
+              onClick={()=>setCollapsed(true)}></i>}
+              {collapsed&&<i className="ri-menu-2-line text-2xl flex items-center" onClick={()=>setCollapsed(false)}></i>}
+          </div>
+          <h1 className='text-2xl flex items-center'>
+            SkillScan.ai 
+          </h1>
+          <div>
+          <div className='flex justify-center items-center gap-1'>
+            <i className="ri-user-line"></i>
+            {user?.name}
+          </div>
+          <span>Role : {(user?.isAdmin)?"Admin":"User"}</span>
+          </div>
          </div>
          <div className='content'>
             {children}

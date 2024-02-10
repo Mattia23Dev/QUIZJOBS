@@ -6,14 +6,149 @@ import { addExam, deleteQuestionFromExam, editExam, getExamById } from '../../..
 import { useDispatch } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
 import AddEditQuestion from './AddEditQuestion';
+import openai from 'openai';
+
+const DomandeComponent = ({ domande }) => {
+   console.log(domande);
+   return (
+     <div>
+       {domande?.map((domanda, index) => (
+         <div key={index}>
+           <p>{domanda.domanda}</p>
+           <ul>
+             {Object.entries(domanda.opzioni).map(([lettera, risposta], index) => (
+               <li key={index}>{lettera} {risposta}</li>
+             ))}
+           </ul>
+           <p>Risposta Corretta: {domanda.rispostaCorretta !== null && domanda.rispostaCorretta.risposta}</p>
+         </div>
+       ))}
+     </div>
+   );
+ };
 
 function AddEditExam() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {id} = useParams()
+  const apiKey = "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"
   const [examData,setExamData] = useState();
   const [showAddEditQuestionModal, setShowAddEditQuestionModal] = useState(false)
-  const [selectedQuestion, setSelectedQuestion] = useState()
+  const [selectedQuestion, setSelectedQuestion] = useState();
+  const [questions, setQuestions] = useState();
+  const [showQuestions, setShowQuestions] = useState(false);
+  const [config, setConfig] = useState({
+      numOfQuestions: 30,
+      difficulty: 'Media',
+      generalSector: 'Informatica', // Sostituisci con il settore generale
+      jobPosition: 'Full stack developer', // Sostituisci con la posizione lavorativa
+      testLanguage: 'Italiano', // Sostituisci con la lingua del test
+      skills: ['Javascript', 'Wordpress', 'React', 'Node js'], // Sostituisci con la lista di competenze
+   });
+
+   function convertiStringaInOggetti(stringaDomande) {
+      const domandeArray = [];
+      const domandeSeparate = stringaDomande.split(/\d+\.\s+/).filter(Boolean);
+  
+      domandeSeparate.forEach(domanda => {
+          const righe = domanda.split('\n').filter(Boolean);
+          const testoDomanda = righe[0].trim();
+          const opzioni = {};
+          let rispostaCorretta = null;
+  
+          for (let i = 1; i < righe.length - 1; i++) {
+              const opzioneMatch = righe[i].match(/- ([A-D]\)) (.+)/);
+              if (opzioneMatch) {
+                  const letteraOpzione = opzioneMatch[1];
+                  const testoOpzione = opzioneMatch[2];
+                  opzioni[letteraOpzione] = testoOpzione;
+              }
+          }
+  
+          let rispostaMatch = righe[righe.length - 1].match(/(Risposta:|Risposta corretta:) ([A-D]\)) (.+)/);
+          if (rispostaMatch) {
+              const letteraRispostaCorretta = rispostaMatch[2];
+              const rispostaEffettiva = rispostaMatch[3].replace(/\*+$/, '');
+              rispostaCorretta = { lettera: letteraRispostaCorretta, risposta: rispostaEffettiva };
+          } else {
+              rispostaMatch = righe[righe.length - 1].match(/- ([A-D]\)) (.+)/);
+              if (rispostaMatch) {
+                  const letteraRispostaCorretta = rispostaMatch[1];
+                  const rispostaEffettiva = rispostaMatch[2].replace(/\*+$/, '');
+                  rispostaCorretta = { lettera: letteraRispostaCorretta, risposta: rispostaEffettiva };
+              }
+          }
+  
+          domandeArray.push({
+              domanda: testoDomanda,
+              opzioni: opzioni,
+              rispostaCorretta: rispostaCorretta
+          });
+      });
+  
+      return domandeArray;
+  }
+
+   const generateQuestions = async () => {
+      const client = new openai.OpenAI({
+         apiKey: apiKey,
+         dangerouslyAllowBrowser: true,
+         model: 'gpt-4-turbo-preview',
+       });
+       const exampleFormat = `### Domande per Full Stack Developer
+
+      1. In JavaScript, cosa restituisce 'typeof NaN'?
+      - A) "number"
+      - B) "NaN"
+      - C) "undefined"
+      - D) "error"
+      - **Risposta corretta: A) "number"**
+    
+      2. Quale funzione di WordPress permette di aggiungere un nuovo tipo di post personalizzato?
+      - A) add_new_post_type()
+      - B) register_post_type()
+      - C) create_post_type()
+      - D) new_post_type()
+      - **Risposta corretta: B) register_post_type()**
+       
+       `;
+      const prompt = `Immagina di essere un recruiter e devi testare le competenze di un candidato per un'offerta lavorativa per la posizione ${config.jobPosition}. Genera ${config.numOfQuestions} domande a risposta multipla con 4 possibilità e con le rispettive risposte. Ripeti le stesse risposte SOLO SE NECESSARIO inserirle nel contesto della domanda. Assicurati di fare domande non banali e specifiche alle competenze fornite: ${config.skills.join(', ')}, con difficoltà ${config.difficulty}, nella lingua ${config.testLanguage}.`;
+
+      const requestData = {
+         max_tokens: 1200, 
+         n: 5,
+         model: 'gpt-4-turbo-preview',
+         messages: [
+            { role: 'system', content: prompt},
+            { role: 'user', content: exampleFormat },
+         ],
+         stop: ['Domanda'],
+         temperature: 0.7,
+         top_p: 1,
+         frequency_penalty: 0,
+         presence_penalty: 0,
+         format: 'json'
+       };
+    
+      try {
+      dispatch(ShowLoading())
+        const response = await client.chat.completions.create(requestData);
+        console.log(response.choices);
+        const allQuestions = [];
+        response.choices.forEach(async  (choice) => {
+            const domandeOggetto = await convertiStringaInOggetti(choice.message.content);
+            allQuestions.push(...domandeOggetto);
+        });
+        
+        console.log(allQuestions);
+        setQuestions(allQuestions);
+        setShowQuestions(true);
+        dispatch(HideLoading())
+      } catch (error) {
+        console.error('Errore durante la generazione delle domande:', error);
+      }
+    };
+
   const onFinish = async(values) => {
      try{
        dispatch(ShowLoading())
@@ -121,9 +256,11 @@ function AddEditExam() {
    }
 ]
   return (
-    <div>
-        <PageTitle title={id?'Edit Exam':'Add Exam'}/>
-        <div className='divider'></div>
+    <div className='home-content'>
+        <PageTitle title={id?'Edit Exam':'Add Test'}/>
+        <button className='primary-outlined-btn w-15 cursor-pointer' onClick={generateQuestions}>
+                Save
+         </button>
         {(examData || !id) && <Form layout="vertical" onFinish={onFinish} initialValues={examData} className="mt-2">
         <Tabs defaultActiveKey="1">
           <Tabs.TabPane tab="Exam Details" key="1">
@@ -191,6 +328,7 @@ function AddEditExam() {
          selectedQuestion={selectedQuestion}
          setSelectedQuestion={setSelectedQuestion}
         />}
+        {showQuestions && questions && <DomandeComponent domande={questions} />}
     </div>
   )
 }
