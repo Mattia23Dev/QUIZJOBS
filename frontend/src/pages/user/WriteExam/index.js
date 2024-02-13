@@ -14,7 +14,7 @@ function WriteExam() {
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0)
   const [selectedOptions, setSelectedOptions] = useState({})
   const [result, setResult] = useState()
-  const {id} = useParams()
+  const { idUser, jobPositionSlug, uniqueId } = useParams();
   const dispatch = useDispatch()
   const [view, setView] = useState("instructions")
   const [secondsLeft,setSecondsLeft] = useState(0)
@@ -26,12 +26,13 @@ function WriteExam() {
     try{
        dispatch(ShowLoading())
        const response = await getExamById(id)
+       console.log(response.data);
        dispatch(HideLoading())
        if(response.success){
           message.success(response.message)
-          setExamData(response.data)
-          setQuestions(response.data.questions)
-          setSecondsLeft(response.data.duration)
+          setExamData(response.data[0])
+          setQuestions(response.data[0].questions)
+          setSecondsLeft(10000);
        }
        else{
           message.error(response.message)
@@ -56,7 +57,7 @@ const calculateResult = async() => {
       }
     })
     let verdict = "Pass";
-    if(correctAnswers.length<examData.passingMarks){
+    if(correctAnswers.length<70){
       verdict = "Fail";
     }
     const tempResult = {
@@ -67,7 +68,7 @@ const calculateResult = async() => {
     setResult(tempResult)
     dispatch(ShowLoading())
     const response = await addReport({
-      exam: id,
+      exam: uniqueId,
       result: tempResult,
       user: user._id 
     })
@@ -85,7 +86,7 @@ const calculateResult = async() => {
   }
 }
 const startTimer = () => {
-   let totalSeconds = examData.duration;
+   let totalSeconds = 10000;
    const intervalId = setInterval(()=>{
       if(totalSeconds>0){
         totalSeconds=totalSeconds-1;
@@ -104,44 +105,47 @@ useEffect(()=>{
   }
 },[timeUp])
 useEffect(()=>{
+  const id = uniqueId;
   if(id){
     getExamDataById(id)
   }
 },[])
+console.log(examData);
   return (
    examData && (
     <div className='mt-2'>
     <div className='divider'></div>
-    <h1 className='text-center'>{examData.name}</h1>
+    <h1 className='text-center'>{jobPositionSlug && jobPositionSlug.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</h1>
     <div className='divider'></div>
     {view==="instructions"&&<Instructions examData={examData} setExamData={setExamData}
     view={view}
     setView={setView}
     startTimer={startTimer}
     />}
-    {(view==="questions"&&questions.length > 0)&&<div className='flex flex-col gap-2 mt-2'>
+    {(view==="questions"&&questions?.length > 0)&&<div className='flex flex-col gap-2 mt-2'>
      <div className='flex justify-between'>
      <h1 className='text-2xl'>
-       {selectedQuestionIndex+1} : {questions[selectedQuestionIndex].name}
+       {selectedQuestionIndex+1} : {questions[selectedQuestionIndex].question}
      </h1>
      <div className='timer'>
-      <span className='text-2xl'>{secondsLeft}</span>
+      <span className='text-2xl'>{secondsLeft && secondsLeft}</span>
      </div>
      </div>
      <div className='flex flex-col gap-2'>
-      {Object.keys(questions[selectedQuestionIndex].options).map((option, index)=>{
-        return <div className={`flex gap-2 items-center ${selectedOptions[selectedQuestionIndex] === option ? "selected-option" : "option" }`}
-        key={index}
-        onClick={()=>{
-          setSelectedOptions({...selectedOptions,[selectedQuestionIndex]: option})
-          console.log(selectedOptions)
-        }}
-        >
+      {Object.entries(questions[selectedQuestionIndex].options).map(([lettera, risposta], index) => (
+          <div
+            className={`flex gap-2 items-center ${selectedOptions[selectedQuestionIndex] === risposta ? "selected-option" : "option" }`}
+            key={index}
+            onClick={() => {
+              setSelectedOptions({...selectedOptions, [selectedQuestionIndex]: risposta});
+              console.log(selectedOptions);
+            }}
+          >
             <h1 className='text-xl'>
-              {option} : {questions[selectedQuestionIndex].options[option]}
+              {lettera} : {risposta}
             </h1>
-        </div>
-      })}
+          </div>
+        ))}
      </div>
      <div className='flex justify-between'>
      {selectedQuestionIndex>0&&<button className='primary-outlined-btn'
@@ -175,10 +179,10 @@ useEffect(()=>{
       </h1>
       <div className='marks'>
         <h1 className='text-md'>
-           Total Marks : {examData.totalMarks}
+           Total Marks : {100}
         </h1>
         <h1 className='text-md'>
-           Passing Marks : {examData.passingMarks}
+           Passing Marks : {70}
         </h1>
         <h1 className='text-md'>
             Obtained Marks : {result.correctAnswers.length}
@@ -196,7 +200,7 @@ useEffect(()=>{
             setSelectedQuestionIndex(0);
             setSelectedOptions({});
             setTimeUp(false);
-            setSecondsLeft(examData.duration)
+            setSecondsLeft(10000)
           }}
           >
           Retake Exam
@@ -230,7 +234,7 @@ useEffect(()=>{
             setSelectedQuestionIndex(0);
             setSelectedOptions({});
             setTimeUp(false);
-            setSecondsLeft(examData.duration);
+            setSecondsLeft(10000);
           }}
           >
           Retake Exam

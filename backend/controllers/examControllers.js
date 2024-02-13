@@ -81,7 +81,7 @@ const getAllExams = async(req,res) => {
 
 const getExamById = async(req,res) => {
   try{
-     const exam = await Exam.findById(req.params.id).populate('questions');
+     const exam = await Exam.find({idEsame: req.params.id});
      if(exam){
       res.send({
         message: "Exam data fetched successfully.",

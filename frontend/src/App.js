@@ -45,6 +45,7 @@ function App() {
         <Route path="/login" element={<PublicRoute><LoginPage/></PublicRoute>}/>
         <Route path="/register" element={<PublicRoute><RegisterPage/></PublicRoute>}/>
         <Route path="/" element={<PublicRoute><Home/></PublicRoute>}/>
+        <Route path="/user/:idUser/:jobPositionSlug/:uniqueId" element={<PublicRoute><WriteExam /></PublicRoute>} />
         <Route path="/admin/exams" element={<ProtectedRoute setLoginPopup={setLoginPopup}><HomePage/></ProtectedRoute>}/>
         <Route path="/admin/test" element={<ProtectedRoute setLoginPopup={setLoginPopup}><ExamsPage/></ProtectedRoute>}/>
         <Route path="/admin/exams/add" element={<ProtectedRoute setLoginPopup={setLoginPopup}><AddEditExam/></ProtectedRoute>}/>
