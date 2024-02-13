@@ -50,23 +50,23 @@ function ProtectedRoute({children, setLoginPopup}) {
       onClick: () => navigate("/admin/exams")
     },
     {
-      title: "Exams",
+      title: "Test",
       paths: ["/admin/test"],
       icon: <i className='ri-file-list-line'></i>,
       onClick: () => navigate("/admin/test")
     },
     {
-      title: "Reports",
+      title: "CRM",
       paths: ["/admin/reports"],
       icon: <i className="ri-bar-chart-line"></i>,
       onClick: ()=>navigate("/admin/reports")
     },
-    // {
-    //   title: "Profile",
-    //   paths: ["/profile"],
-    //   icon: <i className='ri-user-line'></i>,
-    //   onClick: ()=>navigate("/profile")
-    // },
+    {
+      title: "Profilo",
+      paths: ["/profile"],
+      icon: <i className='ri-user-line'></i>,
+      onClick: ()=>navigate("/profile")
+    },
     {
       title: "Logout",
       paths: ["/logout"],

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { getAllExams } from '../../../apicalls/exams'
 import PageTitle from '../../../components/PageTitle'
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice'
-import './test-page.css';
+import './testPage.css';
 
 function HomePage() {
   const [exams, setExams] = useState([])

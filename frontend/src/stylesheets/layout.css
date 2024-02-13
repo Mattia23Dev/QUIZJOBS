@@ -64,6 +64,7 @@
 }
 .home-content{
   padding: 15px 10px 10px 15px;
+  overflow-y: hidden;
 }
 .header{
   background-color: #fff;

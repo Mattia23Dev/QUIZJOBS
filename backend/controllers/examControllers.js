@@ -2,39 +2,55 @@ const Exam = require("../models/examModel")
 const User = require("../models/userModel")
 const Question = require('../models/questionModel')
 
-const addExam = async(req,res) => {
-   try{
+const addExam = async (req, res) => {
+  try {
       const user = await User.findOne({
-        _id: req.body.userid
-      })
-      if(user.isAdmin){
-        //check if exam name already exists
-        const examExists = await Exam.findOne({name: req.body.name})
-        if(examExists){
-            res.send({
-                message: "Exam already exists",
-                success: false
-            })
-        }
-        else{
-            req.body.questions = []
-            const newExam = new Exam(req.body)
-            await newExam.save()
-            res.send({
-             message: "Exam added successfully",
+          _id: req.body.userid
+      });
+
+      if (user.isAdmin) {
+
+        const examWithIdExists = await Exam.findOne({ idEsame: req.body.idEsame });
+          if (examWithIdExists) {
+              return res.send({
+                  message: "Exam with the same ID already exists",
+                  success: false
+              });
+          }
+
+          const newExam = new Exam(req.body);
+          console.log(req.body);
+          if (req.body.domande && req.body.domande.length > 0) {            
+            const savedQuestions = [];
+              for (const domanda of req.body.domande) {
+                const newQuestion = new Question({
+                    question: domanda.domanda,
+                    correctOption: domanda.rispostaCorretta !== null ?
+                      domanda.rispostaCorretta.lettera + ' ' + domanda.rispostaCorretta.risposta
+                      : "Nullo",
+                    options: domanda.opzioni,
+                    exam: newExam._id,
+                });
+                const savedQuestion = await newQuestion.save();
+                savedQuestions.push(savedQuestion);
+            }
+            newExam.questions = savedQuestions;
+          }
+
+          await newExam.save();
+          res.send({
+              message: "Exam added successfully",
               success: true
-            })
-        }
+          });
       }
-   }
-   catch(error){
+  } catch (error) {
       res.send({
-        message: error.message,
-        data: error,
-        success: false
-      })
-   }
-}
+          message: error.message,
+          data: error,
+          success: false
+      });
+  }
+};
 
 const getAllExams = async(req,res) => {
   try{

@@ -3,48 +3,104 @@ import PageTitle from '../../../components/PageTitle';
 import { Form, Row, Col, message, Tabs, Table } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { addExam, deleteQuestionFromExam, editExam, getExamById } from '../../../apicalls/exams';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
 import AddEditQuestion from './AddEditQuestion';
+import './addEditTest.css';
+import { FaGripHorizontal } from "react-icons/fa";
 import openai from 'openai';
 
-const DomandeComponent = ({ domande }) => {
-   console.log(domande);
+const DomandeComponent = ({ domande, onUpdateDomande }) => {
+   const [currentDomanda, setCurrentDomanda] = useState(domande[0]);
+ 
+   const handleDomandaClick = (domanda) => {
+     setCurrentDomanda(domanda);
+   };
+ 
+   const handleDragStart = (event, domanda) => {
+     event.dataTransfer.setData('domanda', JSON.stringify(domanda));
+   };
+ 
+   const handleDragOver = (event) => {
+     event.preventDefault();
+   };
+ 
+   const handleDrop = (event, index) => {
+     const droppedDomanda = JSON.parse(event.dataTransfer.getData('domanda'));
+     const updatedDomande = Array.from(domande);
+     const currentIndex = updatedDomande.indexOf(droppedDomanda);
+     updatedDomande.splice(currentIndex, 1);
+     updatedDomande.splice(index, 0, droppedDomanda);
+     setCurrentDomanda(updatedDomande[index]);
+     onUpdateDomande(updatedDomande);
+   };
+ 
    return (
-     <div>
-       {domande?.map((domanda, index) => (
-         <div key={index}>
-           <p>{domanda.domanda}</p>
-           <ul>
-             {Object.entries(domanda.opzioni).map(([lettera, risposta], index) => (
-               <li key={index}>{lettera} {risposta}</li>
-             ))}
-           </ul>
-           <p>Risposta Corretta: {domanda.rispostaCorretta !== null && domanda.rispostaCorretta.risposta}</p>
-         </div>
-       ))}
+     <div className="domande-container">
+       <div className="lista-domande">
+         {domande.map((domanda, index) => (
+           <div
+             key={index}
+             className="domanda-item"
+           >
+            <span
+            className='drag-handle'
+            draggable
+            onDragStart={(event) => handleDragStart(event, domanda)}
+            onDragOver={handleDragOver}
+            onDrop={(event) => handleDrop(event, index)}
+            >
+              <FaGripHorizontal
+               size={30}
+            /> 
+            </span>
+             <p onClick={() => handleDomandaClick(domanda)}>{domanda.domanda}</p>
+           </div>
+         ))}
+       </div>
+       <div className="domanda-attuale">
+         <p>{currentDomanda.domanda}</p>
+         <ul className="opzioni">
+           {Object.entries(currentDomanda.opzioni).map(([lettera, risposta], index) => (
+             <li className={currentDomanda.rispostaCorretta && risposta === currentDomanda.rispostaCorretta.risposta ? "risposta-corretta" : ""} key={index}>{lettera} {risposta}</li>
+           ))}
+         </ul>
+       </div>
      </div>
    );
  };
+ 
 
 function AddEditExam() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {id} = useParams()
-  const apiKey = "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"
+  const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
   const [examData,setExamData] = useState();
+  const [activeTab, setActiveTab] = useState('1');
   const [showAddEditQuestionModal, setShowAddEditQuestionModal] = useState(false)
   const [selectedQuestion, setSelectedQuestion] = useState();
   const [questions, setQuestions] = useState();
   const [showQuestions, setShowQuestions] = useState(false);
+  const idUser = useSelector(state=>state.users.user._id);
   const [config, setConfig] = useState({
       numOfQuestions: 30,
-      difficulty: 'Media',
-      generalSector: 'Informatica', // Sostituisci con il settore generale
-      jobPosition: 'Full stack developer', // Sostituisci con la posizione lavorativa
-      testLanguage: 'Italiano', // Sostituisci con la lingua del test
-      skills: ['Javascript', 'Wordpress', 'React', 'Node js'], // Sostituisci con la lista di competenze
+      difficulty: '',
+      generalSector: '',
+      jobPosition: '',
+      testLanguage: '',
+      skills: ['',],
    });
+
+   const generateUniqueId = (length) => {
+      let result = '';
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      const charactersLength = characters.length;
+      for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      }
+      return result;
+    };
 
    function convertiStringaInOggetti(stringaDomande) {
       const domandeArray = [];
@@ -90,6 +146,11 @@ function AddEditExam() {
   }
 
    const generateQuestions = async () => {
+      console.log(config);
+      if (!config.numOfQuestions || !config.difficulty || !config.generalSector || !config.jobPosition || !config.testLanguage || config.skills.length < 1) {
+         console.error('Tutti i campi di config devono essere definiti.');
+         return;
+     }
       const client = new openai.OpenAI({
          apiKey: apiKey,
          dangerouslyAllowBrowser: true,
@@ -142,22 +203,40 @@ function AddEditExam() {
         
         console.log(allQuestions);
         setQuestions(allQuestions);
+
         setShowQuestions(true);
-        dispatch(HideLoading())
+        handleChangeTab();
+        dispatch(HideLoading());
       } catch (error) {
         console.error('Errore durante la generazione delle domande:', error);
       }
     };
 
-  const onFinish = async(values) => {
+  const onFinish = async() => {
      try{
        dispatch(ShowLoading())
+
+       const uniqueId = generateUniqueId(6);
+       const jobPositionSlug = config.jobPosition.toLowerCase().replace(/\s/g, '_'); // Converti il jobPosition in un formato slug
+       const examLink = `http://localhost:3000/${idUser}/${jobPositionSlug}/${uniqueId}`; 
+       const examData = {
+         numOfQuestions: config.numOfQuestions,
+         difficulty: config.difficulty,
+         generalSector: config.generalSector,
+         jobPosition: config.jobPosition,
+         testLanguage: config.testLanguage,
+         skills: config.skills,
+         domande: questions, 
+         idEsame: uniqueId,
+         examLink: examLink,
+       };
+
        let response;
        if(id){
-         response = await editExam(values,id)
+         response = await editExam(examData, id)
        }
        else{
-         response = await addExam(values)
+         response = await addExam(examData);
        }
        dispatch(HideLoading())
        if(response.success){
@@ -255,57 +334,122 @@ function AddEditExam() {
       }
    }
 ]
+
+      const handleAddTag = (newSkill) => {
+         if (newSkill.trim() !== '') {
+            setConfig(prevConfig => ({ ...prevConfig, skills: [...prevConfig.skills, newSkill.trim()] }));
+         }
+      };
+      const handleRemoveTag = (tagToRemove) => {
+         setConfig(prevConfig => ({
+         ...prevConfig,
+         skills: prevConfig.skills.filter(tag => tag !== tagToRemove)
+         }));
+      };
+
+      const handleUpdateDomande = (updatedDomande) => {
+         setQuestions(updatedDomande);
+       };
+
+       const handleChangeTab = () => {
+         setActiveTab('2');
+       };
   return (
     <div className='home-content'>
         <PageTitle title={id?'Edit Exam':'Add Test'}/>
-        <button className='primary-outlined-btn w-15 cursor-pointer' onClick={generateQuestions}>
-                Save
-         </button>
-        {(examData || !id) && <Form layout="vertical" onFinish={onFinish} initialValues={examData} className="mt-2">
-        <Tabs defaultActiveKey="1">
-          <Tabs.TabPane tab="Exam Details" key="1">
+        {(examData || !id) && 
+        <Form layout="vertical" onFinish={generateQuestions} initialValues={examData} className="mt-2">
+        <Tabs className='tabs-sticky' defaultActiveKey={activeTab} onChange={handleChangeTab}>
+          <Tabs.TabPane tab="Dettagli Test" key="1">
           <Row gutter={[10,10]}>
                 <Col span={8}>
-                   <Form.Item label="Exam Name" name="name">
-                    <input type="text"/>
+                   <Form.Item label="Settore generale" name="general-sector">
+                    <input type="text" value={config.generalSector || ''}  onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, generalSector: e.target.value }))} />
                    </Form.Item>
                 </Col>
                 <Col span={8}>
-                   <Form.Item label="Exam Duration" name="duration">
-                    <input type="number" min={0}/>
+                   <Form.Item label="Job position" name="job-position">
+                    <input type="text" value={config.jobPosition}  onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, jobPosition: e.target.value }))}/>
                    </Form.Item>
                 </Col>
                 <Col span={8}>
-                   <Form.Item label="Category" name="category">
-                    <select>
-                    <option value="JavaScript">JavaScript</option>
-                    <option value="Nodejs">Nodejs</option>
-                    <option value="React">React</option>
-                    <option value="MongoDb">MongoDb</option>
+                   <Form.Item label="Difficoltà" name="seniority">
+                    <select value={config.difficulty} onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, difficulty: e.target.value }))}>
+                        <option value="">Seleziona</option>
+                        <option value="Facile">Facile</option>
+                        <option value="Medio">Medio</option>
+                        <option value="Difficile">Difficile</option>
                     </select>
                    </Form.Item>
                 </Col>
                 <Col span={8}>
-                   <Form.Item label="Total Marks" name="totalMarks">
-                    <input type="number" min={0}/>
+                   <Form.Item label="Lingua del test" name="test-language">
+                    <select value={config.testLanguage} onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, testLanguage: e.target.value }))}>
+                        <option value="">Seleziona</option>
+                        <option value="Italiano">Italiano</option>
+                        <option value="Inglese">Inglese</option>
+                        <option value="Tedesco">Tedesco</option>
+                        <option value="Spagnolo">Spagnolo</option>
+                        <option value="Francese">Francese</option>
+                        <option value="Portoghese">Portoghese</option>
+                    </select>
                    </Form.Item>
                 </Col>
                 <Col span={8}>
-                   <Form.Item label="Passing Marks" name="passingMarks">
-                    <input type="number" min={0}/>
-                   </Form.Item>
+                  <Form.Item label="Competenze" name="skills">
+                     <div>
+                        {config.skills.map(tag => (
+                           <span
+                              key={tag}
+                              style={{ marginRight: '8px', marginBottom: '8px', display: 'inline-block' }}
+                           >
+                              {tag} <button onClick={() => handleRemoveTag(tag)}>X</button>
+                           </span>
+                        ))}
+                        <div>
+                           <input
+                              type="text"
+                              placeholder="Aggiungi una competenza"
+                              onKeyDown={(e) => {
+                                 if (e.key === 'Enter') {
+                                    const newSkill = e.target.value.trim();
+                                    if (newSkill) {
+                                       handleAddTag(newSkill);
+                                    }
+                                    e.target.value = '';
+                                 }
+                              }}
+                           />
+                        </div>
+                     </div>
+                  </Form.Item>
                 </Col>
             </Row>
             <div className='flex justify-end gap-2'>
-             <button className='primary-outlined-btn w-15 cursor-pointer' type="submit">
-                Save
-             </button>
-             <button className='primary-contained-btn w-15 cursor-pointer'
-             onClick={()=>navigate('/admin/exams')}
-             >
-                Cancel
+               <button className='primary-outlined-btn w-15 cursor-pointer' type="submit">
+                  Save
+               </button>
+               <button className='primary-contained-btn w-15 cursor-pointer'
+               onClick={()=>navigate('/admin/exams')}
+               >
+                  Cancel
              </button>
             </div>
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Questions" key="2">
+              <div className='flex justify-end'> 
+              <button className="primary-outlined-btn cursor-pointer"
+              type="button"
+              onClick={()=>{
+               setShowAddEditQuestionModal(true)
+              }}>Add Question</button>
+              </div>
+              {showQuestions && questions && 
+              <div className='domande-container-save'>
+                  <DomandeComponent domande={questions} onUpdateDomande={handleUpdateDomande} />
+                  <button onClick={onFinish}>Salva e Genera Test</button>
+              </div>
+              }
           </Tabs.TabPane>
           {id && <Tabs.TabPane tab="Questions" key="2">
               <div className='flex justify-end'> 
@@ -315,9 +459,6 @@ function AddEditExam() {
                setShowAddEditQuestionModal(true)
               }}>Add Question</button>
               </div>
-              <Table columns={questionColumns} dataSource={examData?.questions} className="mt-1">
-
-              </Table>
           </Tabs.TabPane>}
         </Tabs>
         </Form>}
@@ -328,7 +469,6 @@ function AddEditExam() {
          selectedQuestion={selectedQuestion}
          setSelectedQuestion={setSelectedQuestion}
         />}
-        {showQuestions && questions && <DomandeComponent domande={questions} />}
     </div>
   )
 }

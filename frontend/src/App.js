@@ -22,6 +22,7 @@ import WriteExam from './pages/user/WriteExam';
 import AdminReportsPage from './pages/admin/Reports';
 import Home from './pages/Home';
 import { useState } from 'react';
+import InfoExam from './pages/admin/Exams/InfoExam';
 
 function App() {
   const {loading} = useSelector(state=>state.loaders)
@@ -48,6 +49,7 @@ function App() {
         <Route path="/admin/test" element={<ProtectedRoute setLoginPopup={setLoginPopup}><ExamsPage/></ProtectedRoute>}/>
         <Route path="/admin/exams/add" element={<ProtectedRoute setLoginPopup={setLoginPopup}><AddEditExam/></ProtectedRoute>}/>
         <Route path="/admin/exams/edit/:id" element={<ProtectedRoute setLoginPopup={setLoginPopup}><AddEditExam/></ProtectedRoute>}/>
+        <Route path="/admin/exams/info/:id" element={<ProtectedRoute setLoginPopup={setLoginPopup}><InfoExam/></ProtectedRoute>}/>
         <Route path="/user/reports" element={<ProtectedRoute setLoginPopup={setLoginPopup}><ReportsPage/></ProtectedRoute>}/>
         <Route path="/admin/reports" element={<ProtectedRoute setLoginPopup={setLoginPopup}><AdminReportsPage/></ProtectedRoute>}/>
         <Route path="/profile" element={<ProtectedRoute setLoginPopup={setLoginPopup}><ProfilePage/></ProtectedRoute>}/>

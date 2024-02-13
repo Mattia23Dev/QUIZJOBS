@@ -2,34 +2,56 @@ const mongoose = require('mongoose')
 const Question = require("./questionModel")
 
 const examSchema = new mongoose.Schema({
-    name: {
+    numOfQuestions: {
+        type: Number,
+        required: true
+    },
+    difficulty: {
         type: String,
         required: true
     },
-    duration: {
-        type: Number,
-        required: true
-    },
-    category: {
+    generalSector: {
         type: String,
         required: true
     },
-    totalMarks: {
-        type: Number,
+    jobPosition: {
+        type: String,
         required: true
     },
-    passingMarks: {
-        type: Number,
+    testLanguage: {
+        type: String,
+        required: true
+    },
+    skills: {
+        type: [String],
         required: true
     },
     questions: {
-        type: [mongoose.Schema.Types.ObjectId],
+        type: [Object],
         required: true,
-        ref: "questions"  
     },
-},{
+    idEsame: {
+        type: String,
+        required: true
+    },
+    deadline: {
+        type: Date,
+    },
+    active: {
+        type: Boolean,
+        default: true
+    },
+    candidates: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "candidates"
+    }],
+    examLink: {
+        type: String,
+        required: true,
+    }
+}, {
     timestamps: true
-})
+});
 
 // remove all the questions associated with an exam if that exam is deleted
 examSchema.post('remove',async function(res, next){

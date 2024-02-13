@@ -38,6 +38,8 @@ function ExamsPage() {
         return <div className='flex gap-2'>
           <i className='ri-pencil-line cursor-pointer'
           onClick={()=>navigate(`/admin/exams/edit/${record._id}`)}></i>
+          <i className='ri-pencil-line cursor-pointer'
+          onClick={()=>navigate(`/admin/exams/info/${record._id}`)}></i>
           <i className='ri-delete-bin-line cursor-pointer' onClick={()=>{deleteExamById(record._id)}}></i>
         </div>
       }

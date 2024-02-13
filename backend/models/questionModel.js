@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Exam = require("./examModel")
 
 const questionSchema = new mongoose.Schema({
-    name: {
+    question: {
         type: String,
         required: true
     },

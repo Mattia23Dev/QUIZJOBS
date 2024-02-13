@@ -6,8 +6,8 @@
 .test-header button {
     border: none;
     cursor: pointer;
-    background-color: #0078E7;
-    padding: 6px 16px;
+    background-color: var(--primary);
+    padding: 6px 20px;
     color: white;
     border-radius: 5px;
 }
