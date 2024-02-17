@@ -30,23 +30,47 @@ const candidateSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    experience: {
+        type: String,
+    },
+    degree: {
+        type: String,
+        required: true
+    },
     tests: [{
         testId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "exams"
         },
+        progress: {
+            questionIndex: {
+              type: Number
+            },
+            selectedOption: {
+              type: String
+            }
+        },
         score: {
             type: Number,
-            required: true
         },
         correctAnswers: {
             type: Number,
-            required: true
         },
         totalQuestions: {
             type: Number,
-            required: true
-        }
+        },
+        arrayAnswers: {
+            answers: {
+                type: mongoose.Schema.Types.Mixed,
+            },
+            questions: {
+                type: mongoose.Schema.Types.Mixed,
+            }
+        },
+        report: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "reports"
+        },
     }],
     status: {
         type: String,

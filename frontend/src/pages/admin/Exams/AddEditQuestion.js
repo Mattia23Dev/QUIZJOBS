@@ -63,14 +63,14 @@ function AddEditQuestion(props) {
       setSelectedQuestion()
       }}>
      <Form onFinish={onFinish} layout="vertical" initialValues={{
-       name: selectedQuestion?.name,
+       question: selectedQuestion?.question,
        correctOption: selectedQuestion?.correctOption,
-       A: selectedQuestion?.options.A,
-       B: selectedQuestion?.options.B,
-       C: selectedQuestion?.options.C,
-       D: selectedQuestion?.options.D,
+       A: selectedQuestion?.options['A)'],
+       B: selectedQuestion?.options['B)'],
+       C: selectedQuestion?.options['C)'],
+       D: selectedQuestion?.options['D)'],
      }}>
-       <Form.Item name="name" label="Question">
+       <Form.Item name="question" label="Question">
         <input type="text"/>
        </Form.Item>
        <Form.Item name="correctOption" label="Correct Option">

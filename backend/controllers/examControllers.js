@@ -1,6 +1,7 @@
 const Exam = require("../models/examModel")
 const User = require("../models/userModel")
-const Question = require('../models/questionModel')
+const Question = require('../models/questionModel');
+const candidateModel = require("../models/candidateModel");
 
 const addExam = async (req, res) => {
   try {
@@ -81,7 +82,15 @@ const getAllExams = async(req,res) => {
 
 const getExamById = async(req,res) => {
   try{
-     const exam = await Exam.find({idEsame: req.params.id});
+     const exam = await Exam.find({_id: req.params.id})
+      .populate({
+          path: "candidates.candidate",
+          select: "name surname email phone city cv", // Seleziona i campi desiderati per il candidato
+      })
+      .populate({
+          path: "candidates.report",
+          select: "result", // Seleziona i campi desiderati per il report
+      });
      if(exam){
       res.send({
         message: "Exam data fetched successfully.",
@@ -286,4 +295,41 @@ const deleteQuestionFromExam = async(req,res) => {
   }
 }
 
-module.exports = {addExam, getAllExams, getExamById, editExam, deleteExam, addQuestionToExam, editQuestionInExam, deleteQuestionFromExam}
+const saveTestProgress = async (req, res) => {
+  try {
+    const { email, testId, questionIndex, selectedOption, arrayAnswers, correctAnswer, totalQuestions } = req.body;
+
+    const candidate = await candidateModel.findOne({ email });
+
+    if (!candidate) {
+      return res.status(404).json({ message: 'Candidate not found', success: false });
+    }
+
+    const testIndex = candidate.tests.find(test => test.testId.toString() === testId);
+
+    if (!testIndex) {
+      return res.status(404).json({ message: 'Test not found for the candidate', success: false });
+    }
+
+    testIndex.progress = { questionIndex, selectedOption };
+    
+    testIndex.correctAnswers = correctAnswer;
+    testIndex.totalQuestions = totalQuestions;
+    testIndex.arrayAnswers = arrayAnswers; 
+
+    await candidate.save();
+
+    const updatedCandidate = await candidateModel.findOneAndUpdate(
+      { email },
+      { $pull: { tests: { testId: { $ne: testId } } } },
+      { new: true } 
+  );
+
+    res.status(200).json({ message: 'Test progress saved successfully', success: true, candidate: updatedCandidate });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message, success: false });
+  }
+};
+
+module.exports = {addExam, getAllExams, getExamById, editExam, deleteExam, addQuestionToExam, editQuestionInExam, deleteQuestionFromExam, saveTestProgress}

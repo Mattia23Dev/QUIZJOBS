@@ -176,8 +176,8 @@ function AddEditExam() {
       const prompt = `Immagina di essere un recruiter e devi testare le competenze di un candidato per un'offerta lavorativa per la posizione ${config.jobPosition}. Genera ${config.numOfQuestions} domande a risposta multipla con 4 possibilità e con le rispettive risposte. Ripeti le stesse risposte SOLO SE NECESSARIO inserirle nel contesto della domanda. Assicurati di fare domande non banali e specifiche alle competenze fornite: ${config.skills.join(', ')}, con difficoltà ${config.difficulty}, nella lingua ${config.testLanguage}.`;
 
       const requestData = {
-         max_tokens: 1200, 
-         n: 5,
+         max_tokens: 3000, 
+         n: 2,
          model: 'gpt-4-turbo-preview',
          messages: [
             { role: 'system', content: prompt},
@@ -198,7 +198,8 @@ function AddEditExam() {
         const allQuestions = [];
         response.choices.forEach(async  (choice) => {
             const domandeOggetto = await convertiStringaInOggetti(choice.message.content);
-            allQuestions.push(...domandeOggetto);
+            const domandeFiltrate = domandeOggetto.filter(domanda => domanda.rispostaCorretta !== null && Object.keys(domanda.opzioni).length > 3);
+            allQuestions.push(...domandeFiltrate);
         });
         
         console.log(allQuestions);
@@ -275,7 +276,7 @@ function AddEditExam() {
       getExamDataById(id)
     }
   },[])
-  const deleteQuestionById = async(questionId) =>{
+  const deleteQuestionById = async(questionId) => {
     try{
       const reqPayload = {
          questionId: questionId
@@ -296,44 +297,6 @@ function AddEditExam() {
       message.error(error.message)
     }
   }
-  const questionColumns = [
-   {
-      title: "Question",
-      dataIndex: "name"
-   },
-   {
-      title: "Options",
-      dataIndex: "options",
-      render: (text,record) => {
-         return Object.keys(record.options).map((key)=>{
-            return <div>{key} : {record.options[key]}</div>
-         })
-      }
-   },
-   {
-      title: "Correct Option",
-      dataIndex: "correctOption",
-      render: (text,record) => {
-         return `${record.correctOption}. ${record.options[record.correctOption]}`;
-      }
-   },
-   {
-      title: "Action",
-      dataIndex: "action",
-      render: (text,record) => {
-         return (
-            <div className='flex gap-2'>
-              <i className='ri-pencil-line cursor-pointer'
-               onClick={()=>{
-                  setSelectedQuestion(record)
-                  setShowAddEditQuestionModal(true)
-               }}></i>
-              <i className='ri-delete-bin-line cursor-pointer' onClick={()=>{deleteQuestionById(record._id)}}></i>
-            </div>
-         )
-      }
-   }
-]
 
       const handleAddTag = (newSkill) => {
          if (newSkill.trim() !== '') {
@@ -451,7 +414,7 @@ function AddEditExam() {
               </div>
               }
           </Tabs.TabPane>
-          {id && <Tabs.TabPane tab="Questions" key="2">
+          {id && <Tabs.TabPane tab="Questions" key="3">
               <div className='flex justify-end'> 
               <button className="primary-outlined-btn cursor-pointer"
               type="button"

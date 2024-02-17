@@ -1,13 +1,38 @@
 const Report = require("../models/reportModel")
 const Exam = require("../models/examModel")
-const User = require("../models/userModel")
+const User = require("../models/userModel");
+const candidateModel = require("../models/candidateModel");
+const examModel = require("../models/examModel");
 
 //add attempts
 
 const addReport = async(req,res) => {
     try{
+       const { email, exam, user } = req.body;
+
+       const existingReport = await Report.findOne({ user, exam });
+
+        if (existingReport) {
+            return res.status(400).json({
+                message: "A report already exists for this user and test",
+                success: false
+            });
+        }
+        
        const report = new Report(req.body);
-       await report.save()
+       await report.save();
+       const reportId = report._id;
+
+       const candidate = await candidateModel.findOneAndUpdate(
+           { email: email },
+           { $set: { "tests.$[elem].report": reportId } },
+           { arrayFilters: [{ "elem.testId": req.body.exam }] }
+       );
+
+       const examUpdate = await examModel.findOneAndUpdate(
+            { _id: exam, "candidates.candidate": candidate._id },
+            { $set: { "candidates.$.report": reportId } }
+        );
        res.send({
         message: "Attempt added successfully",
         data: null,

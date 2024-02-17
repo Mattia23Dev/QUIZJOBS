@@ -1,12 +1,14 @@
 import React, {useState, useEffect} from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import { getExamById } from '../../../apicalls/exams'
+import { getExamById, saveTestProgress } from '../../../apicalls/exams'
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice'
 import { message } from 'antd'
 import Instructions from './Instructions'
 import { addReport } from '../../../apicalls/reports'
 import { useSelector } from 'react-redux'
+import { useCookies } from 'react-cookie';
+import './writeExamUser.css';
 
 function WriteExam() {
   const [examData, setExamData] = useState()
@@ -17,11 +19,14 @@ function WriteExam() {
   const { idUser, jobPositionSlug, uniqueId } = useParams();
   const dispatch = useDispatch()
   const [view, setView] = useState("instructions")
-  const [secondsLeft,setSecondsLeft] = useState(0)
+  const [secondsLeft, setSecondsLeft] = useState(30)
   const [timeUp, setTimeUp] = useState(false)
   const [intervalId, setIntervalId] = useState(null);
-  const {user} = useSelector(state=>state.users)
+  const [user, setUser] = useState();
+  const [cookies, setCookie] = useCookies(['answers']);
+
   const navigate = useNavigate();
+
   const getExamDataById = async(id) => {
     try{
        dispatch(ShowLoading())
@@ -43,92 +48,153 @@ function WriteExam() {
        message.error(error.message)
     }
 }
-const calculateResult = async() => {
-    try{
-    let correctAnswers = [];
-    let wrongAnswers = [];
 
-    questions.forEach((question,index)=>{
-      if(question.correctOption===selectedOptions[index]){
-        correctAnswers.push(question);
+const calculateResult = async() => {
+  try {
+      let correctAnswersCount = 0;
+      questions.forEach((question, index) => {
+          if (question.correctOption.includes(selectedOptions[index])) {
+              correctAnswersCount++;
+          }
+      });
+
+      const totalQuestions = questions.length;
+      const percentage = (correctAnswersCount / totalQuestions) * 100;
+      const verdict = percentage >= 70 ? "Pass" : "Fail";
+
+      const tempResult = {
+          correctAnswersCount,
+          totalQuestions,
+          percentage,
+          verdict,
+      };
+
+      setResult(tempResult);
+      dispatch(ShowLoading());
+
+      const response = await addReport({
+          exam: examData._id,
+          result: tempResult,
+          user: user._id,
+          email: user.email,
+      });
+
+      dispatch(HideLoading());
+
+      if(response.success) {
+          //setView("result");
+          console.log(response);
+      } else {
+          message.error(response.message);
       }
-      else{
-        wrongAnswers.push(question);
+  } catch(error) {
+      dispatch(HideLoading());
+      message.error(error.message);
+  }
+};
+
+useEffect(() => {
+  if (user && user.tests && user.tests.length > 0) {
+    const currentTest = user.tests[0];
+    if (currentTest.progress && currentTest.totalQuestions) {
+      setSelectedQuestionIndex(currentTest.progress.questionIndex);
+      const remainingTime = 30;
+      setSecondsLeft(remainingTime);
+      const answers = currentTest.arrayAnswers?.answers;
+      if (answers) {
+        setSelectedOptions({ ...selectedOptions, ...answers });
       }
-    })
-    let verdict = "Pass";
-    if(correctAnswers.length<70){
-      verdict = "Fail";
-    }
-    const tempResult = {
-      correctAnswers,
-      wrongAnswers,
-      verdict,
-    }
-    setResult(tempResult)
-    dispatch(ShowLoading())
-    const response = await addReport({
-      exam: uniqueId,
-      result: tempResult,
-      user: user._id 
-    })
-    dispatch(HideLoading())
-    if(response.success){
-      setView("result"); 
-    }
-    else{
-      message.error(response.message)
+    } else {
+      setSelectedQuestionIndex(0); 
+      setSecondsLeft(30);
     }
   }
-  catch(error){
-    dispatch(HideLoading())
-    message.error(error.message)
+}, [user]);
+
+const handleNextButtonClick = async () => {
+  let correctAnswersCount = 0;
+  for (let i = 0; i <= selectedQuestionIndex; i++) {
+    const question = questions[i];
+    if (question.correctOption.includes(selectedOptions[i])) {
+      correctAnswersCount++;
+    }
   }
-}
+  const response = await saveTestProgress({
+      email: user.email,
+      testId: examData._id,
+      questionIndex: selectedQuestionIndex,
+      selectedOption: selectedOptions[selectedQuestionIndex],
+      arrayAnswers: {
+        answers: selectedOptions,
+        questions: questions.slice(0, selectedQuestionIndex + 1).map(question => question.question)
+      },
+      correctAnswer: correctAnswersCount,
+      totalQuestions: selectedQuestionIndex + 1,
+  })
+  console.log(response);
+  setSelectedQuestionIndex(selectedQuestionIndex + 1);
+  startTimer();
+};
+
 const startTimer = () => {
-   let totalSeconds = 10000;
-   const intervalId = setInterval(()=>{
-      if(totalSeconds>0){
-        totalSeconds=totalSeconds-1;
-        setSecondsLeft(totalSeconds)
-      }
-      else{
+  clearInterval(intervalId);
+  let remainingTime = 30;
+  setSecondsLeft(remainingTime); 
+
+  const intervalIdSt = setInterval(() => {
+    if (remainingTime > 0) {
+      remainingTime -= 1; 
+      setSecondsLeft(remainingTime); 
+    } else {
+      clearInterval(intervalIdSt);
+
+      if (selectedQuestionIndex < questions.length - 1) {
+        handleNextButtonClick();
+      } else {
         setTimeUp(true);
       }
-   }, 1000);
-   setIntervalId(intervalId)
-}
-useEffect(()=>{
-  if(timeUp&&view==="questions"){
-    clearInterval(intervalId)
-    calculateResult(); 
+    }
+  }, 1000);
+  setIntervalId(intervalIdSt);
+};
+
+useEffect(() => {
+  if (timeUp && view === "questions") {
+    clearInterval(intervalId);
+    if (selectedQuestionIndex < questions.length - 1) {
+      setSelectedQuestionIndex(prevIndex => prevIndex + 1);
+      startTimer(); 
+    } else {
+      calculateResult();
+    }
   }
-},[timeUp])
+}, [timeUp]);
+
 useEffect(()=>{
   const id = uniqueId;
   if(id){
     getExamDataById(id)
   }
 },[])
-console.log(examData);
+
   return (
    examData && (
     <div className='mt-2'>
     <div className='divider'></div>
-    <h1 className='text-center'>{jobPositionSlug && jobPositionSlug.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</h1>
+    <h1 className='text-center user-select-none'>{jobPositionSlug && jobPositionSlug.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</h1>
     <div className='divider'></div>
-    {view==="instructions"&&<Instructions examData={examData} setExamData={setExamData}
+    {view==="instructions"&&<Instructions setUser={setUser} examData={examData} setExamData={setExamData}
     view={view}
     setView={setView}
     startTimer={startTimer}
     />}
     {(view==="questions"&&questions?.length > 0)&&<div className='flex flex-col gap-2 mt-2'>
      <div className='flex justify-between'>
-     <h1 className='text-2xl'>
+     <h1 className='text-2xl user-select-none'>
        {selectedQuestionIndex+1} : {questions[selectedQuestionIndex].question}
      </h1>
      <div className='timer'>
-      <span className='text-2xl'>{secondsLeft && secondsLeft}</span>
+      <span className='text-2xl user-select-none'>{secondsLeft && secondsLeft}</span>
      </div>
      </div>
      <div className='flex flex-col gap-2'>
@@ -141,31 +207,21 @@ console.log(examData);
               console.log(selectedOptions);
             }}
           >
-            <h1 className='text-xl'>
+            <h1 className='text-xl user-select-none'>
               {lettera} : {risposta}
             </h1>
           </div>
         ))}
      </div>
      <div className='flex justify-between'>
-     {selectedQuestionIndex>0&&<button className='primary-outlined-btn'
-      onClick={()=>{
-          setSelectedQuestionIndex(selectedQuestionIndex-1)
-      }}
-      >
-       Previous
-      </button>}
       {selectedQuestionIndex<questions.length-1&&<button className='primary-contained-btn'
-      onClick={()=>{
-          setSelectedQuestionIndex(selectedQuestionIndex+1)
-      }}
-      >
+      onClick={()=> handleNextButtonClick()}>
        Next
       </button>}
       {selectedQuestionIndex===questions.length-1&&<button className='primary-contained-btn'
       onClick={()=>{
         clearInterval(intervalId)
-          setTimeUp(true)
+        setTimeUp(true)
       }}
       >
        Submit

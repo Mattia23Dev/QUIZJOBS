@@ -42,8 +42,14 @@ const examSchema = new mongoose.Schema({
         default: true
     },
     candidates: [{
+        candidate: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "candidates"
+        },
+        report: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "reports"
+        }
     }],
     examLink: {
         type: String,

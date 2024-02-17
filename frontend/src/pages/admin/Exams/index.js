@@ -13,24 +13,24 @@ function ExamsPage() {
   const columns = [
     {
       title: "Exam Name",
-      dataIndex: "name",
+      dataIndex: "jobPosition",
     },
     {
-      title: "Duration",
-      dataIndex: "duration"
+      title: "Skills",
+      dataIndex: "skills"
     },
     {
-      title: "Category",
-      dataIndex: "category"
+      title: "Difficoltà",
+      dataIndex: "difficulty"
     },
     {
-      title: "Total Marks",
-      dataIndex: "totalMarks"
+      title: "Lingua",
+      dataIndex: "testLanguage"
     },
     {
-      title: "Passing Marks",
-      dataIndex: "passingMarks"
-    },
+      title: "Candidati",
+      render: (text, record) => record.candidates.length
+    },    
     {
       title: "Action",
       dataIndex: "action",
@@ -38,8 +38,8 @@ function ExamsPage() {
         return <div className='flex gap-2'>
           <i className='ri-pencil-line cursor-pointer'
           onClick={()=>navigate(`/admin/exams/edit/${record._id}`)}></i>
-          <i className='ri-pencil-line cursor-pointer'
-          onClick={()=>navigate(`/admin/exams/info/${record._id}`)}></i>
+          <span className='cursor-pointer'
+          onClick={()=>navigate(`/admin/exams/info/${record._id}`)}>Info</span>
           <i className='ri-delete-bin-line cursor-pointer' onClick={()=>{deleteExamById(record._id)}}></i>
         </div>
       }
@@ -52,6 +52,7 @@ function ExamsPage() {
       dispatch(HideLoading())
       if(response.success){
        message.success(response.message)
+       console.log(response);
        setExams(response.data)
       }
       else{
@@ -94,7 +95,7 @@ function ExamsPage() {
        </button>
     </div>
     <div className='divider mt-1'></div>
-    <Table columns={columns} dataSource={exams}/>
+    <Table columns={columns} dataSource={exams} rowKey={(record) => record._id} />
     </>
   )
 }

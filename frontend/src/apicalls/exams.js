@@ -79,3 +79,25 @@ export const deleteQuestionFromExam = async(id,payload) => {
         return error.response.data
     }
 }
+
+export const addCandidate = async (payload) => {
+    try {
+      const response = await axiosInstance.post('/api/users/add-candidate', payload, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      return response.data; 
+    } catch (error) {
+      return error.response.data;
+    }
+  };
+
+ export const saveTestProgress = async (payload) => {
+    try {
+      const response = await axiosInstance.put('/api/exams/save-test-progress', payload);
+      return response.data
+    } catch (error) {
+      return error
+    }
+  };  
