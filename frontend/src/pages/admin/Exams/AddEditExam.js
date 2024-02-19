@@ -218,8 +218,6 @@ function AddEditExam() {
        dispatch(ShowLoading())
 
        const uniqueId = generateUniqueId(6);
-       const jobPositionSlug = config.jobPosition.toLowerCase().replace(/\s/g, '_'); // Converti il jobPosition in un formato slug
-       const examLink = `http://localhost:3000/user/${idUser}/${jobPositionSlug}/${uniqueId}`; 
        const examData = {
          numOfQuestions: config.numOfQuestions,
          difficulty: config.difficulty,
@@ -229,7 +227,6 @@ function AddEditExam() {
          skills: config.skills,
          domande: questions, 
          idEsame: uniqueId,
-         examLink: examLink,
        };
 
        let response;

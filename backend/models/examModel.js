@@ -53,7 +53,6 @@ const examSchema = new mongoose.Schema({
     }],
     examLink: {
         type: String,
-        required: true,
     },
     company: {
         type: mongoose.Schema.Types.ObjectId,

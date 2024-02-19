@@ -20,8 +20,11 @@ const addExam = async (req, res) => {
           }
 
           const newExam = new Exam(req.body);
+          const jobPositionSlug = req.body.jobPosition.toLowerCase().replace(/\s/g, '_'); 
+          const examLink = `http://localhost:3000/user/${jobPositionSlug}/${newExam._id}`;
+          newExam.examLink = examLink;
           console.log(req.body);
-          if (req.body.domande && req.body.domande.length > 0) {            
+          if (req.body.domande && req.body.domande.length > 0) {
             const savedQuestions = [];
               for (const domanda of req.body.domande) {
                 const newQuestion = new Question({
