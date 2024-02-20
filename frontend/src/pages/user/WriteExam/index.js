@@ -67,6 +67,7 @@ const calculateResult = async() => {
           totalQuestions,
           percentage,
           verdict,
+          allAnswers: selectedOptions,
       };
 
       setResult(tempResult);

@@ -112,6 +112,38 @@ const getUserInfo = async(req,res) => {
    }
 }
 
+const getCandidateInfo = async (req, res) => {
+    try {
+      const { userId, examId } = req.body;
+  
+      const user = await candidateModel.findOne({ _id: userId }).populate({
+        path: 'tests',
+        match: { testId: examId },
+        populate: { path: 'report' }
+      });
+  
+      if (!user) {
+        return res.status(404).send({
+          message: "User not found",
+          data: null,
+          success: false
+        });
+      }
+  
+      return res.status(200).send({
+        message: "User info fetched successfully",
+        data: user,
+        success: true
+      });
+    } catch (error) {
+      return res.status(500).send({
+        message: error.message,
+        data: error,
+        success: false
+      });
+    }
+  };
+
  const addCandidate = async(req, res) => {
     try {
         const { name, surname, email, phone, city, coverLetter, degree, testId } = req.body;
@@ -167,4 +199,4 @@ const getUserInfo = async(req,res) => {
     }
 }
 
-module.exports = { register, login, getUserInfo, addCandidate }
+module.exports = { register, login, getUserInfo, addCandidate, getCandidateInfo }

@@ -20,6 +20,7 @@ function HomePage() {
        dispatch(HideLoading())
        if(response.success){
         message.success(response.message)
+        console.log(response.data)
         setExams(response.data)
        }
        else{
@@ -46,24 +47,21 @@ function HomePage() {
             <Col span={6} key={index}>
               <div className='card-lg flex flex-col gap-1 p-2'>
                 <h1 className='text-2xl'>
-                  {exam.name}
+                  {exam.jobPosition}
                 </h1>
                 <div className='divider'>
                 </div>
                 <h1 className='text-md'>
-                  Category: {exam.category}
+                  Category: {exam.generalSector}
                 </h1>
                 <h1 className='text-md'>
                   Total Questions: {exam.questions.length}
                 </h1>
                 <h1 className='text-md'>
-                  Total Marks: {exam.totalMarks}
+                  Competenze: {exam.skills}
                 </h1>
                 <h1 className='text-md'>
-                  Passing Marks: {exam.passingMarks}
-                </h1>
-                <h1 className='text-md'>
-                  Duration: {exam.duration}
+                  {exam.candidates.length} candidati
                 </h1>
                 <button className='primary-outlined-btn cursor-pointer'
                 onClick={()=>navigate(`/user/write-exam/${exam._id}`)}>

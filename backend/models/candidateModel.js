@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
 
 const candidateSchema = new mongoose.Schema({
+    date: {
+        type: Date,
+        default: new Date()
+    },
     name: {
         type: String,
         required: true
@@ -74,6 +78,7 @@ const candidateSchema = new mongoose.Schema({
     }],
     status: {
         type: String,
+        default: "Da contattare"
     },
     notes: {
         type: String

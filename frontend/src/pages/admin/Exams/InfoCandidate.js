@@ -1,8 +1,8 @@
-import React from 'react'
-import { Modal, Form, message } from 'antd'
+import React, { useEffect } from 'react'
+import { Modal, message } from 'antd'
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice'
 import { useDispatch } from 'react-redux'
-import { addQuestionToExam, editQuestionInExam } from '../../../apicalls/exams'
+import { getCandidateInfo } from '../../../apicalls/users'
 
 function InfoCandidate(props) {
   const {showInfoCandidateModal,setShowInfoCandidateModal,examId,refreshData, selectedCandidate, setSelectedCandidate} = props
@@ -11,6 +11,21 @@ function InfoCandidate(props) {
     setShowInfoCandidateModal(false)
     setSelectedCandidate()
   }
+  const getCandidateById = async () => {
+    ShowLoading();
+    const userId = selectedCandidate._id
+    try {
+      const response = await getCandidateInfo({userId, examId});
+      console.log(response);
+      HideLoading();
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  useEffect(() => {
+    getCandidateById();
+  }, [])
 
   return (
     <Modal title={selectedCandidate? "Edit Question" : "Add Question"} open={showInfoCandidateModal} footer={false} onCancel={()=>{

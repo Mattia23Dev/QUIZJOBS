@@ -29,3 +29,13 @@ export const getUserInfo = async() => {
     return error.response.data
   }
 }
+
+export const getCandidateInfo = async(payload) => {
+  try{
+    const response = await axiosInstance.post('/api/users/get-candidate-info', payload)
+    return response.data
+  }
+  catch(error){
+    return error.response.data
+  }
+}

@@ -23,6 +23,7 @@ const addExam = async (req, res) => {
           const jobPositionSlug = req.body.jobPosition.toLowerCase().replace(/\s/g, '_'); 
           const examLink = `http://localhost:3000/user/${jobPositionSlug}/${newExam._id}`;
           newExam.examLink = examLink;
+          newExam.company = req.body.userId;
           console.log(req.body);
           if (req.body.domande && req.body.domande.length > 0) {
             const savedQuestions = [];
@@ -117,6 +118,64 @@ const getExamById = async(req,res) => {
     })
   }
 }
+
+const getCandidateCrm = async (req, res) => {
+  try {
+      const userId = req.params.id;
+      const exams = await Exam.find({ company: userId })
+          .populate({
+              path: 'candidates.candidate',
+              select: 'name surname status',
+          })
+          .populate({
+              path: 'candidates.report',
+              select: 'result',
+          });
+
+      if (!exams || exams.length === 0) {
+          return res.status(404).json({
+              message: 'No exams found for the user.',
+              data: null,
+              success: false,
+          });
+      }
+      let candidates = [];
+
+      for (const exam of exams) {
+          const candidatesForExam = await candidateModel.find({
+              'tests.testId': { $in: exam._id}
+          });
+          if (exam.candidates && exam.candidates.length > 0){
+          const formattedCandidates = candidatesForExam.map(candidate => ({
+              examId: exam._id,
+              jobPosition: exam.jobPosition,
+              candidateId: candidate._id,
+              name: candidate.name,
+              surname: candidate.surname,
+              email: candidate.email,
+              phone: candidate.phone,
+              city: candidate.city,
+              status: candidate.status,
+              cv: candidate.cv,
+              report: exam.candidates.report,
+          }));
+          candidates = [...candidates, ...formattedCandidates];
+        }
+      }
+
+      res.status(200).json({
+          message: 'Exams data fetched successfully.',
+          data: candidates,
+          success: true,
+      });
+  } catch (error) {
+      res.status(500).json({
+          message: error.message,
+          data: error,
+          success: false,
+      });
+  }
+};
 
 // edit exam by id
 const editExam = async(req,res) => {
@@ -335,4 +394,4 @@ const saveTestProgress = async (req, res) => {
   }
 };
 
-module.exports = {addExam, getAllExams, getExamById, editExam, deleteExam, addQuestionToExam, editQuestionInExam, deleteQuestionFromExam, saveTestProgress}
+module.exports = {addExam, getAllExams, getExamById, getCandidateCrm, editExam, deleteExam, addQuestionToExam, editQuestionInExam, deleteQuestionFromExam, saveTestProgress}

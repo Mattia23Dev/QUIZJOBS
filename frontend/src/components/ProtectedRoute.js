@@ -57,6 +57,12 @@ function ProtectedRoute({children, setLoginPopup}) {
     },
     {
       title: "CRM",
+      paths: ["/admin/crm"],
+      icon: <i className="ri-bar-chart-line"></i>,
+      onClick: ()=>navigate("/admin/crm")
+    },
+    {
+      title: "Reports",
       paths: ["/admin/reports"],
       icon: <i className="ri-bar-chart-line"></i>,
       onClick: ()=>navigate("/admin/reports")
