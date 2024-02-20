@@ -1,4 +1,5 @@
 import React from 'react';
+import './DragAndDrop.css'
 
 const CardItem = ({ data, handleDragging }) => {
   const handleDragStart = (e) => {
@@ -15,7 +16,7 @@ const CardItem = ({ data, handleDragging }) => {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <p>{data.content}</p>
+      <p>{data?.name + ' ' + data?.surname}</p>
     </div>
   );
 };

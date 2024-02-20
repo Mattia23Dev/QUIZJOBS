@@ -69,6 +69,9 @@ const candidateSchema = new mongoose.Schema({
             },
             questions: {
                 type: mongoose.Schema.Types.Mixed,
+            },
+            seconds: {
+                type: mongoose.Schema.Types.Mixed,
             }
         },
         report: {

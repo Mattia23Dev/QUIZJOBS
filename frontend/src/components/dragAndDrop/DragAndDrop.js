@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
-import ContainerCards from './ContainerCards';
+import React, { useEffect, useState } from 'react';
+import CardItem from './CardItem';
 
-const typesHero = ['Candidati', 'Contattati', 'Colloquio', 'Scartati', 'Assunti'];
+const typesHero = ['Da contattare', 'Contattati', 'Colloquio', 'Scartati', 'Assunti'];
 
 const DragAndDrop = ({status, initialData}) => {
     const [isDragging, setIsDragging] = useState(false);
     const [listItems, setListItems] = useState(initialData);
+
+    useEffect(() => {
+        setListItems(initialData);
+      }, [initialData]);
 
     const handleUpdateList = (id) => {
         let card = listItems.find(item => item.id === id);
@@ -22,19 +26,26 @@ const DragAndDrop = ({status, initialData}) => {
     };
 
     const handleDragging = dragging => setIsDragging(dragging);
+    const handleDrop = (e) => {
+        e.preventDefault();
+        handleUpdateList(+e.dataTransfer.getData('text'), status);
+        handleDragging(false);
+      };
+    
+      const handleDragOver = (e) => e.preventDefault();
 
     return (
         <div className="grid">
             {
                 typesHero.map(container => (
-                    <ContainerCards
-                        items={listItems}
-                        status={container}
-                        key={container}
-                        isDragging={isDragging}
-                        handleDragging={handleDragging}
-                        handleUpdateList={handleUpdateList}
-                    />
+                 <div
+                    className={`layout-cards ${isDragging ? 'layout-dragging' : ''}`}
+                    onDrop={handleDrop}
+                    onDragOver={handleDragOver}
+                  >
+                    <p>{container}</p>
+                    {listItems.length > 0 && listItems.map((item) => container === item.status && <CardItem data={item} key={item.id} handleDragging={handleDragging} />)}
+                  </div>
                 ))
             }
         </div>

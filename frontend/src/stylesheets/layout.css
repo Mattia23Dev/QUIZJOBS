@@ -57,10 +57,37 @@
 }
 .page-title{
   font-size: 22px;
+  color: var(--primary);
 }
 .body{
   width: 100%;
   background-color: #F0F6FF;
+  overflow-y: auto;
+}
+.body::-webkit-scrollbar {
+  width: 10px; /* Larghezza della scrollbar */
+}
+
+.body::-webkit-scrollbar-track {
+  background: #F0F6FF; /* Colore dello sfondo della scrollbar */
+}
+
+.body::-webkit-scrollbar-thumb {
+  background-color: #c4c4c4; /* Colore della thumb (il pulsante trascinabile) */
+}
+
+/* Stile per la scrollbar su Firefox */
+.body::-moz-scrollbar {
+  width: 10px; /* Larghezza della scrollbar */
+}
+
+.body::-moz-scrollbar-track {
+  background: #F0F6FF; /* Colore dello sfondo della scrollbar */
+}
+
+.body::-moz-scrollbar-thumb {
+  background-color: #888; /* Colore della thumb (il pulsante trascinabile) */
+  border-radius: 5px; /* Bordi arrotondati della thumb */
 }
 .home-content{
   padding: 15px 10px 10px 15px;
@@ -72,6 +99,9 @@
   color: #5D7285 !important;
   width: 100%; 
   padding: 10px 15px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 .content{
   padding: 15px;

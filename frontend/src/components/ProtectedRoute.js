@@ -45,15 +45,15 @@ function ProtectedRoute({children, setLoginPopup}) {
   const adminMenu = [
     {
       title: "Home",
-      paths: ["/admin/exams", "/admin/exams/add", "/admin/exams/edit/:id", "/user/write-exam/:id"],
+      paths: ["/admin/home"],
       icon: <i className="ri-home-line"></i>,
-      onClick: () => navigate("/admin/exams")
+      onClick: () => navigate("/admin/home")
     },
     {
       title: "Test",
-      paths: ["/admin/test"],
+      paths: ["/admin/exams", "/admin/exams/add", "/admin/exams/edit/:id", "/user/write-exam/:id"],
       icon: <i className='ri-file-list-line'></i>,
-      onClick: () => navigate("/admin/test")
+      onClick: () => navigate("/admin/exams")
     },
     {
       title: "CRM",

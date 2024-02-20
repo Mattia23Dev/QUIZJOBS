@@ -15,8 +15,9 @@ function WriteExam() {
   const [questions, setQuestions] = useState([])
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0)
   const [selectedOptions, setSelectedOptions] = useState({})
+  const [seconds, setSeconds] = useState({})
   const [result, setResult] = useState()
-  const { idUser, jobPositionSlug, uniqueId } = useParams();
+  const { idUser, jobPositionSlug, uniqueId } = useParams()
   const dispatch = useDispatch()
   const [view, setView] = useState("instructions")
   const [secondsLeft, setSecondsLeft] = useState(30)
@@ -60,7 +61,7 @@ const calculateResult = async() => {
 
       const totalQuestions = questions.length;
       const percentage = (correctAnswersCount / totalQuestions) * 100;
-      const verdict = percentage >= 70 ? "Pass" : "Fail";
+      const verdict = percentage >= 60 ? "Pass" : "Fail";
 
       const tempResult = {
           correctAnswersCount,
@@ -68,6 +69,7 @@ const calculateResult = async() => {
           percentage,
           verdict,
           allAnswers: selectedOptions,
+          allSeconds: seconds,
       };
 
       setResult(tempResult);
@@ -120,6 +122,7 @@ const handleNextButtonClick = async () => {
       correctAnswersCount++;
     }
   }
+
   const response = await saveTestProgress({
       email: user.email,
       testId: examData._id,
@@ -127,7 +130,8 @@ const handleNextButtonClick = async () => {
       selectedOption: selectedOptions[selectedQuestionIndex],
       arrayAnswers: {
         answers: selectedOptions,
-        questions: questions.slice(0, selectedQuestionIndex + 1).map(question => question.question)
+        questions: questions.slice(0, selectedQuestionIndex + 1).map(question => question.question),
+        seconds: seconds,
       },
       correctAnswer: correctAnswersCount,
       totalQuestions: selectedQuestionIndex + 1,
@@ -146,6 +150,10 @@ const startTimer = () => {
     if (remainingTime > 0) {
       remainingTime -= 1; 
       setSecondsLeft(remainingTime); 
+      setSeconds(prevSeconds => ({
+        ...prevSeconds,
+        [selectedQuestionIndex]: 30 - remainingTime
+      }));
     } else {
       clearInterval(intervalIdSt);
 

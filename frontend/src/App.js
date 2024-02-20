@@ -47,8 +47,8 @@ function App() {
         <Route path="/register" element={<PublicRoute><RegisterPage/></PublicRoute>}/>
         <Route path="/" element={<PublicRoute><Home/></PublicRoute>}/>
         <Route path="/user/:jobPositionSlug/:uniqueId" element={<PublicRoute><WriteExam /></PublicRoute>} />
-        <Route path="/admin/exams" element={<ProtectedRoute setLoginPopup={setLoginPopup}><HomePage/></ProtectedRoute>}/>
-        <Route path="/admin/test" element={<ProtectedRoute setLoginPopup={setLoginPopup}><ExamsPage/></ProtectedRoute>}/>
+        <Route path="/admin/home" element={<ProtectedRoute setLoginPopup={setLoginPopup}><HomePage/></ProtectedRoute>}/>
+        <Route path="/admin/exams" element={<ProtectedRoute setLoginPopup={setLoginPopup}><ExamsPage/></ProtectedRoute>}/>
         <Route path="/admin/exams/add" element={<ProtectedRoute setLoginPopup={setLoginPopup}><AddEditExam/></ProtectedRoute>}/>
         <Route path="/admin/exams/edit/:id" element={<ProtectedRoute setLoginPopup={setLoginPopup}><AddEditExam/></ProtectedRoute>}/>
         <Route path="/admin/exams/info/:id" element={<ProtectedRoute setLoginPopup={setLoginPopup}><InfoExam/></ProtectedRoute>}/>
