@@ -1,8 +1,8 @@
 import React from 'react'
 
-function PageTitle({title}) {
+function PageTitle({title, style}) {
   return (
-    <h1 className='page-title'>{title}</h1>
+    <h1 className='page-title' style={style}>{title}</h1>
   )
 }
 

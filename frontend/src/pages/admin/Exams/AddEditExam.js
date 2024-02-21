@@ -9,6 +9,9 @@ import AddEditQuestion from './AddEditQuestion';
 import './addEditTest.css';
 import { FaGripHorizontal } from "react-icons/fa";
 import openai from 'openai';
+import copia from '../../../imgs/copia.png';
+import copiablu from '../../../imgs/copiablu.png';
+import eye from '../../../imgs/eye.png';
 
 const DomandeComponent = ({ domande, onUpdateDomande }) => {
    const [currentDomanda, setCurrentDomanda] = useState(domande[0]);
@@ -77,7 +80,7 @@ function AddEditExam() {
   const {id} = useParams()
   const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
   const [examData,setExamData] = useState();
-  const [activeTab, setActiveTab] = useState('1');
+  const [activeTab, setActiveTab] = useState(1);
   const [showAddEditQuestionModal, setShowAddEditQuestionModal] = useState(false)
   const [selectedQuestion, setSelectedQuestion] = useState();
   const [questions, setQuestions] = useState();
@@ -316,8 +319,31 @@ function AddEditExam() {
        };
   return (
     <div className='home-content'>
-        <PageTitle title={id?'Edit Exam':'Add Test'}/>
-        {(examData || !id) && 
+      <div className='copy-preview'>
+        {!examData && !id ? <button className='copy-link'><img src={copia} alt='copia link skilltest' />Copia link</button> : <button className='copy-link-active'><img src={copiablu} alt='copia link skilltest' />Copia link</button>}
+        <a href='#' className='preview'><img src={eye} alt='Anteprima skilltest' />Anteprima</a>
+      </div>
+        <div className='create-exam-top'>
+          <div onClick={() => setActiveTab(1)} className={activeTab === 1 ? 'active' : ''}>
+            <span></span>
+            <p>Dettagli test</p>
+          </div>
+          <hr />
+          <div onClick={() => setActiveTab(2)} className={activeTab === 2 ? 'active' : ''}>
+            <span></span>
+            <p>Domande</p>
+          </div>
+          <hr />
+          <div onClick={() => setActiveTab(3)} className={activeTab === 3 ? 'active' : ''}>
+            <span></span>
+            <p>Candidati</p>
+          </div>
+        </div>
+        {(examData || !id) &&
+        activeTab === 1 ?
+        <div className='create-exam-body'>
+        <PageTitle title={"Genera un nuovo test"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
+        <button className='button-ligh-blue'>Visualizza test salvati</button>
         <Form layout="vertical" onFinish={generateQuestions} initialValues={examData} className="mt-2">
         <Tabs className='tabs-sticky' defaultActiveKey={activeTab} onChange={handleChangeTab}>
           <Tabs.TabPane tab="Dettagli Test" key="1">
@@ -396,21 +422,6 @@ function AddEditExam() {
              </button>
             </div>
           </Tabs.TabPane>
-          <Tabs.TabPane tab="Questions" key="2">
-              <div className='flex justify-end'> 
-              <button className="primary-outlined-btn cursor-pointer"
-              type="button"
-              onClick={()=>{
-               setShowAddEditQuestionModal(true)
-              }}>Add Question</button>
-              </div>
-              {showQuestions && questions && 
-              <div className='domande-container-save'>
-                  <DomandeComponent domande={questions} onUpdateDomande={handleUpdateDomande} />
-                  <button onClick={onFinish}>Salva e Genera Test</button>
-              </div>
-              }
-          </Tabs.TabPane>
           {id && <Tabs.TabPane tab="Questions" key="3">
               <div className='flex justify-end'> 
               <button className="primary-outlined-btn cursor-pointer"
@@ -421,7 +432,26 @@ function AddEditExam() {
               </div>
           </Tabs.TabPane>}
         </Tabs>
-        </Form>}
+        </Form>
+        </div> : activeTab === 2 ? 
+        <div className='create-exam-body'>
+          <PageTitle title={"Domande"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
+            <div className='flex justify-end'> 
+              <button className="primary-outlined-btn cursor-pointer"
+              type="button"
+              onClick={()=>{
+               setShowAddEditQuestionModal(true)
+              }}>Add Question</button>
+            </div>
+            {showQuestions && questions && 
+            <div className='domande-container-save'>
+                  <DomandeComponent domande={questions} onUpdateDomande={handleUpdateDomande} />
+                  <button onClick={onFinish}>Salva e Genera Test</button>
+            </div>}
+        </div> : 
+        <div>
+          <PageTitle title={"Candidati"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
+        </div>}
         {showAddEditQuestionModal&&<AddEditQuestion   setShowAddEditQuestionModal={setShowAddEditQuestionModal}
          showAddEditQuestionModal={showAddEditQuestionModal}
          examId = {id}

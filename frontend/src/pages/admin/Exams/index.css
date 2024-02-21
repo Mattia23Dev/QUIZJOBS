@@ -33,10 +33,13 @@
     color: white;
     margin-top: -10px;
 }
-.card-exam-middle{
-    padding: 20px;
+.card-exam-middle {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px 0px;
 }
-.card-exam-middle > li {
+.card-exam-middle-skills > li {
     color: #424242;
     font-size: 14px;
 }

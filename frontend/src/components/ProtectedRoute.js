@@ -6,6 +6,7 @@ import { SetUser } from '../redux/usersSlice'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { HideLoading, ShowLoading } from '../redux/loaderSlice'
+import logo from '../imgs/logo.png'
 
 function ProtectedRoute({children, setLoginPopup}) {
   const dispatch = useDispatch()
@@ -138,11 +139,7 @@ function ProtectedRoute({children, setLoginPopup}) {
     user && <div className='layout'>
      <div className='flex h-100'>
        <div className={!collapsed ? 'sidebar' : 'sidebar-close'}>
-          <div className='cursor-pointer'>
-            {!collapsed&&<i className="ri-close-line text-2xl flex items-center"
-            onClick={()=>setCollapsed(true)}></i>}
-            {collapsed&&<i className="ri-menu-2-line text-2xl flex items-center" onClick={()=>setCollapsed(false)}></i>}
-         </div>
+       <img className='logo' alt='logo di SkillTest' src={logo} />
          <div className='menu'>
             {menu.map((item,index)=>{
               return(
@@ -156,21 +153,23 @@ function ProtectedRoute({children, setLoginPopup}) {
        </div>
        <div className='body'>
          <div className='header flex justify-between'>
-          <div className='cursor-pointer-mobile'>
+            <div className='cursor-pointer-mobile'>
+                {!collapsed&&<i className="ri-close-line text-2xl flex items-center"
+                onClick={()=>setCollapsed(true)}></i>}
+                {collapsed&&<i className="ri-menu-2-line text-2xl flex items-center" onClick={()=>setCollapsed(false)}></i>}
+            </div>
+            <div className='cursor-pointer'>
               {!collapsed&&<i className="ri-close-line text-2xl flex items-center"
               onClick={()=>setCollapsed(true)}></i>}
               {collapsed&&<i className="ri-menu-2-line text-2xl flex items-center" onClick={()=>setCollapsed(false)}></i>}
-          </div>
-          <h1 className='text-2xl flex items-center'>
-            SkillScan.ai 
-          </h1>
-          <div>
-          <div className='flex justify-center items-center gap-1'>
-            <i className="ri-user-line"></i>
-            {user?.name}
-          </div>
-          <span>Role : {(user?.isAdmin)?"Admin":"User"}</span>
-          </div>
+            </div>
+            <div>
+              <div className='flex justify-center items-center gap-1'>
+                <i className="ri-user-line"></i>
+                {user?.name}
+              </div>
+              <span>Role : {(user?.isAdmin)?"Admin":"User"}</span>
+            </div>
          </div>
          <div className='content'>
             {children}

@@ -111,7 +111,6 @@ function ExamsPage() {
               const isConfirmVisible = confirmVisibleMap[examId] || false;
             return (
                 <div className='card-exam' key={examId}>
-                  <Switch defaultChecked/>
                   <div className='card-exam-top'>
                     <h1>
                       {exam.jobPosition}
@@ -119,13 +118,17 @@ function ExamsPage() {
                     <button onClick={()=>navigate(`/admin/exams/info/${exam._id}`)}>Info candidati</button>
                   </div>
                   <div className='divider'></div>
-                  <ul className='card-exam-middle'>
-                    {exam.skills.map((skill) => (
-                      <li className='text-md'>
-                        {skill}
-                      </li>                    
-                    ))}
-                  </ul>
+                  <div className='card-exam-middle'>
+                    <ul className='card-exam-middle-skills'>
+                      {exam.skills.map((skill) => (
+                        <li className='text-md'>
+                          {skill}
+                        </li>                    
+                      ))}
+                    </ul>
+                    <Switch defaultChecked/>
+                  </div>
+
                   <div className='card-exam-bottom'>
                     <div>
                       <h4>
