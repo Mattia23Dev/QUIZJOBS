@@ -1,17 +1,21 @@
 import React,{useState,useEffect} from 'react';
 import PageTitle from '../../../components/PageTitle';
-import { Form, Row, Col, message, Tabs, Table } from 'antd';
+import { Form, Row, Col, message, Tabs, DatePicker, Select } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { addExam, deleteQuestionFromExam, editExam, getExamById } from '../../../apicalls/exams';
 import { useDispatch, useSelector } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
 import AddEditQuestion from './AddEditQuestion';
+import locale from 'antd/es/date-picker/locale/it_IT'; 
 import './addEditTest.css';
 import { FaGripHorizontal } from "react-icons/fa";
 import openai from 'openai';
 import copia from '../../../imgs/copia.png';
 import copiablu from '../../../imgs/copiablu.png';
 import eye from '../../../imgs/eye.png';
+import 'antd/dist/antd.css';
+import BigLoader from '../../../components/bigLoader/BigLoader';
+const { Option } = Select;
 
 const DomandeComponent = ({ domande, onUpdateDomande }) => {
    const [currentDomanda, setCurrentDomanda] = useState(domande[0]);
@@ -74,7 +78,7 @@ const DomandeComponent = ({ domande, onUpdateDomande }) => {
  };
  
 
-function AddEditExam() {
+function AddEditExam({setBigLoading}) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {id} = useParams()
@@ -93,7 +97,12 @@ function AddEditExam() {
       jobPosition: '',
       testLanguage: '',
       skills: ['',],
+      deadline: null,
    });
+
+   const handleChange = (selectedItems) => {
+    setConfig(prevConfig => ({ ...prevConfig, difficulty: selectedItems }));
+  };
 
    const generateUniqueId = (length) => {
       let result = '';
@@ -149,7 +158,7 @@ function AddEditExam() {
   }
 
    const generateQuestions = async () => {
-      console.log(config);
+    console.log(config);
       if (!config.numOfQuestions || !config.difficulty || !config.generalSector || !config.jobPosition || !config.testLanguage || config.skills.length < 1) {
          console.error('Tutti i campi di config devono essere definiti.');
          return;
@@ -195,7 +204,7 @@ function AddEditExam() {
        };
     
       try {
-      dispatch(ShowLoading())
+        setBigLoading(true);
         const response = await client.chat.completions.create(requestData);
         console.log(response.choices);
         const allQuestions = [];
@@ -209,10 +218,11 @@ function AddEditExam() {
         setQuestions(allQuestions);
 
         setShowQuestions(true);
-        handleChangeTab();
-        dispatch(HideLoading());
+        setActiveTab(2);
+        setBigLoading(false);
       } catch (error) {
         console.error('Errore durante la generazione delle domande:', error);
+        setBigLoading(false);
       }
     };
 
@@ -298,168 +308,145 @@ function AddEditExam() {
     }
   }
 
-      const handleAddTag = (newSkill) => {
-         if (newSkill.trim() !== '') {
-            setConfig(prevConfig => ({ ...prevConfig, skills: [...prevConfig.skills, newSkill.trim()] }));
-         }
-      };
-      const handleRemoveTag = (tagToRemove) => {
-         setConfig(prevConfig => ({
-         ...prevConfig,
-         skills: prevConfig.skills.filter(tag => tag !== tagToRemove)
-         }));
-      };
-
       const handleUpdateDomande = (updatedDomande) => {
          setQuestions(updatedDomande);
        };
 
-       const handleChangeTab = () => {
-         setActiveTab('2');
-       };
   return (
-    <div className='home-content'>
-      <div className='copy-preview'>
-        {!examData && !id ? <button className='copy-link'><img src={copia} alt='copia link skilltest' />Copia link</button> : <button className='copy-link-active'><img src={copiablu} alt='copia link skilltest' />Copia link</button>}
-        <a href='#' className='preview'><img src={eye} alt='Anteprima skilltest' />Anteprima</a>
-      </div>
-        <div className='create-exam-top'>
-          <div onClick={() => setActiveTab(1)} className={activeTab === 1 ? 'active' : ''}>
-            <span></span>
-            <p>Dettagli test</p>
-          </div>
-          <hr />
-          <div onClick={() => setActiveTab(2)} className={activeTab === 2 ? 'active' : ''}>
-            <span></span>
-            <p>Domande</p>
-          </div>
-          <hr />
-          <div onClick={() => setActiveTab(3)} className={activeTab === 3 ? 'active' : ''}>
-            <span></span>
-            <p>Candidati</p>
-          </div>
+      <div className='home-content'>
+        <div className='copy-preview'>
+          {!examData && !id ? <button className='copy-link'><img src={copia} alt='copia link skilltest' />Copia link</button> : <button className='copy-link-active'><img src={copiablu} alt='copia link skilltest' />Copia link</button>}
+          <a href='#' className='preview'><img src={eye} alt='Anteprima skilltest' />Anteprima</a>
         </div>
-        {(examData || !id) &&
-        activeTab === 1 ?
-        <div className='create-exam-body'>
-        <PageTitle title={"Genera un nuovo test"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
-        <button className='button-ligh-blue'>Visualizza test salvati</button>
-        <Form layout="vertical" onFinish={generateQuestions} initialValues={examData} className="mt-2">
-        <Tabs className='tabs-sticky' defaultActiveKey={activeTab} onChange={handleChangeTab}>
-          <Tabs.TabPane tab="Dettagli Test" key="1">
-          <Row gutter={[10,10]}>
-                <Col span={8}>
-                   <Form.Item label="Settore generale" name="general-sector">
-                    <input type="text" value={config.generalSector || ''}  onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, generalSector: e.target.value }))} />
-                   </Form.Item>
-                </Col>
-                <Col span={8}>
-                   <Form.Item label="Job position" name="job-position">
-                    <input type="text" value={config.jobPosition}  onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, jobPosition: e.target.value }))}/>
-                   </Form.Item>
-                </Col>
-                <Col span={8}>
-                   <Form.Item label="Difficoltà" name="seniority">
-                    <select value={config.difficulty} onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, difficulty: e.target.value }))}>
-                        <option value="">Seleziona</option>
-                        <option value="Facile">Facile</option>
-                        <option value="Medio">Medio</option>
-                        <option value="Difficile">Difficile</option>
-                    </select>
-                   </Form.Item>
-                </Col>
-                <Col span={8}>
-                   <Form.Item label="Lingua del test" name="test-language">
-                    <select value={config.testLanguage} onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, testLanguage: e.target.value }))}>
-                        <option value="">Seleziona</option>
-                        <option value="Italiano">Italiano</option>
-                        <option value="Inglese">Inglese</option>
-                        <option value="Tedesco">Tedesco</option>
-                        <option value="Spagnolo">Spagnolo</option>
-                        <option value="Francese">Francese</option>
-                        <option value="Portoghese">Portoghese</option>
-                    </select>
-                   </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="Competenze" name="skills">
-                     <div>
-                        {config.skills.map(tag => (
-                           <span
-                              key={tag}
-                              style={{ marginRight: '8px', marginBottom: '8px', display: 'inline-block' }}
-                           >
-                              {tag} <button onClick={() => handleRemoveTag(tag)}>X</button>
-                           </span>
-                        ))}
-                        <div>
-                           <input
-                              type="text"
-                              placeholder="Aggiungi una competenza"
-                              onKeyDown={(e) => {
-                                 if (e.key === 'Enter') {
-                                    const newSkill = e.target.value.trim();
-                                    if (newSkill) {
-                                       handleAddTag(newSkill);
-                                    }
-                                    e.target.value = '';
-                                 }
-                              }}
-                           />
-                        </div>
-                     </div>
-                  </Form.Item>
-                </Col>
+          <div className='create-exam-top'>
+            <div onClick={() => setActiveTab(1)} className={activeTab === 1 ? 'active' : ''}>
+              <span></span>
+              <p>Dettagli test</p>
+            </div>
+            <hr />
+            <div onClick={() => setActiveTab(2)} className={activeTab === 2 ? 'active' : ''}>
+              <span></span>
+              <p>Domande</p>
+            </div>
+            <hr />
+            <div onClick={() => setActiveTab(3)} className={activeTab === 3 ? 'active' : ''}>
+              <span></span>
+              <p>Candidati</p>
+            </div>
+          </div>
+          {(examData || !id) &&
+          activeTab === 1 ?
+          <div className='create-exam-body'>
+          <PageTitle title={"Genera un nuovo test"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
+          <button className='button-ligh-blue' onClick={() => navigate('/admin/exams')}>Visualizza test salvati</button>
+          <Form layout="vertical" onFinish={generateQuestions} initialValues={examData} className="create-exam-form">
+            <Row gutter={[10,10]}>
+                  <Col flex="auto">
+                    <Form.Item label="Settore" name="general-sector">
+                      <input type="text" value={config.generalSector || ''}  onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, generalSector: e.target.value }))} />
+                    </Form.Item>
+                  </Col>
+                  <Col flex="auto">
+                    <Form.Item label="Job position" name="job-position">
+                      <input type="text" value={config.jobPosition}  onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, jobPosition: e.target.value }))}/>
+                    </Form.Item>
+                  </Col>
             </Row>
-            <div className='flex justify-end gap-2'>
-               <button className='primary-outlined-btn w-15 cursor-pointer' type="submit">
-                  Save
-               </button>
-               <button className='primary-contained-btn w-15 cursor-pointer'
-               onClick={()=>navigate('/admin/exams')}
-               >
-                  Cancel
-             </button>
-            </div>
-          </Tabs.TabPane>
-          {id && <Tabs.TabPane tab="Questions" key="3">
-              <div className='flex justify-end'> 
-              <button className="primary-outlined-btn cursor-pointer"
-              type="button"
-              onClick={()=>{
-               setShowAddEditQuestionModal(true)
-              }}>Add Question</button>
+            <Row style={{margin: '20px 0'}} gutter={[10,10]}>      
+                  <Col flex="auto">
+                    <Form.Item label="Lingua del test" name="test-language">
+                      <select value={config.testLanguage} onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, testLanguage: e.target.value }))}>
+                          <option value="">Seleziona</option>
+                          <option value="Italiano">Italiano</option>
+                          <option value="Inglese">Inglese</option>
+                          <option value="Tedesco">Tedesco</option>
+                          <option value="Spagnolo">Spagnolo</option>
+                          <option value="Francese">Francese</option>
+                          <option value="Portoghese">Portoghese</option>
+                      </select>
+                    </Form.Item>
+                  </Col>
+                  <Col flex="auto">
+                    <Form.Item label="Deadline" name="deadline">
+                    <DatePicker className='datepicker' locale={locale} value={config.deadline} onChange={(date, dateString) => setConfig(prevConfig => ({ ...prevConfig, deadline: dateString }))} />
+                    </Form.Item>
+                  </Col>
+            </Row>
+            <Row gutter={[10,10]}>    
+                  <Col span={12}>
+                    <Form.Item label="Difficoltà" name="seniority">
+                      <select value={config.difficulty} onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, difficulty: e.target.value }))}>
+                          <option value="">Seleziona</option>
+                          <option value="Facile">Facile</option>
+                          <option value="Medio">Medio</option>
+                          <option value="Difficile">Difficile</option>
+                      </select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item label="Competenze" name="skills">
+                        <Select
+                          mode="tags"
+                          style={{ width: '100%' }}
+                          className='tag-antd'
+                          placeholder="Aggiungi una competenza"
+                          onChange={handleChange}
+                          value={config.skills}
+                        >
+                          {config.skills.map(tag => (
+                            <Option key={tag} value={tag}>{tag}</Option>
+                          ))}
+                        </Select>
+                    </Form.Item>
+                  </Col>
+              </Row>
+              <div className='flex justify-center gap-2 flex-column items-center' style={{flexDirection: 'column', marginTop: '40px'}}>
+                <button className='primary-outlined-btn w-25 cursor-pointer' type="submit">
+                    Genera test
+                </button>
+                <button className='btn btn-link'
+                style={{ textDecoration: 'underline', cursor: 'pointer', backgroundColor: 'transparent', border: 'none' }}
+                onClick={()=>navigate('/admin/exams')}
+                >
+                    Annulla
+              </button>
               </div>
-          </Tabs.TabPane>}
-        </Tabs>
-        </Form>
-        </div> : activeTab === 2 ? 
-        <div className='create-exam-body'>
-          <PageTitle title={"Domande"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
-            <div className='flex justify-end'> 
-              <button className="primary-outlined-btn cursor-pointer"
-              type="button"
-              onClick={()=>{
-               setShowAddEditQuestionModal(true)
-              }}>Add Question</button>
-            </div>
-            {showQuestions && questions && 
-            <div className='domande-container-save'>
-                  <DomandeComponent domande={questions} onUpdateDomande={handleUpdateDomande} />
-                  <button onClick={onFinish}>Salva e Genera Test</button>
-            </div>}
-        </div> : 
-        <div>
-          <PageTitle title={"Candidati"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
-        </div>}
-        {showAddEditQuestionModal&&<AddEditQuestion   setShowAddEditQuestionModal={setShowAddEditQuestionModal}
-         showAddEditQuestionModal={showAddEditQuestionModal}
-         examId = {id}
-         refreshData = {getExamDataById}
-         selectedQuestion={selectedQuestion}
-         setSelectedQuestion={setSelectedQuestion}
-        />}
-    </div>
+            {id && <Tabs.TabPane tab="Questions" key="3">
+                <div className='flex justify-end'> 
+                <button className="primary-outlined-btn cursor-pointer"
+                type="button"
+                onClick={()=>{
+                setShowAddEditQuestionModal(true)
+                }}>Add Question</button>
+                </div>
+            </Tabs.TabPane>}
+          </Form>
+          </div> : activeTab === 2 ? 
+          <div className='create-exam-body'>
+            <PageTitle title={"Domande"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
+              <div className='flex justify-end'> 
+                <button className="button-ligh-blue"
+                onClick={()=>{
+                setShowAddEditQuestionModal(true)
+                }}>+ Aggiungi domanda</button>
+              </div>
+              {showQuestions && questions && 
+              <div className='domande-container-save'>
+                    <DomandeComponent domande={questions} onUpdateDomande={handleUpdateDomande} />
+                    <button onClick={onFinish}>Salva e Genera Test</button>
+              </div>}
+          </div> : 
+          <div>
+            <PageTitle title={"Candidati"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
+          </div>}
+          {showAddEditQuestionModal&&<AddEditQuestion   setShowAddEditQuestionModal={setShowAddEditQuestionModal}
+          showAddEditQuestionModal={showAddEditQuestionModal}
+          examId = {id}
+          refreshData = {getExamDataById}
+          selectedQuestion={selectedQuestion}
+          setSelectedQuestion={setSelectedQuestion}
+          />}
+      </div>    
   )
 }
 
