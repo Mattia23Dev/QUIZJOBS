@@ -10,6 +10,10 @@ import { useSelector } from 'react-redux'
 import { useCookies } from 'react-cookie';
 import logo from '../../../imgs/logo.png'
 import time from '../../../imgs/time.png'
+import arrowRight from '../../../imgs/arrowright.png'
+import alert from '../../../imgs/alert.png'
+import thanks from '../../../imgs/thanks.png'
+import v from '../../../imgs/v.png'
 import './writeExamUser.css';
 
 function WriteExam() {
@@ -85,7 +89,7 @@ const calculateResult = async() => {
       });
 
       dispatch(HideLoading());
-
+      setView("thanks");
       if(response.success) {
           //setView("result");
           console.log(response);
@@ -194,8 +198,8 @@ useEffect(()=>{
         <div className='header-big-loader' style={{padding: '15px', position: 'sticky', top: '0', zIndex: 20, backgroundColor: '#fff'}}>
             <img src={logo} alt='logo skilltest' />
         </div>
-    <h1 className='text-center user-select-none mt-2'>Test per l'offerta <b>{jobPositionSlug && jobPositionSlug.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</b></h1>
-    <p>Ciao, questo è solo un test per categorizzarti e non influirà sul successo della candidatura.</p>
+    {view!=="thanks" &&<h1 className='text-center user-select-none mt-2'>Test per l'offerta <b>{jobPositionSlug && jobPositionSlug.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</b></h1>}
+    {view!=="thanks" &&<p>Ciao, questo è solo un test per categorizzarti e non influirà sul successo della candidatura.</p>}
     {view==="instructions"&&<Instructions setUser={setUser} examData={examData} setExamData={setExamData}
     view={view}
     setView={setView}
@@ -205,7 +209,7 @@ useEffect(()=>{
     <div className='question-exam-container'>
     <div className='timer'>
       <img alt='time user' src={time} />
-      <span className='text-2xl user-select-none'>{secondsLeft && secondsLeft}</span>
+      <span className='text-2xl user-select-none'>00:{secondsLeft <10 ? '0' : null}{secondsLeft}:00</span>
      </div>
      <div style={{width: '60%'}} className='flex justify-center mt-2'>
      <h1 style={{width:'65%'}} className='text-xl user-select-none'>
@@ -228,18 +232,32 @@ useEffect(()=>{
           </div>
         ))}
      </div>
-     <div className='flex justify-between'>
-      {selectedQuestionIndex<questions.length-1&&<button className='primary-contained-btn'
-      onClick={()=> handleNextButtonClick()}>
-       Next
-      </button>}
+     <div className='alert-exam'>
+        <img src={alert} alt='alert' />
+        <p>Si prega notare che, in caso di uscita dal test, questo verrà interrotto. <br />
+          Tuttavia, avrai la possibiltà di riprendere esattamente dove ti eri fermato una volta che riaccedi nel sistema.
+        </p>
+     </div>
+     <div className='button-exam-container flex justify-between'>
+      {selectedQuestionIndex<questions.length-1&&
+      <div style={{display: 'flex', flexDirection: 'column', textAlign: 'center', gap: '20px'}}>
+        <button className='primary-contained-btn'
+      onClick={()=> handleNextButtonClick()}
+      style={{display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center'}}>
+       <img src={arrowRight} alt='arrow right' />Domanda successiva
+      </button>
+      <p><b>Non è possibile</b> tornare all <br /> <u style={{color: '#F95959'}}>domanda precedente</u></p>
+      </div>
+      }
       {selectedQuestionIndex===questions.length-1&&<button className='primary-contained-btn'
+      style={{display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center'}}
       onClick={()=>{
         clearInterval(intervalId)
         setTimeUp(true)
       }}
       >
-       Submit
+       <img src={arrowRight} alt='arrow right' />
+       Invia candidatura
       </button>}
      </div>
     </div>
@@ -290,33 +308,14 @@ useEffect(()=>{
       {result.verdict==="Fail"&&<lottie-player src="https://assets4.lottiefiles.com/packages/lf20_qp1spzqv.json"  background="transparent" speed="1" loop autoplay></lottie-player>}
       </div>
     </div>}
-    {view==="review"&&<div className='flex flex-col gap-2'> 
-       {questions.map((question,index)=>{
-          const isCorrect = question.correctOption === selectedOptions[index]
-          return <div className={`flex flex-col gap-1 p-2 card ${isCorrect? "bg-success" : "bg-warning"}`}>
-            <h1 className='text-xl'>{index+1} : {question.name}</h1>
-            <h1 className='text-md'>Submitted Answer : {selectedOptions[index]} : {question.options[selectedOptions[index]]}</h1>
-            <h1 className='text-md'>Correct Answer : {question.correctOption} : {question.options[question.correctOption]}</h1>
-          </div>
-       })}
-       <div className='flex justify-center gap-2'>
-       <button className='primary-outlined-btn'
-          onClick={()=>{
-            setView("instructions")
-            setSelectedQuestionIndex(0);
-            setSelectedOptions({});
-            setTimeUp(false);
-            setSecondsLeft(10000);
-          }}
-          >
-          Retake Exam
-          </button>
-          <button className='primary-contained-btn' onClick={()=>{
-            navigate("/")
-          }}>
-            Close
-          </button>
-       </div>
+    {view==="thanks"&&<div className='thanks-exam-container flex flex-col gap-2'> 
+       <img alt='skilltest' src={thanks} className='back-img' />
+       <img src={v} alt='ok' />
+       <h2>Grazie per aver completato il nostro test!</h2>
+       <p>Il tuo tempo e il tuo impegno sono molto apprezzati. <br />
+       <b>Abbiamo registrato con successo le tue risposte.</b></p>
+       <p>Ti informeremo <i>via email</i> riguardo i prossimi e eventuali <br /> aggiornamenti.</p>
+       <button style={{zIndex: 10}} className='primary-contained-btn' onClick={() => navigate('/login')}>Registrati gratuitamente</button>
     </div>}
     </div>
    )
