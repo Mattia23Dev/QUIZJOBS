@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { addCandidate } from '../../../apicalls/exams';
 import { useCookies } from 'react-cookie';
+import arrowRight from '../../../imgs/arrowright.png'
 
 const FAQList = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -50,6 +51,8 @@ function Instructions(props) {
     coverLetter: "",
     degree: "",
     testId: examData._id,
+    terms: false,
+    privacyPolicy: false,
   });
 
   const handleChange = (e) => {
@@ -68,6 +71,9 @@ function Instructions(props) {
     for (const key in formData) {
       if (formData[key] === "") {
         alert("Per favore compila tutti i campi del form.");
+        return;
+      } else if (formData.terms == false || formData.privacyPolicy == false){
+        alert("Accetta termini e condizioni");
         return;
       }
     }
@@ -100,9 +106,6 @@ function Instructions(props) {
 
   return (
     <div className='flex flex-col items-center mt-2 gap-5 p-3'>
-        <h1 className='text-2xl underline text-center'>
-            Welcome
-        </h1>
         <form className="form-candidato" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="nome">Nome:</label>
@@ -160,8 +163,9 @@ function Instructions(props) {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="cv">CV:</label>
+            <label htmlFor="cv">Upload CV:</label>
             <input
+              className='cv-upload'
               type="file"
               id="cv"
               name="cv"
@@ -169,18 +173,6 @@ function Instructions(props) {
               accept=".pdf,.doc,.docx"
               required
             />
-          </div>
-          <div className="form-group">
-            <label htmlFor="letteraPresentazione">Lettera di Presentazione:</label>
-            <textarea
-              id="coverLetter"
-              name="coverLetter"
-              value={formData.coverLetter}
-              onChange={handleChange}
-              placeholder="Lettera di Presentazione"
-              rows="4"
-              required
-            ></textarea>
           </div>
           <div className="form-group">
             <label htmlFor="titoloStudio">Titolo di Studio:</label>
@@ -201,18 +193,47 @@ function Instructions(props) {
               <option value={"Laurea magistrale"}>Laurea magistrale</option>
               <option value={"Dottorato"}>Dottorato</option>
             </select>  
+            <div className='accept'>
+              <label>
+                <input
+                  id='terms'
+                  type="checkbox"
+                  name="terms"
+                  checked={formData.terms}
+                  onChange={() => setFormData({ ...formData, terms: !formData.terms })}
+                />
+                <a href="/terms">Termini e Condizioni</a>
+              </label>
+              <label>
+                <input
+                  id='privacyPolicy'
+                  type="checkbox"
+                  name="privacyPolicy"
+                  checked={formData.privacyPolicy}
+                  onChange={() => setFormData({ ...formData, privacyPolicy: !formData.privacyPolicy })}
+                />
+                <a href="/privacy">Informativa sulla Privacy</a>
+              </label>
+            </div>
+          </div>
+          <div className="form-group">
+            <label htmlFor="letteraPresentazione">Lettera di Presentazione (opzionale):</label>
+            <textarea
+              id="coverLetter"
+              name="coverLetter"
+              value={formData.coverLetter}
+              onChange={handleChange}
+              placeholder="Lettera di Presentazione"
+              rows="4"
+              required
+            ></textarea>
           </div>
         </form>
-        <FAQList />
         <div className='flex gap-2'>
-        <button className='primary-outlined-btn'
-        onClick={()=>navigate(-1)}
-        >
-         Close
-        </button>
         <button className='primary-contained-btn'
         onClick={handleSubmit}
-        >Start Exam</button>
+        style={{display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center'}}
+        ><img alt='arrow right' src={arrowRight} />Inizia test</button>
         </div>
     </div>
   )

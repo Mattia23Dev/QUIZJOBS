@@ -28,6 +28,8 @@
 }
 .layout .menu {
   margin-top: 25px;
+  position: relative;
+  height: 100%;
 }
 .menu-item{
     display: flex;
@@ -39,6 +41,22 @@
     gap: 10px;
     font-size: 20px !important;
     width: 100%;
+}
+.menu-item-bottom{
+  display: flex;
+  align-items: center;
+  padding: 4px 30px 4px 15px;
+  margin: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  gap: 10px;
+  font-size: 20px !important;
+  width: 100%;
+  position: absolute;
+  bottom: 10px;
+}
+.menu-item-bottom > span {
+  font-size: 14px;
 }
 .menu-item span {
   font-size: 14px;

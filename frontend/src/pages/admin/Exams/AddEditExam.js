@@ -1,45 +1,85 @@
 import React,{useState,useEffect} from 'react';
 import PageTitle from '../../../components/PageTitle';
-import { Form, Row, Col, message, Tabs, DatePicker, Select } from 'antd';
+import { Form, Row, Col, message, Tabs, DatePicker, Select, Popconfirm } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { addExam, deleteQuestionFromExam, editExam, getExamById } from '../../../apicalls/exams';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
 import AddEditQuestion from './AddEditQuestion';
 import locale from 'antd/es/date-picker/locale/it_IT'; 
 import './addEditTest.css';
-import { FaGripHorizontal } from "react-icons/fa";
 import openai from 'openai';
 import copia from '../../../imgs/copia.png';
 import copiablu from '../../../imgs/copiablu.png';
 import eye from '../../../imgs/eye.png';
 import 'antd/dist/antd.css';
-import BigLoader from '../../../components/bigLoader/BigLoader';
+import leftArrow from '../../../imgs/leftarrow.png'
+import rightArrow from '../../../imgs/arrowright.png'
+import edit from '../../../imgs/edit.png'
+import move from '../../../imgs/move.png'
+import cancel from '../../../imgs/cancel.png'
+import { setDatiGenerali } from '../../../redux/createTestSlice';
 const { Option } = Select;
 
 const DomandeComponent = ({ domande, onUpdateDomande }) => {
    const [currentDomanda, setCurrentDomanda] = useState(domande[0]);
+   const [currentDomandaIndex, setCurrentDomandaIndex] = useState(0); // Inizializza l'indice della domanda corrente a 0
+   const [confirmVisible, setConfirmVisible] = useState(Array(domande.length).fill(false));
+
+   const handleConfirm = () => {
+     const filteredDomande = domande.filter(domanda => domanda !== currentDomanda);
+     onUpdateDomande(filteredDomande);
+     setCurrentDomanda(domande[0]);
+     const updatedConfirmVisible = [...confirmVisible];
+     const index = domande.indexOf(currentDomanda);
+     updatedConfirmVisible[index] = false;
+     setConfirmVisible(updatedConfirmVisible); 
+   };
  
-   const handleDomandaClick = (domanda) => {
+   const handleCancel = () => {
+    setConfirmVisible(Array(domande.length).fill(false));
+   };
+ 
+   const handleDomandaClick = (domanda, index) => {
      setCurrentDomanda(domanda);
+     setCurrentDomandaIndex(index)
    };
  
-   const handleDragStart = (event, domanda) => {
+   const [draggingIndex, setDraggingIndex] = useState(null); // Stato per tener traccia dell'indice della domanda che viene trascinata
+
+   const handleDragStart = (event, domanda, index) => {
      event.dataTransfer.setData('domanda', JSON.stringify(domanda));
+     setDraggingIndex(index); // Imposta l'indice della domanda che viene trascinata
    };
- 
+   
    const handleDragOver = (event) => {
      event.preventDefault();
    };
- 
+   
+   const handleDragEnter = (index) => {
+     setDraggingIndex(index); // Imposta l'indice della domanda su cui passa sopra
+   };
+   
+   const handleDragLeave = () => {
+     setDraggingIndex(null); // Resettare l'indice della domanda quando si lascia l'area di trascinamento
+   };
+   
    const handleDrop = (event, index) => {
      const droppedDomanda = JSON.parse(event.dataTransfer.getData('domanda'));
      const updatedDomande = Array.from(domande);
      const currentIndex = updatedDomande.indexOf(droppedDomanda);
+     
+     // Rimuovi la domanda dalla sua posizione precedente
      updatedDomande.splice(currentIndex, 1);
+     
+     // Aggiungi la domanda nella nuova posizione
      updatedDomande.splice(index, 0, droppedDomanda);
-     setCurrentDomanda(updatedDomande[index]);
+     
+     // Aggiorna lo stato delle domande con la nuova posizione della domanda
      onUpdateDomande(updatedDomande);
+   
+     setDraggingIndex(null); // Resettare l'indice della domanda trascinata dopo il rilascio
    };
  
    return (
@@ -48,28 +88,41 @@ const DomandeComponent = ({ domande, onUpdateDomande }) => {
          {domande.map((domanda, index) => (
            <div
              key={index}
-             className="domanda-item"
-           >
-            <span
+             onDragStart={(event) => handleDragStart(event, domanda, index)} // Gestisci l'inizio del trascinamento sulla domanda
+             onDragOver={handleDragOver}
+             onDragEnter={() => handleDragEnter(index)} // Gestisci l'entrata del trascinamento sulla domanda
+             onDragLeave={handleDragLeave} // Gestisci l'uscita del trascinamento dall'area della domanda
+             onDrop={(event) => handleDrop(event, index)}
+             className={`domanda-item ${currentDomanda === domanda ? "domanda-selected" : ""} ${draggingIndex === index ? "dragging" : ""}`}
+             >
+            <Popconfirm
+              visible={confirmVisible[index]}
+              title="Sei sicuro di voler eliminare?"
+              onConfirm={() => handleConfirm(domanda)}
+              onCancel={handleCancel}
+              okText="Sì"
+              cancelText="No"
+            />
+            <img alt='cancel question' src={cancel} onClick={() => { setConfirmVisible((prevState) => {
+                const updatedConfirmVisible = [...prevState];
+                updatedConfirmVisible[index] = true;
+                return updatedConfirmVisible;
+              }); setCurrentDomanda(domanda) }} />
+            <img alt='edit question' src={edit} onClick={() => handleDomandaClick(domanda, index)} />
+            <img
             className='drag-handle'
+            src={move}
             draggable
-            onDragStart={(event) => handleDragStart(event, domanda)}
-            onDragOver={handleDragOver}
-            onDrop={(event) => handleDrop(event, index)}
-            >
-              <FaGripHorizontal
-               size={30}
-            /> 
-            </span>
-             <p onClick={() => handleDomandaClick(domanda)}>{domanda.domanda}</p>
+            />
+             <p onClick={() => handleDomandaClick(domanda, index)}><span>{index + 1}.</span>{domanda.domanda}</p>
            </div>
          ))}
        </div>
        <div className="domanda-attuale">
-         <p>{currentDomanda.domanda}</p>
+         <p><span>{currentDomandaIndex + 1}.</span>{currentDomanda.domanda}</p>
          <ul className="opzioni">
            {Object.entries(currentDomanda.opzioni).map(([lettera, risposta], index) => (
-             <li className={currentDomanda.rispostaCorretta && risposta === currentDomanda.rispostaCorretta.risposta ? "risposta-corretta" : ""} key={index}>{lettera} {risposta}</li>
+             <li className={currentDomanda.rispostaCorretta && risposta === currentDomanda.rispostaCorretta.risposta ? "risposta risposta-corretta" : "risposta"} key={index}><span>{lettera.substring(0, 1)}</span> {risposta}</li>
            ))}
          </ul>
        </div>
@@ -89,16 +142,38 @@ function AddEditExam({setBigLoading}) {
   const [selectedQuestion, setSelectedQuestion] = useState();
   const [questions, setQuestions] = useState();
   const [showQuestions, setShowQuestions] = useState(false);
+  const [copyLink, setCopyLink] = useState(false);
+  const [preview, setPreview] = useState(false);
+  const [link, setLink] = useState("");
   const idUser = useSelector(state=>state.users.user._id);
+  const datiGenerali = useSelector(state => state.domanda?.datiGenerali);
   const [config, setConfig] = useState({
-      numOfQuestions: 30,
-      difficulty: '',
-      generalSector: '',
-      jobPosition: '',
-      testLanguage: '',
-      skills: ['',],
-      deadline: null,
-   });
+      numOfQuestions: datiGenerali?.numOfQuestions || 30,
+      difficulty: datiGenerali?.difficulty || '',
+      generalSector: datiGenerali?.generalSector || '',
+      jobPosition: datiGenerali?.jobPosition || '',
+      testLanguage: datiGenerali?.testLanguage || '',
+      skills: datiGenerali?.skills || [''],
+      deadline: datiGenerali?.deadline || null,
+  });
+
+  const handleCopyLink = (examLink) => {
+    navigator.clipboard.writeText(examLink)
+      .then(() => {
+        message.success('Link copiato negli appunti');
+      })
+      .catch((error) => {
+        // Gestione degli errori
+        console.error('Si è verificato un errore durante la copia del link:', error);
+        message.error('Si è verificato un errore durante la copia del link');
+      });
+  };
+
+  useEffect(() => {
+    if (datiGenerali){
+      setConfig(datiGenerali);
+    }
+  }, [datiGenerali])
 
    const handleChange = (selectedItems) => {
     setConfig(prevConfig => ({ ...prevConfig, difficulty: selectedItems }));
@@ -185,10 +260,11 @@ function AddEditExam({setBigLoading}) {
       - **Risposta corretta: B) register_post_type()**
        
        `;
-      const prompt = `Immagina di essere un recruiter e devi testare le competenze di un candidato per un'offerta lavorativa per la posizione ${config.jobPosition}. Genera ${config.numOfQuestions} domande a risposta multipla con 4 possibilità e con le rispettive risposte. Ripeti le stesse risposte SOLO SE NECESSARIO inserirle nel contesto della domanda. Assicurati di fare domande non banali e specifiche alle competenze fornite: ${config.skills.join(', ')}, con difficoltà ${config.difficulty}, nella lingua ${config.testLanguage}.`;
+      const prompt = `Immagina di essere un recruiter e devi testare le competenze di un candidato per un'offerta lavorativa per la posizione ${config.jobPosition}. Genera ${config.numOfQuestions} domande a risposta multipla con 4 possibilità e con le rispettive risposte. Ripeti le stesse risposte SOLO SE NECESSARIO inserirle nel contesto della domanda. 
+      Assicurati di non inserire opzioni che non centrano con il contesto della domanda o del ruolo, Assicurati di fare domande non banali e specifiche alle competenze fornite: ${config.skills.join(', ')}, con difficoltà ${config.difficulty}, nella lingua ${config.testLanguage}.`;
 
       const requestData = {
-         max_tokens: 3000, 
+         max_tokens: 2600, 
          n: 2,
          model: 'gpt-4-turbo-preview',
          messages: [
@@ -204,6 +280,7 @@ function AddEditExam({setBigLoading}) {
        };
     
       try {
+        dispatch(setDatiGenerali(config));
         setBigLoading(true);
         const response = await client.chat.completions.create(requestData);
         console.log(response.choices);
@@ -220,6 +297,7 @@ function AddEditExam({setBigLoading}) {
         setShowQuestions(true);
         setActiveTab(2);
         setBigLoading(false);
+        setPreview(true);
       } catch (error) {
         console.error('Errore durante la generazione delle domande:', error);
         setBigLoading(false);
@@ -252,7 +330,9 @@ function AddEditExam({setBigLoading}) {
        dispatch(HideLoading())
        if(response.success){
         message.success(response.message)
-        navigate("/admin/exams")
+        setActiveTab(3);
+        setCopyLink(true);
+        setLink(response.data.examLink);
        }
        else{
         message.error(response.message)
@@ -311,12 +391,20 @@ function AddEditExam({setBigLoading}) {
       const handleUpdateDomande = (updatedDomande) => {
          setQuestions(updatedDomande);
        };
+       const handlePreviewClick = () => {
+      
+        const queryParams = new URLSearchParams();
+        queryParams.append('domande', JSON.stringify(questions));
+        const url = `/admin/exams/add/preview?${queryParams.toString()}`;
+      
+        navigate(url, { target: '_blank' });
+      };
 
   return (
       <div className='home-content'>
         <div className='copy-preview'>
-          {!examData && !id ? <button className='copy-link'><img src={copia} alt='copia link skilltest' />Copia link</button> : <button className='copy-link-active'><img src={copiablu} alt='copia link skilltest' />Copia link</button>}
-          <a href='#' className='preview'><img src={eye} alt='Anteprima skilltest' />Anteprima</a>
+          {!examData && !id ? <button className={!copyLink ? 'copy-link' : 'copy-link-active'}><img src={!copyLink ? copia : copiablu} alt='copia link skilltest' />Copia link</button> : <button onClick={() => handleCopyLink(link)} className='copy-link-active'><img src={copiablu} alt='copia link skilltest' />Copia link</button>}
+          <a onClick={preview ? handlePreviewClick : null} className={preview ? 'preview': 'preview-disabled'}><img src={eye} alt='Anteprima skilltest' />Anteprima</a>
         </div>
           <div className='create-exam-top'>
             <div onClick={() => setActiveTab(1)} className={activeTab === 1 ? 'active' : ''}>
@@ -432,8 +520,9 @@ function AddEditExam({setBigLoading}) {
               </div>
               {showQuestions && questions && 
               <div className='domande-container-save'>
+                    <a onClick={() => setActiveTab(1)}><img alt='left arrow' src={leftArrow} /> Torna ai dettagli del test</a>
                     <DomandeComponent domande={questions} onUpdateDomande={handleUpdateDomande} />
-                    <button onClick={onFinish}>Salva e Genera Test</button>
+                    <button onClick={onFinish}><img alt='arrow right' src={rightArrow} />Salva e Genera Test</button>
               </div>}
           </div> : 
           <div>

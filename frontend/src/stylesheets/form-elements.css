@@ -7,6 +7,14 @@ input, select{
     outline: none;
     transition: 0.2s all;
 }
+textarea{
+    padding: 10px 20px;
+    border: 1.5px solid #DDDDDD;
+    width: 100%;
+    border-radius: 5px;
+    outline: none;
+    transition: 0.2s all;
+}
 .datepicker{
     width: 100%;
     height: 40px;
@@ -27,16 +35,9 @@ input, select{
     color: white;
     padding: 10px 20px;
     cursor: pointer;
+    border: none;
+    border-radius: 5px;
 }
-
-.primary-contained-btn:hover{
-    background-color: white;
-    color: var(--primary);
-    border: 2px solid var(--primary) !important;
-    padding: 10px;
-    border-radius: 2px;
-}
-
 .primary-outlined-btn{
     color: white;
     background-color: var(--primary);
@@ -53,11 +54,6 @@ input, select{
     padding: 6px 15px;
     border: none;
     cursor: pointer;
-}
-.primary-outlined-btn:hover{
-    background-color: white;
-    border: 2px solid var(--primary);
-    color: var(--primary);
 }
 
 .ant-form-item{

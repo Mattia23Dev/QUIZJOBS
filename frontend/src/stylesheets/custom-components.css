@@ -39,17 +39,74 @@
 }
 
 .option{
-  box-shadow: rgba(0,0,0,0.638) 0px 0px 1.5px;
-  padding: 10px;
-  border-radius: 2px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  align-items: center;
+  padding: 6px 10px;
+  border: 1.3px solid var(--primary);
+  border-radius: 5px;
+  background-color: #edeffa;
+  color: var(--primary);
+  font-size: 14px;
+  cursor: pointer;
+  min-width: 350px;
 }
 
 .selected-option{
-    box-shadow: rgba(0,0,0,0.638) 0px 0px 5px;
-    padding: 10px;
-    border-radius: 2px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 6px 10px;
+    border: 1.3px solid var(--primary);
+    border-radius: 5px;
+    background-color: var(--primary);
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    min-width: 350px;
 }
-
+.selected-option > h4 {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    align-items: center;
+    color: #fff;
+    font-size: 14px;
+}
+.selected-option span {
+    background-color: #fff;
+    color: var(--primary);
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--primary);
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.option h4 {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    align-items: center;
+    font-size: 14px;
+}
+.option span {
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--primary);
+    border-radius: 5px;
+    background-color: white;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 600;
+}
 .result{
     background-color: #ede9df;
     padding: 20px;
@@ -59,15 +116,4 @@
 
 .lottie-animation{
     height: 200px;
-}
-
-.timer{
-    background-color: #894114;
-    color: white !important;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 80px;
-    width: 80px;
 }

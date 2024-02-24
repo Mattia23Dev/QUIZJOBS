@@ -6,13 +6,24 @@
   left: 0;
   background-color: white;
   z-index: 20;
+  overflow: hidden;
 }
-
+.header-big-loader{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+  box-shadow: 0 0 10px 3px #dcdfe6;
+}
+.header-big-loader > img {
+  width: 10%;
+}
 .big-loader {
-    background-image: url('../../imgs/anim_3.gif') !important;
-    background-size: cover; /* per adattare la GIF alle dimensioni del contenitore */
-    background-repeat: no-repeat; /* per evitare che la GIF si ripeta */
-    background-position: center;
+    /*ackground-image: url('../../imgs/anim_3.gif') !important;
+    background-size: cover;
+    background-repeat: no-repeat; 
+    background-position: center;*/
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,15 +31,17 @@
     text-align: center;
     background-color: white;
     height: 100%;
+    margin-top: 4rem;
+    height: 80vh;
     z-index: 20;
   }
   .big-loader > img {
     position: absolute;
-    top: 50%;
+    top: 56%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 10;
-    width: 100%;
+    width: 80%;
   }
   .big-loader > div:first-of-type{
     color: var(--primary);
@@ -37,7 +50,7 @@
   }
   .big-loader > p{
     color: var(--primary);
-    font-size: 16px;
+    font-size: 14px;
     width: 33%;
-    margin-top: 50px;
+    margin-top: 20px;
   }

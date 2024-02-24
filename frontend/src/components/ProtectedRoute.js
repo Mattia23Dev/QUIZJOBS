@@ -62,11 +62,29 @@ function ProtectedRoute({children, setLoginPopup}) {
       icon: <i className="ri-bar-chart-line"></i>,
       onClick: ()=>navigate("/admin/crm")
     },
-    {
+    /*{
       title: "Reports",
       paths: ["/admin/reports"],
       icon: <i className="ri-bar-chart-line"></i>,
       onClick: ()=>navigate("/admin/reports")
+    },*/
+    {
+      title: "Calendar",
+      paths: ["/admin/calendar"],
+      icon: <i className='ri-calendar-line'></i>, // Icona del calendario
+      onClick: () => navigate("/admin/calendar")
+    },
+    {
+      title: "Team",
+      paths: ["/admin/team"],
+      icon: <i className='ri-team-line'></i>, // Icona del team
+      onClick: () => navigate("/admin/team")
+    },
+    {
+      title: "Automations",
+      paths: ["/admin/automations"],
+      icon: <i className='ri-settings-line'></i>, // Icona delle automazioni
+      onClick: () => navigate("/admin/automations")
     },
     {
       title: "Profilo",
@@ -74,16 +92,6 @@ function ProtectedRoute({children, setLoginPopup}) {
       icon: <i className='ri-user-line'></i>,
       onClick: ()=>navigate("/profile")
     },
-    {
-      title: "Logout",
-      paths: ["/logout"],
-      icon: <i className='ri-logout-box-line'></i>,
-      onClick: ()=>{
-        //localStorage.removeItem("token")
-        //navigate("/login");
-        setLoginPopup(true);
-      }
-    }
   ]
   const getUserData = async() => {
     try{
@@ -149,6 +157,9 @@ function ProtectedRoute({children, setLoginPopup}) {
                 </div>
               )
             })}
+            <div onClick={() => setLoginPopup(true)} className='menu-item-bottom'>
+              <span><i className='ri-logout-box-line'></i> Logout</span>
+            </div>
          </div>
        </div>
        <div className='body'>

@@ -25,6 +25,7 @@ import { useState } from 'react';
 import InfoExam from './pages/admin/Exams/InfoExam';
 import Crm from './pages/admin/Crm/Crm';
 import BigLoader from './components/bigLoader/BigLoader';
+import Preview from './pages/user/WriteExam/Preview';
 
 function App() {
   const {loading} = useSelector(state=>state.loaders)
@@ -54,6 +55,7 @@ function App() {
         <Route path="/admin/home" element={<ProtectedRoute setLoginPopup={setLoginPopup}><HomePage/></ProtectedRoute>}/>
         <Route path="/admin/exams" element={<ProtectedRoute setLoginPopup={setLoginPopup}><ExamsPage/></ProtectedRoute>}/>
         <Route path="/admin/exams/add" element={<ProtectedRoute setLoginPopup={setLoginPopup}><AddEditExam setBigLoading={setBigLoading}/></ProtectedRoute>}/>
+        <Route path="/admin/exams/add/preview" element={<ProtectedRoute setLoginPopup={setLoginPopup}><Preview /></ProtectedRoute>}/>
         <Route path="/admin/exams/edit/:id" element={<ProtectedRoute setLoginPopup={setLoginPopup}><AddEditExam setBigLoading={setBigLoading}/></ProtectedRoute>}/>
         <Route path="/admin/exams/info/:id" element={<ProtectedRoute setLoginPopup={setLoginPopup}><InfoExam/></ProtectedRoute>}/>
         <Route path="/user/reports" element={<ProtectedRoute setLoginPopup={setLoginPopup}><ReportsPage/></ProtectedRoute>}/>

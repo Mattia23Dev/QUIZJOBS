@@ -8,6 +8,8 @@ import Instructions from './Instructions'
 import { addReport } from '../../../apicalls/reports'
 import { useSelector } from 'react-redux'
 import { useCookies } from 'react-cookie';
+import logo from '../../../imgs/logo.png'
+import time from '../../../imgs/time.png'
 import './writeExamUser.css';
 
 function WriteExam() {
@@ -188,25 +190,29 @@ useEffect(()=>{
 
   return (
    examData && (
-    <div className='mt-2'>
-    <div className='divider'></div>
-    <h1 className='text-center user-select-none'>{jobPositionSlug && jobPositionSlug.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</h1>
-    <div className='divider'></div>
+    <div className='exam-user-container'>
+        <div className='header-big-loader' style={{padding: '15px', position: 'sticky', top: '0', zIndex: 20, backgroundColor: '#fff'}}>
+            <img src={logo} alt='logo skilltest' />
+        </div>
+    <h1 className='text-center user-select-none mt-2'>Test per l'offerta <b>{jobPositionSlug && jobPositionSlug.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</b></h1>
+    <p>Ciao, questo è solo un test per categorizzarti e non influirà sul successo della candidatura.</p>
     {view==="instructions"&&<Instructions setUser={setUser} examData={examData} setExamData={setExamData}
     view={view}
     setView={setView}
     startTimer={startTimer}
     />}
     {(view==="questions"&&questions?.length > 0)&&<div className='flex flex-col gap-2 mt-2'>
-     <div className='flex justify-between'>
-     <h1 className='text-2xl user-select-none'>
-       {selectedQuestionIndex+1} : {questions[selectedQuestionIndex].question}
-     </h1>
-     <div className='timer'>
+    <div className='question-exam-container'>
+    <div className='timer'>
+      <img alt='time user' src={time} />
       <span className='text-2xl user-select-none'>{secondsLeft && secondsLeft}</span>
      </div>
+     <div style={{width: '60%'}} className='flex justify-center mt-2'>
+     <h1 style={{width:'65%'}} className='text-xl user-select-none'>
+       {selectedQuestionIndex+1} : {questions[selectedQuestionIndex].question}
+     </h1>
      </div>
-     <div className='flex flex-col gap-2'>
+     <div className='flex flex-col gap-2 align-left'>
       {Object.entries(questions[selectedQuestionIndex].options).map(([lettera, risposta], index) => (
           <div
             className={`flex gap-2 items-center ${selectedOptions[selectedQuestionIndex] === risposta ? "selected-option" : "option" }`}
@@ -216,9 +222,9 @@ useEffect(()=>{
               console.log(selectedOptions);
             }}
           >
-            <h1 className='text-xl user-select-none'>
-              {lettera} : {risposta}
-            </h1>
+            <h4 className='text-m user-select-none'>
+              <span>{lettera.substring(0, 1)}</span>{risposta}
+            </h4>
           </div>
         ))}
      </div>
@@ -236,6 +242,7 @@ useEffect(()=>{
        Submit
       </button>}
      </div>
+    </div>
     </div>}
     {view==="result"&&<div className='flex justify-center mt-2 gap-2'>
       <div className='flex flex-col gap-2 result'>

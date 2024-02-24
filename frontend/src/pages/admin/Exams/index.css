@@ -6,6 +6,29 @@
     justify-content: center;
     gap: 2rem;
 }
+.test-filter{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+.test-filter select {
+    border: none;
+    background-color: transparent;
+    border-radius: 0;
+    font-size: 13px;
+    padding: 0;
+}
+.test-filter label {
+    font-size: 12px;
+    width: fit-content;
+}
+.test-filter > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0px;
+}
 .card-exam{
     border: 1.3px solid var(--primary);
     border-radius: 10px;
