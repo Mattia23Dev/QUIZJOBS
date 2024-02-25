@@ -5,6 +5,8 @@ const examModel = require("../models/examModel");
 const candidateModel = require("../models/candidateModel");
 const fs = require('fs');
 const path = require('path');
+const {OAuth2Client} = require('google-auth-library');
+const client = new OAuth2Client("830063440629-j40l5f7lb1fck6ap120s272d49rp1ph6.apps.googleusercontent.com");
 
 //user registration
 const register = async(req,res) => {
@@ -23,12 +25,17 @@ const register = async(req,res) => {
         const newUser = new User({
             name: req.body.name,
             email: req.body.email,
-            password: hashedPassword
+            password: hashedPassword,
+            partitaIva: req.body.partitaIva
         })
         await newUser.save()
+        const token = jwt.sign({
+          userid: newUser._id
+      },process.env.JWT_SECRET,{})
         res.status(200).send({
             message: "User registered successfully.",
-            success: true
+            success: true,
+            data: token
         })
      }
    }
@@ -52,9 +59,7 @@ const login = async(req,res) => {
         if(passwordsMatched){
             const token = jwt.sign({
                 userid: user._id
-            },process.env.JWT_SECRET,{
-                expiresIn: "365d"
-            })
+            },process.env.JWT_SECRET,{})
             res.send({
               message: "User logged in successfully",
               data: token,
@@ -199,4 +204,64 @@ const getCandidateInfo = async (req, res) => {
     }
 }
 
-module.exports = { register, login, getUserInfo, addCandidate, getCandidateInfo }
+const googleLogin = async (req, res) => {
+  const {tokenId} = req.body;
+
+  client.verifyIdToken({idToken: tokenId, audience: "830063440629-j40l5f7lb1fck6ap120s272d49rp1ph6.apps.googleusercontent.com"}).then((response) => {
+    const {email_verified, name, email} = response.payload; 
+    if (email_verified) {
+      console.log('email verificata');
+      User.findOne({email})
+      .exec(async(err, user) => {
+        if (err){
+          console.log(err);
+          return res.status(400).json({
+            error: 'Qualcosa è andato storto..'
+          })
+        } else {
+          if (user){
+            const token = jwt.sign({
+              userid: user._id
+          },process.env.JWT_SECRET,{})
+            res.send({
+              message: "User logged in successfully",
+              data: token,
+              success: true,
+            })
+          } else {
+              let password = email+process.env.JWT_SECRET;
+              
+              let newUser = new User({
+                name,
+                email,
+                password: password,
+              });
+
+              await newUser.save((err, data) => {
+                if (err) {
+                  console.log(err);
+                  return res.status(400).json({
+                    error: 'Qualcosa è andato storto..'
+                  })
+                };
+                
+  
+                const token = jwt.sign({
+                  userid: newUser._id
+              },process.env.JWT_SECRET,{})
+
+                res.send({
+                  message: "User logged in successfully",
+                  data: token,
+                  success: true,
+                })
+              })
+          }
+        }
+      })
+    }
+    console.log(response.payload);
+  })
+};
+
+module.exports = { register, login, getUserInfo, addCandidate, getCandidateInfo, googleLogin }

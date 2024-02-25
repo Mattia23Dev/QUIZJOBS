@@ -4,7 +4,9 @@ const Report = require("./reportModel")
 const userSchema = new mongoose.Schema({
    name: {
     type: String,
-    required: true
+   },
+   partitaIva: {
+    type: String,
    },
    email: {
     type: String,
@@ -18,7 +20,7 @@ const userSchema = new mongoose.Schema({
    isAdmin: {
     type: Boolean,
     required: true,
-    default: false
+    default: true
    },
 },{
     timestamps: true
