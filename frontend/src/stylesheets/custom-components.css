@@ -119,3 +119,17 @@
 .lottie-animation{
     height: 200px;
 }
+.popup-logout{
+    text-align: center;
+    padding: 2rem 0;
+}
+.popup-logout h2 {
+    color: var(--primary);
+    font-weight: 600;
+}
+.popup-logout p {
+    color: var(--primary);
+}
+.popup-logout button{
+    margin: 0 20px;
+}

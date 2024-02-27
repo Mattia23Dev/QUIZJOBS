@@ -188,8 +188,11 @@
   border-radius: 0;
   margin: 10px 0;
 }
+.auth-img-mobile{
+  display: none;
+}
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 650px) {
   .sidebar{
     background-color: #fff;
     padding: 10px 14px 10px 6px;
@@ -215,5 +218,30 @@
   }
   .cursor-pointer-mobile{
     display: block;
+  }
+  .auth-img{
+    display: none;
+  }
+  .auth-img-mobile{
+    display: block;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .auth-img-mobile > img{
+    width: 60%;
+  }
+  .form-auth{
+    position: relative;
+  }
+  .form-auth p {
+    width: 60%;
+  }
+  .auth-img-mobile{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 170px;
   }
 }

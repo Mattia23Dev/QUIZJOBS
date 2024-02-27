@@ -294,3 +294,64 @@
     justify-content: flex-start;
     gap: 10px;
   }
+
+
+  /*ADD EDIT QUESTION*/
+  .edit-correct{
+    border: 1px solid var(--primary) !important;
+  }
+  .div-not-edit{
+    position: relative;
+    width: 50%;
+  }
+  .div-not-edit img,
+  .div-correct-not-edit img {
+    position: absolute;
+    top: 0px;
+    left: -8px;
+    width: 17px;
+    z-index: 1000;
+    cursor: pointer;
+  }
+  .div-correct-not-edit{
+    position: relative;
+    width: 50%;
+  }
+  .risposta-edit{
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    align-items: center;
+    padding: 6px 8px;
+    border: 1.3px solid var(--primary);
+    margin: 10px 0;
+    border-radius: 5px;
+    background-color: #edeffa;
+    width: 100%;
+    color: var(--primary);
+    font-size: 13px;
+  }
+  .risposta-edit > span {
+    width: 20px;
+    min-height: 20px;
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--primary);
+    border-radius: 5px;
+    background-color: white;
+    color: var(--primary);
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .risposta-corretta-edit {
+    margin: 10px 0;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 5px;
+    padding: 4px 8px;
+    width: 100%;
+    min-width: 100%;
+  }

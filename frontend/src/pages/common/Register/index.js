@@ -64,6 +64,7 @@ function RegisterPage() {
         <div style={{position: 'relative'}} className='flex justify-center items-center h-screen w-screen bg-primary'>
           <img alt='logo skilltest' src={logobianco} className='logo-auth' />
          <div className='w-400 p-3 bg-white form-auth'>
+           <img alt='login skilltest' src={register} className='auth-img-mobile' />
            <div className='flex flex-col'>
            <h1 className='text-2xl'>
            Welcome  <i className='ri-user-add-line'></i>

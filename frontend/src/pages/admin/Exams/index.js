@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import PageTitle from '../../../components/PageTitle'
 import {Table,message, Row, Col, Popconfirm, Switch} from 'antd'
 import { MdMore } from 'react-icons/md';
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice'
-import { getAllExams, deleteExam } from '../../../apicalls/exams'
+import { getAllExams, deleteExam, getExamByUser } from '../../../apicalls/exams'
 import './index.css'
 import testImg from '../../../imgs/testimg.png';
 import candidateNumber from '../../../imgs/candidate.png'
@@ -18,6 +18,8 @@ function ExamsPage() {
   const [attivo, setAttivo] = useState('tutti'); // Valori possibili: 'tutti', 'attivo', 'non attivo'
   const [difficolta, setDifficolta] = useState('tutti'); // Valori possibili: 'tutti', 'facile', 'medio', 'difficile'
   const [numCandidati, setNumCandidati] = useState('tutti');
+  const user = useSelector(state=>state.users.user)
+  const storedQuestions = JSON.parse(localStorage.getItem('questions'));
 
   /*
   <div className='flex gap-2'>
@@ -28,10 +30,17 @@ function ExamsPage() {
           <i className='ri-delete-bin-line cursor-pointer' onClick={()=>{deleteExamById(record._id)}}></i>
   </div>
   */
+ const continueExam = () => {
+  navigate('/admin/exams/add',{
+    state: {
+      storedQuestions: storedQuestions,
+    }
+  })
+ }
   const getExamsData = async() => {
     try{
       dispatch(ShowLoading())
-      const response = await getAllExams()
+      const response = await getExamByUser(user._id)
       dispatch(HideLoading())
       if(response.success){
        //message.success(response.message)
@@ -155,6 +164,11 @@ function ExamsPage() {
             </select>
           </div>
         </div>
+        {storedQuestions &&
+        <button className='primary-outlined-btn flex items-center cursor-pointer'onClick={continueExam}>
+        <i style={{marginRight: '3px'}} className='ri-pencil-line'></i>
+        Continue Exam
+        </button>}
         <button className='primary-outlined-btn flex items-center cursor-pointer' onClick={()=>navigate('/admin/exams/add')}>
           <i className='ri-add-line'></i>
           Add Exam

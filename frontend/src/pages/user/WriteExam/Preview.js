@@ -1,9 +1,10 @@
 import React, {useState, useEffect} from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
+import arrowRight from '../../../imgs/arrowright.png'
+import time from '../../../imgs/time.png'
 
 const Preview = () => {
-    const [examData, setExamData] = useState()
     const [questions, setQuestions] = useState([])
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -12,7 +13,6 @@ const Preview = () => {
     const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0)
     const [selectedOptions, setSelectedOptions] = useState({})
     const [seconds, setSeconds] = useState({})
-    const [result, setResult] = useState()
     const { idUser, jobPositionSlug, uniqueId } = useParams()
     const dispatch = useDispatch()
     const [view, setView] = useState("instructions")
@@ -73,17 +73,16 @@ const Preview = () => {
   return (
     questions.length > 0 && (
         <div className='mt-2'>
-        <div className='divider'></div>
         <h1 className='text-center user-select-none'>{jobPositionSlug && jobPositionSlug.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</h1>
-        <div className='divider'></div>
         <div className='flex flex-col gap-2 mt-2'>
          <div className='flex justify-between'>
          <h1 className='text-2xl user-select-none'>
            {selectedQuestionIndex+1} : {questions[selectedQuestionIndex].domanda}
          </h1>
          <div className='timer'>
-          <span className='text-2xl user-select-none'>{secondsLeft && secondsLeft}</span>
-         </div>
+            <img alt='time user' src={time} />
+            <span className='text-2xl user-select-none'>00:{secondsLeft <10 ? '0' : null}{secondsLeft}:00</span>
+          </div>
          </div>
          <div className='flex flex-col gap-2'>
           {Object.entries(questions[selectedQuestionIndex].opzioni).map(([lettera, risposta], index) => (
@@ -95,24 +94,26 @@ const Preview = () => {
                   console.log(selectedOptions);
                 }}
               >
-                <h1 className='text-xl user-select-none'>
-                  {lettera} : {risposta}
-                </h1>
+                <h4 className='text-m user-select-none'>
+                  <span>{lettera.substring(0, 1)}</span>{risposta}
+                </h4>
               </div>
             ))}
          </div>
          <div className='flex justify-between'>
-          {selectedQuestionIndex<questions.length-1&&<button className='primary-contained-btn'
-          onClick={()=> handleNextButtonClick()}>
-           Next
-          </button>}
+          {selectedQuestionIndex<questions.length-1&&
+            <button className='primary-contained-btn'
+            onClick={()=> handleNextButtonClick()}
+            style={{display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center'}}>
+            <img src={arrowRight} alt='arrow right' />Domanda successiva
+            </button>}
           {selectedQuestionIndex===questions.length-1&&<button className='primary-contained-btn'
           onClick={()=>{
             clearInterval(intervalId)
             setTimeUp(true)
           }}
           >
-           Submit
+           Invia
           </button>}
          </div>
         </div>

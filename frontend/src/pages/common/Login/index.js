@@ -75,6 +75,7 @@ function LoginPage() {
         <img alt='login skilltest' src={login} />
       </div>
      <div className='w-400 p-3 bg-white form-auth'>
+       <img alt='login skilltest' src={login} className='auth-img-mobile' />
        <div className='flex flex-col'>
        <h1 className='text-2xl'>
         Welcome back  <i className='ri-login-circle-line'></i>

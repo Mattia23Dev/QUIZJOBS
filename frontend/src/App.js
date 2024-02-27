@@ -42,10 +42,12 @@ function App() {
       {logoutPopup && 
         <div className='popup-shadows'>
           <div className='popup-logout'>
-            <button onClick={() => setLoginPopup(false)}>Non uscire</button>
+            <h2>Sei sicuro di uscire?</h2>
+            <p>Potrai perderti nuovi aggiornamenti e candidati.</p>
+            <button className='primary-outlined-btn' onClick={() => setLoginPopup(false)}>Non uscire</button>
             <a href='/login' onClick={() => {
                 localStorage.removeItem("token")
-            }}>Esci</a>
+            }}><u>Esci</u></a>
           </div>
         </div>
         }

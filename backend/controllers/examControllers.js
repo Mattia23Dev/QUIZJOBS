@@ -178,7 +178,6 @@ const getCandidateCrm = async (req, res) => {
   }
 };
 
-// edit exam by id
 const editExam = async(req,res) => {
   try{
      const user = await User.findOne({_id: req.body.userid})
@@ -395,4 +394,31 @@ const saveTestProgress = async (req, res) => {
   }
 };
 
-module.exports = {addExam, getAllExams, getExamById, getCandidateCrm, editExam, deleteExam, addQuestionToExam, editQuestionInExam, deleteQuestionFromExam, saveTestProgress}
+const getAllExamsByUser = async(req,res) => {
+  try{
+     const exam = await Exam.find({company: req.params.id})
+     if(exam){
+      res.send({
+        message: "Exams list fetched successfully.",
+        data: exam,
+        success: true
+      })
+     }
+     else{
+      res.send({
+        message: "No exams to display.",
+        data: exam,
+        success: false
+      })
+     }
+  }
+  catch(error){
+    res.send({
+      message: error.message,
+      data: error,
+      success: false
+    })
+  }
+}
+
+module.exports = {addExam, getAllExams, getAllExamsByUser, getExamById, getCandidateCrm, editExam, deleteExam, addQuestionToExam, editQuestionInExam, deleteQuestionFromExam, saveTestProgress}

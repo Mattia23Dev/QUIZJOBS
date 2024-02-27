@@ -19,10 +19,10 @@ import rightArrow from '../../../imgs/arrowright.png'
 import edit from '../../../imgs/edit.png'
 import move from '../../../imgs/move.png'
 import cancel from '../../../imgs/cancel.png'
-import { setDatiGenerali } from '../../../redux/createTestSlice';
+import { useLocation } from 'react-router-dom';
 const { Option } = Select;
 
-const DomandeComponent = ({ domande, onUpdateDomande }) => {
+const DomandeComponent = ({ domande, onUpdateDomande, setSelectedQuestion, setShowAddEditQuestionModal }) => {
    const [currentDomanda, setCurrentDomanda] = useState(domande[0]);
    const [currentDomandaIndex, setCurrentDomandaIndex] = useState(0); // Inizializza l'indice della domanda corrente a 0
    const [confirmVisible, setConfirmVisible] = useState(Array(domande.length).fill(false));
@@ -108,7 +108,7 @@ const DomandeComponent = ({ domande, onUpdateDomande }) => {
                 updatedConfirmVisible[index] = true;
                 return updatedConfirmVisible;
               }); setCurrentDomanda(domanda) }} />
-            <img alt='edit question' src={edit} onClick={() => handleDomandaClick(domanda, index)} />
+            <img alt='edit question' src={edit} onClick={() => {setSelectedQuestion(domanda); setShowAddEditQuestionModal(true)}} />
             <img
             className='drag-handle'
             src={move}
@@ -122,7 +122,7 @@ const DomandeComponent = ({ domande, onUpdateDomande }) => {
          <p><span>{currentDomandaIndex + 1}.</span>{currentDomanda.domanda}</p>
          <ul className="opzioni">
            {Object.entries(currentDomanda.opzioni).map(([lettera, risposta], index) => (
-             <li className={currentDomanda.rispostaCorretta && risposta === currentDomanda.rispostaCorretta.risposta ? "risposta risposta-corretta" : "risposta"} key={index}><span>{lettera.substring(0, 1)}</span> {risposta}</li>
+             <li className={currentDomanda.rispostaCorretta && risposta.trim() === currentDomanda.rispostaCorretta.risposta ? "risposta risposta-corretta" : "risposta"} key={index}><span>{lettera.substring(0, 1)}</span> {risposta}</li>
            ))}
          </ul>
        </div>
@@ -145,17 +145,18 @@ function AddEditExam({setBigLoading}) {
   const [copyLink, setCopyLink] = useState(false);
   const [preview, setPreview] = useState(false);
   const [link, setLink] = useState("");
-  const idUser = useSelector(state=>state.users.user._id);
-  const datiGenerali = useSelector(state => state.domanda?.datiGenerali);
+  const storedConfig = JSON.parse(localStorage.getItem('config'));
   const [config, setConfig] = useState({
-      numOfQuestions: datiGenerali?.numOfQuestions || 30,
-      difficulty: datiGenerali?.difficulty || '',
-      generalSector: datiGenerali?.generalSector || '',
-      jobPosition: datiGenerali?.jobPosition || '',
-      testLanguage: datiGenerali?.testLanguage || '',
-      skills: datiGenerali?.skills || [''],
-      deadline: datiGenerali?.deadline || null,
+      numOfQuestions: 30,
+      difficulty: '',
+      generalSector: '',
+      jobPosition: '',
+      testLanguage: '',
+      skills: [''],
+      deadline: null,
   });
+  const location = useLocation();
+  const { storedQuestions } = location.state ?? {};
 
   const handleCopyLink = (examLink) => {
     navigator.clipboard.writeText(examLink)
@@ -169,14 +170,8 @@ function AddEditExam({setBigLoading}) {
       });
   };
 
-  useEffect(() => {
-    if (datiGenerali){
-      setConfig(datiGenerali);
-    }
-  }, [datiGenerali])
-
    const handleChange = (selectedItems) => {
-    setConfig(prevConfig => ({ ...prevConfig, difficulty: selectedItems }));
+    setConfig(prevConfig => ({ ...prevConfig, skills: selectedItems }));
   };
 
    const generateUniqueId = (length) => {
@@ -204,7 +199,7 @@ function AddEditExam({setBigLoading}) {
               if (opzioneMatch) {
                   const letteraOpzione = opzioneMatch[1];
                   const testoOpzione = opzioneMatch[2];
-                  opzioni[letteraOpzione] = testoOpzione;
+                  opzioni[letteraOpzione] = testoOpzione.trim();
               }
           }
   
@@ -212,18 +207,18 @@ function AddEditExam({setBigLoading}) {
           if (rispostaMatch) {
               const letteraRispostaCorretta = rispostaMatch[2];
               const rispostaEffettiva = rispostaMatch[3].replace(/\*+$/, '');
-              rispostaCorretta = { lettera: letteraRispostaCorretta, risposta: rispostaEffettiva };
+              rispostaCorretta = { lettera: letteraRispostaCorretta, risposta: rispostaEffettiva.trim() };
           } else {
               rispostaMatch = righe[righe.length - 1].match(/- ([A-D]\)) (.+)/);
               if (rispostaMatch) {
                   const letteraRispostaCorretta = rispostaMatch[1];
                   const rispostaEffettiva = rispostaMatch[2].replace(/\*+$/, '');
-                  rispostaCorretta = { lettera: letteraRispostaCorretta, risposta: rispostaEffettiva };
+                  rispostaCorretta = { lettera: letteraRispostaCorretta, risposta: rispostaEffettiva.trim() };
               }
           }
   
           domandeArray.push({
-              domanda: testoDomanda,
+              domanda: testoDomanda.trim(),
               opzioni: opzioni,
               rispostaCorretta: rispostaCorretta
           });
@@ -280,8 +275,8 @@ function AddEditExam({setBigLoading}) {
        };
     
       try {
-        dispatch(setDatiGenerali(config));
         setBigLoading(true);
+        localStorage.setItem('config', JSON.stringify(config));
         const response = await client.chat.completions.create(requestData);
         console.log(response.choices);
         const allQuestions = [];
@@ -293,7 +288,6 @@ function AddEditExam({setBigLoading}) {
         
         console.log(allQuestions);
         setQuestions(allQuestions);
-
         setShowQuestions(true);
         setActiveTab(2);
         setBigLoading(false);
@@ -366,6 +360,17 @@ function AddEditExam({setBigLoading}) {
       getExamDataById(id)
     }
   },[])
+
+  useEffect(() => {
+    if (storedQuestions && storedQuestions !== null){
+      setQuestions(storedQuestions)
+      setConfig(storedConfig)
+      setActiveTab(2)
+      setPreview(true)
+      setShowQuestions(true)
+    }
+  }, [])
+  console.log(config)
   const deleteQuestionById = async(questionId) => {
     try{
       const reqPayload = {
@@ -397,7 +402,7 @@ function AddEditExam({setBigLoading}) {
         queryParams.append('domande', JSON.stringify(questions));
         const url = `/admin/exams/add/preview?${queryParams.toString()}`;
       
-        navigate(url, { target: '_blank' });
+        window.open(url, '_blank');
       };
 
   return (
@@ -431,7 +436,7 @@ function AddEditExam({setBigLoading}) {
             <Row gutter={[10,10]}>
                   <Col flex="auto">
                     <Form.Item label="Settore" name="general-sector">
-                      <input type="text" value={config.generalSector || ''}  onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, generalSector: e.target.value }))} />
+                      <input type="text" value={config.generalSector} onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, generalSector: e.target.value }))} />
                     </Form.Item>
                   </Col>
                   <Col flex="auto">
@@ -521,7 +526,11 @@ function AddEditExam({setBigLoading}) {
               {showQuestions && questions && 
               <div className='domande-container-save'>
                     <a onClick={() => setActiveTab(1)}><img alt='left arrow' src={leftArrow} /> Torna ai dettagli del test</a>
-                    <DomandeComponent domande={questions} onUpdateDomande={handleUpdateDomande} />
+                    <DomandeComponent 
+                    domande={questions} 
+                    onUpdateDomande={handleUpdateDomande}
+                    setSelectedQuestion={setSelectedQuestion}
+                    setShowAddEditQuestionModal={setShowAddEditQuestionModal} />
                     <button onClick={onFinish}><img alt='arrow right' src={rightArrow} />Salva e Genera Test</button>
               </div>}
           </div> : 

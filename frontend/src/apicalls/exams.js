@@ -30,6 +30,16 @@ export const getExamById = async(id) => {
     }
 }
 
+export const getExamByUser = async(id) => {
+    try{
+       const response = await axiosInstance.get(`/api/exams//getAllExamsByUser/${id}`)
+       return response.data
+    }
+    catch(error){
+        return error.response.data
+    }
+}
+
 export const getCandidateCrm = async(id) => {
     try{
        const response = await axiosInstance.get(`/api/exams/getCandidateCrm/${id}`)
