@@ -52,7 +52,7 @@ function ProtectedRoute({children, setLoginPopup}) {
     },
     {
       title: "Test",
-      paths: ["/admin/exams", "/admin/exams/add", "/admin/exams/edit/:id", "/user/write-exam/:id"],
+      paths: ["/admin/exams", "/admin/exams/add", "/admin/exams/edit/:id", "/admin/exams/info/:id"],
       icon: <i className='ri-file-list-line'></i>,
       onClick: () => navigate("/admin/exams")
     },
@@ -135,6 +135,9 @@ function ProtectedRoute({children, setLoginPopup}) {
       }
       else{
         if(activeRoute.includes("/admin/exams/edit")&&paths.includes("/admin/exams")){
+          return true
+        }
+        if(activeRoute.includes("/admin/exams/info")&&paths.includes("/admin/exams")){
           return true
         }
         if(activeRoute.includes("/user/write-exam/:id")&&paths.includes("/user/write-exam/:id")){

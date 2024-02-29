@@ -1,0 +1,27 @@
+.info-exam-candidate{
+    margin-top: 1rem;
+}
+.dettagli-test-modal{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+.dettagli-test-modal div{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 8px;
+    width: 50%;
+}
+.dettagli-test-modal div >h4:last-of-type{
+    border: 1px solid var(--primary);
+    border-radius: 5px;
+    padding: 5px 8px;
+    width: 100%;
+    background-color: #edeffa;
+}
+.dettagli-test-modal div > h4:first-of-type{
+    font-size: 600;
+}

@@ -143,6 +143,7 @@ function AddEditExam({setBigLoading}) {
   const [questions, setQuestions] = useState();
   const [showQuestions, setShowQuestions] = useState(false);
   const [copyLink, setCopyLink] = useState(false);
+  const user = useSelector(state=>state.users.user)
   const [preview, setPreview] = useState(false);
   const [link, setLink] = useState("");
   const storedConfig = JSON.parse(localStorage.getItem('config'));
@@ -158,13 +159,12 @@ function AddEditExam({setBigLoading}) {
   const location = useLocation();
   const { storedQuestions } = location.state ?? {};
 
-  const handleCopyLink = (examLink) => {
-    navigator.clipboard.writeText(examLink)
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(link)
       .then(() => {
         message.success('Link copiato negli appunti');
       })
       .catch((error) => {
-        // Gestione degli errori
         console.error('Si è verificato un errore durante la copia del link:', error);
         message.error('Si è verificato un errore durante la copia del link');
       });
@@ -225,6 +225,10 @@ function AddEditExam({setBigLoading}) {
       });
   
       return domandeArray;
+  }
+
+  const handleSetInStorageQuestion = async () => {
+    localStorage.setItem("questions", JSON.stringify(questions));
   }
 
    const generateQuestions = async () => {
@@ -292,6 +296,7 @@ function AddEditExam({setBigLoading}) {
         setActiveTab(2);
         setBigLoading(false);
         setPreview(true);
+        await handleSetInStorageQuestion();
       } catch (error) {
         console.error('Errore durante la generazione delle domande:', error);
         setBigLoading(false);
@@ -311,7 +316,9 @@ function AddEditExam({setBigLoading}) {
          testLanguage: config.testLanguage,
          skills: config.skills,
          domande: questions, 
+         deadline: config.deadline,
          idEsame: uniqueId,
+         userId: user._id,
        };
 
        let response;
@@ -327,6 +334,8 @@ function AddEditExam({setBigLoading}) {
         setActiveTab(3);
         setCopyLink(true);
         setLink(response.data.examLink);
+        localStorage.removeItem("config");
+        localStorage.removeItem("questions");
        }
        else{
         message.error(response.message)
@@ -364,7 +373,9 @@ function AddEditExam({setBigLoading}) {
   useEffect(() => {
     if (storedQuestions && storedQuestions !== null){
       setQuestions(storedQuestions)
-      setConfig(storedConfig)
+      if (storedConfig){
+        setConfig(storedConfig)
+      }
       setActiveTab(2)
       setPreview(true)
       setShowQuestions(true)
@@ -408,7 +419,7 @@ function AddEditExam({setBigLoading}) {
   return (
       <div className='home-content'>
         <div className='copy-preview'>
-          {!examData && !id ? <button className={!copyLink ? 'copy-link' : 'copy-link-active'}><img src={!copyLink ? copia : copiablu} alt='copia link skilltest' />Copia link</button> : <button onClick={() => handleCopyLink(link)} className='copy-link-active'><img src={copiablu} alt='copia link skilltest' />Copia link</button>}
+          {!examData && !id ? <button onClick={copyLink ? handleCopyLink : null} className={!copyLink ? 'copy-link' : 'copy-link-active'}><img src={!copyLink ? copia : copiablu} alt='copia link skilltest' />Copia link</button> : <button onClick={() => handleCopyLink()} className='copy-link-active'><img src={copiablu} alt='copia link skilltest' />Copia link</button>}
           <a onClick={preview ? handlePreviewClick : null} className={preview ? 'preview': 'preview-disabled'}><img src={eye} alt='Anteprima skilltest' />Anteprima</a>
         </div>
           <div className='create-exam-top'>
@@ -504,15 +515,6 @@ function AddEditExam({setBigLoading}) {
                     Annulla
               </button>
               </div>
-            {id && <Tabs.TabPane tab="Questions" key="3">
-                <div className='flex justify-end'> 
-                <button className="primary-outlined-btn cursor-pointer"
-                type="button"
-                onClick={()=>{
-                setShowAddEditQuestionModal(true)
-                }}>Add Question</button>
-                </div>
-            </Tabs.TabPane>}
           </Form>
           </div> : activeTab === 2 ? 
           <div className='create-exam-body'>
@@ -534,8 +536,17 @@ function AddEditExam({setBigLoading}) {
                     <button onClick={onFinish}><img alt='arrow right' src={rightArrow} />Salva e Genera Test</button>
               </div>}
           </div> : 
-          <div>
+          <div className='candidati-add-exam'>
             <PageTitle title={"Candidati"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
+            <h4>Non ci sono ancora candidati, <b>condividi il link</b> per profilare i tuoi talenti, puoi inserire il link nell'offerta
+              di lavoro su Linkedin o Indeed. <br /><br />
+            </h4>
+            <div>
+                <h2>Traccia la provenienza dei candidati</h2> 
+                <p>Puoi generare un link per il test con un nome di tracciamento che imposti tu (es. Linkedin, Indeed, Email ecc..)</p>
+                <input type='text' placeholder='Tracciamento' />
+                <button className='primary-outlined-btn'>Crea link tracciato</button>
+             </div>
           </div>}
           {showAddEditQuestionModal&&<AddEditQuestion   setShowAddEditQuestionModal={setShowAddEditQuestionModal}
           showAddEditQuestionModal={showAddEditQuestionModal}

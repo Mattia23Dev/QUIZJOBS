@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice'
 import { getAllExams, deleteExam, getExamByUser } from '../../../apicalls/exams'
 import './index.css'
-import testImg from '../../../imgs/testimg.png';
+import moment from 'moment';
 import candidateNumber from '../../../imgs/candidate.png'
 
 function ExamsPage() {
@@ -170,8 +170,8 @@ function ExamsPage() {
         Continue Exam
         </button>}
         <button className='primary-outlined-btn flex items-center cursor-pointer' onClick={()=>navigate('/admin/exams/add')}>
-          <i className='ri-add-line'></i>
-          Add Exam
+          <i className='ri-add-line' style={{marginRight: '7px'}}></i>
+          Crea Test
         </button>
       </div>
       <Row gutter={[16,16]} className="exam-list mt-2">
@@ -205,7 +205,7 @@ function ExamsPage() {
                         Difficoltà: 
                         <span className={exam.difficulty === "Facile" ? "easy-diff" : exam.difficulty === "Medio" ? "middle-diff" : "hard-diff"}>o</span>
                       </h4>
-                      <h4>Deadline: {exam.deadline ? exam.deadline : 'Nessuna scadenza'}</h4>
+                      <h4>Deadline: {exam.deadline ? moment(exam.deadline).format('DD/MM/YYYY') : 'Nessuna scadenza'}</h4>
                     </div>
                     <h4 className='text-md'>
                       <img src={candidateNumber} alt='candidati al test di SkillTest' />

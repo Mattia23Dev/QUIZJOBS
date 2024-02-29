@@ -1,13 +1,135 @@
 import React,{useState,useEffect} from 'react';
 import PageTitle from '../../../components/PageTitle';
-import { Form, Row, Col, message, Tabs, Table } from 'antd';
+import { Modal, message, Table, Popconfirm } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { addExam, deleteQuestionFromExam, editExam, getExamById } from '../../../apicalls/exams';
 import { useDispatch } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
 import AddEditQuestion from './AddEditQuestion';
-import openai from 'openai';
+import copia from '../../../imgs/copia.png';
+import copiablu from '../../../imgs/copiablu.png';
+import eye from '../../../imgs/eye.png';
+import 'antd/dist/antd.css';
+import leftArrow from '../../../imgs/leftarrow.png'
+import rightArrow from '../../../imgs/arrowright.png'
+import edit from '../../../imgs/edit.png'
+import move from '../../../imgs/move.png'
+import cancel from '../../../imgs/cancel.png'
 import InfoCandidate from './InfoCandidate';
+import locale from 'antd/es/date-picker/locale/it_IT'; 
+import './infoExam.css'
+
+const DomandeComponent = ({ domande, onUpdateDomande, setSelectedQuestion, setShowAddEditQuestionModal }) => {
+   const [currentDomanda, setCurrentDomanda] = useState(domande[0]);
+   console.log(currentDomanda);
+   const [currentDomandaIndex, setCurrentDomandaIndex] = useState(0); // Inizializza l'indice della domanda corrente a 0
+   const [confirmVisible, setConfirmVisible] = useState(Array(domande.length).fill(false));
+
+   const handleConfirm = () => {
+     const filteredDomande = domande.filter(domanda => domanda !== currentDomanda);
+     onUpdateDomande(filteredDomande);
+     setCurrentDomanda(domande[0]);
+     const updatedConfirmVisible = [...confirmVisible];
+     const index = domande.indexOf(currentDomanda);
+     updatedConfirmVisible[index] = false;
+     setConfirmVisible(updatedConfirmVisible); 
+   };
+ 
+   const handleCancel = () => {
+    setConfirmVisible(Array(domande.length).fill(false));
+   };
+ 
+   const handleDomandaClick = (domanda, index) => {
+     setCurrentDomanda(domanda);
+     setCurrentDomandaIndex(index)
+   };
+ 
+   const [draggingIndex, setDraggingIndex] = useState(null); // Stato per tener traccia dell'indice della domanda che viene trascinata
+
+   const handleDragStart = (event, domanda, index) => {
+     event.dataTransfer.setData('domanda', JSON.stringify(domanda));
+     setDraggingIndex(index); // Imposta l'indice della domanda che viene trascinata
+   };
+   
+   const handleDragOver = (event) => {
+     event.preventDefault();
+   };
+   
+   const handleDragEnter = (index) => {
+     setDraggingIndex(index); // Imposta l'indice della domanda su cui passa sopra
+   };
+   
+   const handleDragLeave = () => {
+     setDraggingIndex(null); // Resettare l'indice della domanda quando si lascia l'area di trascinamento
+   };
+   
+   const handleDrop = (event, index) => {
+     const droppedDomanda = JSON.parse(event.dataTransfer.getData('domanda'));
+     const updatedDomande = Array.from(domande);
+     const currentIndex = updatedDomande.indexOf(droppedDomanda);
+     
+     // Rimuovi la domanda dalla sua posizione precedente
+     updatedDomande.splice(currentIndex, 1);
+     
+     // Aggiungi la domanda nella nuova posizione
+     updatedDomande.splice(index, 0, droppedDomanda);
+     
+     // Aggiorna lo stato delle domande con la nuova posizione della domanda
+     onUpdateDomande(updatedDomande);
+   
+     setDraggingIndex(null); // Resettare l'indice della domanda trascinata dopo il rilascio
+   };
+ 
+   return (
+     <div className="domande-container">
+       <div className="lista-domande">
+         {domande.map((domanda, index) => (
+           <div
+             key={index}
+             onDragStart={(event) => handleDragStart(event, domanda, index)} // Gestisci l'inizio del trascinamento sulla domanda
+             onDragOver={handleDragOver}
+             onDragEnter={() => handleDragEnter(index)} // Gestisci l'entrata del trascinamento sulla domanda
+             onDragLeave={handleDragLeave} // Gestisci l'uscita del trascinamento dall'area della domanda
+             onDrop={(event) => handleDrop(event, index)}
+             className={`domanda-item ${currentDomanda === domanda ? "domanda-selected" : ""} ${draggingIndex === index ? "dragging" : ""}`}
+             >
+            <Popconfirm
+              visible={confirmVisible[index]}
+              title="Sei sicuro di voler eliminare?"
+              onConfirm={() => handleConfirm(domanda)}
+              onCancel={handleCancel}
+              okText="Sì"
+              cancelText="No"
+            />
+            <img alt='cancel question' src={cancel} onClick={() => { setConfirmVisible((prevState) => {
+                const updatedConfirmVisible = [...prevState];
+                updatedConfirmVisible[index] = true;
+                return updatedConfirmVisible;
+              }); setCurrentDomanda(domanda) }} />
+            <img alt='edit question' src={edit} onClick={() => {setSelectedQuestion(domanda); setShowAddEditQuestionModal(true)}} />
+            <img
+            className='drag-handle'
+            src={move}
+            draggable
+            />
+             <p onClick={() => handleDomandaClick(domanda, index)}><span>{index + 1}.</span>{domanda.question}</p>
+           </div>
+         ))}
+       </div>
+       <div className="domanda-attuale">
+         <p><span>{currentDomandaIndex + 1}.</span>{currentDomanda?.question}</p>
+         <ul className="opzioni">
+           {Object.entries(currentDomanda?.options).map(([lettera, risposta], index) => {
+            const opzioneLettera = lettera;
+            const corretta = currentDomanda.correctOption && currentDomanda.correctOption.includes(opzioneLettera);
+            return (
+             <li className={corretta ? "risposta risposta-corretta" : "risposta"} key={index}><span>{lettera.substring(0, 1)}</span> {risposta}</li>
+           )})}
+         </ul>
+       </div>
+     </div>
+   );
+ };
 
 function InfoExam() {
   const navigate = useNavigate();
@@ -17,10 +139,11 @@ function InfoExam() {
   const [examData,setExamData] = useState();
   const [showAddEditQuestionModal, setShowAddEditQuestionModal] = useState(false)
   const [selectedQuestion, setSelectedQuestion] = useState();
+  const [activeTab, setActiveTab] = useState(1);
+  const [showDettagliTest, setShowDettagliTest] = useState(false);
   const [showInfoCandidateModal, setShowInfoCandidateModal] = useState();
   const [selectedCandidate, setSelectedCandidate] = useState();
   const [questions, setQuestions] = useState();
-  const [showQuestions, setShowQuestions] = useState(false);
   const [config, setConfig] = useState({
    numOfQuestions: 30,
    difficulty: examData?.difficulty || "",
@@ -29,6 +152,27 @@ function InfoExam() {
    testLanguage: examData?.testLanguage || "",
    skills: [examData?.skills] || ["",],
 });
+
+
+const handleCopyLink = () => {
+   navigator.clipboard.writeText(examData?.examLink)
+     .then(() => {
+       message.success('Link copiato negli appunti');
+     })
+     .catch((error) => {
+       console.error('Si è verificato un errore durante la copia del link:', error);
+       message.error('Si è verificato un errore durante la copia del link');
+     });
+ };
+
+ const handlePreviewClick = () => {
+      
+   const queryParams = new URLSearchParams();
+   queryParams.append('domande', JSON.stringify(examData?.questions));
+   const url = `/admin/exams/add/preview?${queryParams.toString()}`;
+ 
+   window.open(url, '_blank');
+ };
 
   const onFinish = async(values) => {
      try{
@@ -63,6 +207,8 @@ function InfoExam() {
             message.success(response.message)
             console.log(response.data);
             setExamData(response.data[0])
+            setQuestions(response.data[0].questions)
+            setConf(response.data[0])
          }
          else{
             message.error(response.message)
@@ -102,44 +248,18 @@ function InfoExam() {
       message.error(error.message)
     }
   }
-  const questionColumns = [
-   {
-      title: "Question",
-      dataIndex: "question"
-   },
-   {
-      title: "Options",
-      dataIndex: "options",
-      render: (text,record) => {
-         return Object.keys(record.options).map((key)=>{
-            return <div>{key} : {record.options[key]}</div>
-         })
-      }
-   },
-   {
-      title: "Correct Option",
-      dataIndex: "correctOption",
-      render: (text,record) => {
-         return `${record.correctOption}`;
-      }
-   },
-   {
-      title: "Action",
-      dataIndex: "action",
-      render: (text,record) => {
-         return (
-            <div className='flex gap-2'>
-              <i className='ri-pencil-line cursor-pointer'
-               onClick={()=>{
-                  setSelectedQuestion(record)
-                  setShowAddEditQuestionModal(true)
-               }}></i>
-              <i className='ri-delete-bin-line cursor-pointer' onClick={()=>{deleteQuestionById(record._id)}}></i>
-            </div>
-         )
-      }
-   }
-]
+
+  const setConf = (examData) => {
+   setConfig({
+     numOfQuestions: examData?.numOfQuestions,
+     difficulty: examData?.difficulty,
+     generalSector: examData?.generalSector,
+     jobPosition: examData?.jobPosition,
+     testLanguage: examData?.testLanguage,
+     skills: examData?.skills,
+   });
+  }
+
 const candidateColumns = [
    {
      title: "Nome completo",
@@ -180,129 +300,75 @@ const candidateColumns = [
      }
    }
  ]
- const handleAddTag = (newSkill) => {
-   if (newSkill.trim() !== '') {
-      setConfig(prevConfig => ({ ...prevConfig, skills: [...prevConfig.skills, newSkill.trim()] }));
-   }
+
+const handleUpdateDomande = (updatedDomande) => {
+   setQuestions(updatedDomande);
+ };
+ const formattedSelectedQuestion = selectedQuestion && {
+  domanda: selectedQuestion.question,
+  rispostaCorretta: {
+    risposta: selectedQuestion.correctOption.replace(/^\w+\)\s*/, ''),
+    lettera:selectedQuestion.correctOption.match(/^\w+\)\s*/)[0],
+  },
+  opzioni: selectedQuestion.options,
 };
-const handleRemoveTag = (tagToRemove) => {
-   setConfig(prevConfig => ({
-   ...prevConfig,
-   skills: prevConfig.skills.filter(tag => tag !== tagToRemove)
-   }));
-};
+
   return (
-    <div className='home-content'>
-        <PageTitle title={id?'Edit Exam':'Add Test'}/>
-        {(examData || !id) && <Form layout="vertical" onFinish={onFinish} initialValues={examData} className="mt-2">
-        <Tabs defaultActiveKey="1">
-          <Tabs.TabPane tab="Candidati" key="1">
-            <div className='flex justify-end'> 
-              <button className="primary-outlined-btn cursor-pointer"
-              type="button"
-              onClick={()=>{
-               setShowAddEditQuestionModal(true)
-              }}>Add Question</button>
-              </div>
-              <Table columns={candidateColumns} dataSource={examData?.candidates} rowKey={(record) => record._id} className="mt-1">
-
-              </Table>
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Domande" key="2">
-              <div className='flex justify-end'> 
-              <button className="primary-outlined-btn cursor-pointer"
-              type="button"
-              onClick={()=>{
-               setShowAddEditQuestionModal(true)
-              }}>Add Question</button>
-              </div>
-              <Table columns={questionColumns} dataSource={examData?.questions} rowKey={(record) => record._id} className="mt-1">
-
-              </Table>
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Dati esame" key="3">
-          <Row gutter={[10,10]}>
-                <Col span={8}>
-                   <Form.Item label="Settore generale" name="general-sector">
-                    <input type="text" value={config.generalSector || ''}  onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, generalSector: e.target.value }))} />
-                   </Form.Item>
-                </Col>
-                <Col span={8}>
-                   <Form.Item label="Job position" name="job-position">
-                    <input type="text" value={config.jobPosition}  onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, jobPosition: e.target.value }))}/>
-                   </Form.Item>
-                </Col>
-                <Col span={8}>
-                   <Form.Item label="Difficoltà" name="seniority">
-                    <select value={config.difficulty} onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, difficulty: e.target.value }))}>
-                        <option value="">Seleziona</option>
-                        <option value="Facile">Facile</option>
-                        <option value="Medio">Medio</option>
-                        <option value="Difficile">Difficile</option>
-                    </select>
-                   </Form.Item>
-                </Col>
-                <Col span={8}>
-                   <Form.Item label="Lingua del test" name="test-language">
-                    <select value={config.testLanguage} onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, testLanguage: e.target.value }))}>
-                        <option value="">Seleziona</option>
-                        <option value="Italiano">Italiano</option>
-                        <option value="Inglese">Inglese</option>
-                        <option value="Tedesco">Tedesco</option>
-                        <option value="Spagnolo">Spagnolo</option>
-                        <option value="Francese">Francese</option>
-                        <option value="Portoghese">Portoghese</option>
-                    </select>
-                   </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="Competenze" name="skills">
-                     <div>
-                        {config.skills.map(tag => (
-                           <span
-                              key={tag}
-                              style={{ marginRight: '8px', marginBottom: '8px', display: 'inline-block' }}
-                           >
-                              {tag} <button onClick={() => handleRemoveTag(tag)}>X</button>
-                           </span>
-                        ))}
-                        <div>
-                           <input
-                              type="text"
-                              placeholder="Aggiungi una competenza"
-                              onKeyDown={(e) => {
-                                 if (e.key === 'Enter') {
-                                    const newSkill = e.target.value.trim();
-                                    if (newSkill) {
-                                       handleAddTag(newSkill);
-                                    }
-                                    e.target.value = '';
-                                 }
-                              }}
-                           />
-                        </div>
-                     </div>
-                  </Form.Item>
-                </Col>
-            </Row>
-            <div className='flex justify-end gap-2'>
-             <button className='primary-outlined-btn w-15 cursor-pointer' type="submit">
-                Save
-             </button>
-             <button className='primary-contained-btn w-15 cursor-pointer'
-             onClick={()=>navigate('/admin/exams')}
-             >
-                Cancel
-             </button>
+    examData && <div className='home-content'>
+      <div className='copy-preview'>
+          <button onClick={handleCopyLink} className='copy-link-active'><img src={copiablu} alt='copia link skilltest' />Copia link</button>
+          <a onClick={handlePreviewClick} className='preview'><img src={eye} alt='Anteprima skilltest' />Anteprima</a>
+      </div>
+      <div className='create-exam-top'>
+            <div onClick={() => setActiveTab(1)} className={activeTab === 1 ? 'active' : ''}>
+              <span></span>
+              <p>Candidati</p>
             </div>
-          </Tabs.TabPane>
-        </Tabs>
-        </Form>}
+            <hr />
+            <div onClick={() => setActiveTab(2)} className={activeTab === 2 ? 'active' : ''}>
+              <span></span>
+              <p>Domande</p>
+            </div>
+            <hr />
+            <div onClick={() => setShowDettagliTest(true)} className={activeTab === 3 ? 'active' : ''}>
+              <span></span>
+              <p>Dettagli test</p>
+            </div>
+      </div>
+        {(examData || !id) &&
+        activeTab === 1 ?
+         <div className='info-exam-candidate'>
+            <PageTitle title={"Candidati"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
+            <Table columns={candidateColumns} dataSource={examData?.candidates} rowKey={(record) => record._id} className="mt-1">
+
+            </Table>
+         </div>   
+         : activeTab === 2 ?
+         <div className='create-exam-body'>
+               <PageTitle title={"Domande"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
+               <div className='flex justify-end'> 
+                  <button className="button-ligh-blue"
+                  onClick={()=>{
+                  setShowAddEditQuestionModal(true)
+                  }}>+ Aggiungi domanda</button>
+               </div>
+               {examData?.questions && questions && 
+               <div className='domande-container-save'>
+                     <a onClick={() => setActiveTab(1)}><img alt='left arrow' src={leftArrow} /> Torna ai dettagli del test</a>
+                     <DomandeComponent
+                     domande={questions && questions} 
+                     onUpdateDomande={handleUpdateDomande}
+                     setSelectedQuestion={setSelectedQuestion}
+                     setShowAddEditQuestionModal={setShowAddEditQuestionModal} />
+               </div>}
+         </div> :
+         null
+         }
         {showAddEditQuestionModal&&<AddEditQuestion   setShowAddEditQuestionModal={setShowAddEditQuestionModal}
          showAddEditQuestionModal={showAddEditQuestionModal}
          examId = {id}
          refreshData = {getExamDataById}
-         selectedQuestion={selectedQuestion}
+         selectedQuestion={formattedSelectedQuestion}
          setSelectedQuestion={setSelectedQuestion}
         />}
         {showInfoCandidateModal&&<InfoCandidate setShowInfoCandidateModal={setShowInfoCandidateModal}
@@ -311,6 +377,46 @@ const handleRemoveTag = (tagToRemove) => {
         setSelectedCandidate={setSelectedCandidate}
         examId = {id}
         />}
+        {showDettagliTest &&
+        <Modal
+        title={"Dettagli Test"} 
+         open={showDettagliTest}
+         footer={false} onCancel={()=>{
+         setShowDettagliTest(false)
+         }}>
+            <div className='dettagli-test-modal-container'>
+               <div className='dettagli-test-modal'>
+                  <div>
+                     <h4>Settore generale</h4>
+                     <h4>{config?.generalSector}</h4>
+                  </div>
+                  <div>
+                     <h4>Posizione lavorativa</h4>
+                     <h4>{config?.jobPosition}</h4>
+                  </div>
+               </div>   
+               <div className='dettagli-test-modal'>
+                  <div>
+                     <h4>Lingua</h4>
+                     <h4>{config?.testLanguage}</h4>
+                  </div>
+                  <div>
+                     <h4>Deadline</h4>
+                     <h4>{config?.deadline ? config.deadline : "Nessuna scadenza"}</h4>
+                  </div>
+               </div>
+               <div className='dettagli-test-modal'>  
+                  <div>
+                     <h4>Difficoltà</h4>
+                     <h4>{config?.difficulty}</h4>
+                  </div>
+                  <div>
+                     <h4>Competenze</h4>
+                     <h4>{config?.skills.join(', ')}</h4>
+                  </div>
+               </div>
+            </div>   
+         </Modal>}
     </div>
   )
 }

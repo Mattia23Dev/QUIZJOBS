@@ -198,8 +198,7 @@
     color: #b4b4b4;
   }
   .create-exam-top > div.active > span {
-    background-color: #ffffff;
-    border: 4px solid var(--secondary);
+    background-color: var(--secondary);
   }
   .create-exam-top > div.active > p {
     color: var(--secondary);
@@ -295,6 +294,27 @@
     gap: 10px;
   }
 
+  .candidati-add-exam{
+    text-align: center;
+  }
+  .candidati-add-exam h4 {
+    width: 60%;
+    margin: 0 auto;
+  }
+  .candidati-add-exam h2 {
+    font-weight: 600;
+    text-decoration: underline;
+  }
+  .candidati-add-exam > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 3rem;
+  }
 
   /*ADD EDIT QUESTION*/
   .edit-correct{
@@ -330,8 +350,10 @@
     width: 100%;
     color: var(--primary);
     font-size: 13px;
+    min-height: 60px;
   }
-  .risposta-edit > span {
+  .risposta-edit > span,
+  .risposta-edit-edit > span {
     width: 20px;
     min-height: 20px;
     min-width: 20px;
@@ -354,4 +376,68 @@
     padding: 4px 8px;
     width: 100%;
     min-width: 100%;
+  }
+  .risposta-corretta-edit-edit {
+    margin: 10px 0;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 5px;
+    padding: 4px 8px;
+    width: 50%;
+    min-width: 50%;
+  }
+  .risposta-edit-edit{
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    align-items: center;
+    padding: 0px 8px;
+    border: 1.3px solid var(--primary);
+    margin: 10px 0;
+    border-radius: 5px;
+    background-color: #edeffa;
+    width: 50%;
+    color: var(--primary);
+    font-size: 13px;
+    min-height: 60px;
+  }
+  .risposta-edit-edit input,
+  .div-question-edit input{
+    border: none;
+    background-color: transparent;
+    padding-right: 6px;
+    padding-left: 6px;
+    width: 100%;
+  }
+  .div-question-edit > * {
+    width: 100%;
+  }
+  .risposta-edit-edit .img-set-correct {
+    width: 22px;
+    z-index: 1000;
+    cursor: pointer;
+  }
+
+  .div-question-edit{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0px 8px;
+    border: 1.3px solid var(--primary);
+    margin: 10px 0;
+    border-radius: 5px;
+    background-color: #edeffa;
+    position: relative;
+    width: 100%;
+    color: var(--primary);
+    font-size: 14px;
+    min-height: 60px;
+  }
+  .div-question-edit img {
+    position: absolute;
+    top: -10px;
+    left: -8px;
+    width: 17px;
+    z-index: 1000;
+    cursor: pointer;
   }

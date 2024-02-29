@@ -4,7 +4,7 @@
     align-items: center;
     color: white;
     padding: 1rem;
-    position: sticky;
+    position: sticky !important;
     top: 0;
   }
   .logo img {
