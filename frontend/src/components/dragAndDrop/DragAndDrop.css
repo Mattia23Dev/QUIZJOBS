@@ -1,6 +1,20 @@
 .card-container{
     width: 100%;
-    background-color: white;
+    background-color: transparent;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 10px;
+}
+.card-container > p:first-of-type {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-weight: 600;
+    gap: 5px;
+}
+.card-container > p:first-of-type > img {
+    width: 20px;
+    cursor: pointer;
 }
 .layout-cards{
     display: flex;
@@ -11,9 +25,52 @@
     padding: 10px 5px;
     gap: 10px;
 }
+.layout-cards p {
+    color: var(--primary);
+}
+.layout-cards > button:first-of-type{
+    width: 100%;
+    border: 1px dashed var(--primary);
+    border-radius: 5px;
+    padding: 0px 5px;
+    text-align: center;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--primary);
+    background-color: transparent;
+}
 .grid{
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
     width: 100%;
+}
+.card-container > p:nth-of-type(2){
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+}
+.card-container > p:nth-of-type(2) > span:first-of-type{
+    font-weight: 600;
+    margin-bottom: 0;
+}
+.card-container > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.card-container > div > p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 12px;
+}
+.card-container > div > p:first-of-type > img {
+    width: 22px;
+}
+.card-container > div > p > img {
+    width: 15px;
 }

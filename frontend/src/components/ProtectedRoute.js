@@ -80,12 +80,12 @@ function ProtectedRoute({children, setLoginPopup}) {
       icon: <i className='ri-team-line'></i>, // Icona del team
       onClick: () => navigate("/admin/team")
     },
-    {
+    /*{
       title: "Automations",
       paths: ["/admin/automations"],
       icon: <i className='ri-settings-line'></i>, // Icona delle automazioni
       onClick: () => navigate("/admin/automations")
-    },
+    },*/
     {
       title: "Profilo",
       paths: ["/profile"],

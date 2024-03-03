@@ -1,5 +1,5 @@
 const router = require("express").Router()
-const {register, login, getUserInfo, addCandidate, getCandidateInfo, googleLogin} = require("../controllers/userControllers")
+const {register, login, getUserInfo, addCandidate, getCandidateInfo, googleLogin, changeStatusCandidate} = require("../controllers/userControllers")
 const authMiddleware = require("../middlewares/authMiddleware")
 const multer = require('multer')
 
@@ -21,6 +21,7 @@ router.post('/google-login',googleLogin)
 router.post('/get-user-info',authMiddleware,getUserInfo)
 router.post('/get-candidate-info',authMiddleware,getCandidateInfo)
 router.post('/add-candidate', upload.single('cv'), addCandidate)
+router.post("/changeCandidateStatus",authMiddleware, changeStatusCandidate)
 
 
 module.exports = router

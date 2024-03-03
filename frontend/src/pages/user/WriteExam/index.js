@@ -25,6 +25,8 @@ function WriteExam() {
   const [result, setResult] = useState()
   const { idUser, jobPositionSlug, uniqueId } = useParams()
   const dispatch = useDispatch()
+  const params = new URLSearchParams(window.location.search);
+  const trackLink = params.get('name');
   const [view, setView] = useState("instructions")
   const [secondsLeft, setSecondsLeft] = useState(30)
   const [timeUp, setTimeUp] = useState(false)
@@ -200,7 +202,7 @@ useEffect(()=>{
         </div>
     {view!=="thanks" &&<h1 className='text-center user-select-none mt-2'>Test per l'offerta <b>{jobPositionSlug && jobPositionSlug.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</b></h1>}
     {view!=="thanks" &&<p>Ciao, questo è solo un test per categorizzarti e non influirà sul successo della candidatura.</p>}
-    {view==="instructions"&&<Instructions setUser={setUser} examData={examData} setExamData={setExamData}
+    {view==="instructions"&&<Instructions trackLink={trackLink} setUser={setUser} examData={examData} setExamData={setExamData}
     view={view}
     setView={setView}
     startTimer={startTimer}

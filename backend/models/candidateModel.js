@@ -46,6 +46,13 @@ const candidateSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "exams"
         },
+        testName: {
+            type: String
+        },
+        status: {
+            type: String,
+            default: "Da contattare"
+        },
         progress: {
             questionIndex: {
               type: Number
@@ -79,10 +86,6 @@ const candidateSchema = new mongoose.Schema({
             ref: "reports"
         },
     }],
-    status: {
-        type: String,
-        default: "Da contattare"
-    },
     notes: {
         type: String
     }

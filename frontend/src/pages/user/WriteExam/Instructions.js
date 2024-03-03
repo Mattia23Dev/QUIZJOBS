@@ -38,7 +38,7 @@ const FAQList = () => {
 };
 
 function Instructions(props) {
-  const {examData,setExamData, view, setView, startTimer, setUser} = props
+  const {examData,setExamData, view, setView, startTimer, setUser, trackLink} = props
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState(null);
   const [cookies, setCookie] = useCookies(['userData']);
@@ -53,7 +53,11 @@ function Instructions(props) {
     testId: examData._id,
     terms: false,
     privacyPolicy: false,
+    trackLink: trackLink ? trackLink : null,
+    testName: examData.jobPosition,
   });
+
+  console.log(formData.trackLink)
 
   const handleChange = (e) => {
     const { name, value } = e.target;

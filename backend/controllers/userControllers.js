@@ -149,9 +149,58 @@ const getCandidateInfo = async (req, res) => {
     }
   };
 
+  const changeStatusCandidate = async (req, res) => {
+    try {
+      const { userId, examId, newStatus } = req.body;
+      console.log(req.body)
+  
+      // Trova l'esame dal suo id e popola i candidati
+      const exam = await examModel.findOne({ _id: examId }).populate({
+        path: 'candidates.candidate',
+      });
+  
+      if (!exam) {
+        return res.status(404).send({
+          message: "Esame non trovato",
+          data: null,
+          success: false
+        });
+      }
+  
+      // Trova il candidato nell'array dei candidati
+      const candidate = exam.candidates.find(c => c.candidate._id.toString() === userId);
+  
+      if (!candidate) {
+        return res.status(404).send({
+          message: "Candidato non trovato nell'esame",
+          data: null,
+          success: false
+        });
+      }
+  
+      // Cambia lo status del candidato
+      candidate.status = newStatus;
+  
+      // Salva l'esame con lo status del candidato modificato
+      await exam.save();
+  
+      return res.status(200).send({
+        message: "Status del candidato modificato con successo",
+        data: { userId, examId, newStatus },
+        success: true
+      });
+    } catch (error) {
+      return res.status(500).send({
+        message: "Si è verificato un errore durante la modifica dello status del candidato",
+        data: error.message,
+        success: false
+      });
+    }
+  };
+
  const addCandidate = async(req, res) => {
     try {
-        const { name, surname, email, phone, city, coverLetter, degree, testId } = req.body;
+        const { name, surname, email, phone, city, coverLetter, degree, testId, testName, trackLink } = req.body;
         console.log(req.body);
         const cv = req.file.path; 
 
@@ -167,7 +216,7 @@ const getCandidateInfo = async (req, res) => {
                 cv,
                 coverLetter,
                 degree,
-                tests: [{ testId }]
+                tests: [{ testId, testName }]
             });
 
             await newCandidate.save();
@@ -177,7 +226,7 @@ const getCandidateInfo = async (req, res) => {
               { cv: cvFileName },
               { new: true }
             );
-            await examModel.findByIdAndUpdate(testId, { $push: { candidates: { candidate: newCandidate._id } } });
+            await examModel.findByIdAndUpdate(testId, { $push: { candidates: { candidate: newCandidate._id, trackLink: trackLink } } });
             const uploadFolderPath = path.resolve(__dirname, '..', 'uploads');
             const destinationPath = path.join(uploadFolderPath, cvFileName);
             fs.renameSync(cv, destinationPath);
@@ -187,9 +236,9 @@ const getCandidateInfo = async (req, res) => {
             if (!existingTest) {
                 await candidateModel.findOneAndUpdate(
                     { email },
-                    { $push: { tests: { testId } } }
+                    { $push: { tests: { testId, testName } } }
                 );
-                await examModel.findByIdAndUpdate(testId, { $push: { candidates: { candidate: candidate._id } } });
+                await examModel.findByIdAndUpdate(testId, { $push: { candidates: { candidate: candidate._id, trackLink: trackLink } } });
             }
             const updatedCandidate = await candidateModel.findOneAndUpdate(
                 { email },
@@ -264,4 +313,4 @@ const googleLogin = async (req, res) => {
   })
 };
 
-module.exports = { register, login, getUserInfo, addCandidate, getCandidateInfo, googleLogin }
+module.exports = { register, login, getUserInfo, addCandidate, getCandidateInfo, googleLogin, changeStatusCandidate }

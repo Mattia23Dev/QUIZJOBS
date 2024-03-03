@@ -7,10 +7,13 @@ import { getAllAttempts, getAllAttemptsByUser } from '../../../apicalls/reports'
 import moment from 'moment'
 import { getCandidateCrm } from '../../../apicalls/exams'
 import DragAndDrop from '../../../components/dragAndDrop/DragAndDrop'
+import InfoCandidate from './InfoCandidate'
 
 function Crm() {
   const [initialData, setInitialData] = useState([])
   const id = useSelector(state=>state.users.user._id);
+  const [showInfoCandidateModal, setShowInfoCandidateModal] = useState();
+  const [selectedCandidate, setSelectedCandidate] = useState();
   const [filters, setFilters] = useState({
     examName: "",
     userName: "",
@@ -23,7 +26,7 @@ function Crm() {
        dispatch(HideLoading())
        if(response.success){
         setInitialData(response.data)
-        message.success(response.message)
+        //message.success(response.message)
         console.log(response.data)
        }
        else{
@@ -39,29 +42,23 @@ function Crm() {
    getData(filters)
   },[])
   return (
-    <div>
+    <div className='home-content'>
       <PageTitle title="Reports"/>
-      <div className='divider'></div>
-      <div className='flex gap-2 mt-2'>
-        <input type="text" placeholder='Exam' value={filters.examName} onChange={(e)=>setFilters({...filters, examName: e.target.value})}/>
-        <input type="text" placeholder='User' value={filters.userName} onChange={(e)=>setFilters({...filters, userName: e.target.value})}/>
-        <button className='primary-outlined-btn' onClick={()=>{
-            setFilters({
-                userName: "",
-                examName: "",
-            })
-            getData({
-                userName: "",
-                examName: "",
-            })
-        }}>
-            Clear
-        </button>
-        <button className='primary-contained-btn' onClick={()=>getData(filters)}>
-            Search
-        </button>
-      </div>
-      <DragAndDrop initialData={initialData} />
+      <DragAndDrop 
+      setSelectedCandidate={setSelectedCandidate}
+      selectedCandidate={selectedCandidate} 
+      setShowInfoCandidateModal={setShowInfoCandidateModal} 
+      setInitialData={setInitialData} 
+      initialData={initialData} />
+      {showInfoCandidateModal&&<InfoCandidate 
+        jobPosition={selectedCandidate.jobPosition}
+        setShowInfoCandidateModal={setShowInfoCandidateModal}
+        exams={selectedCandidate.tests}
+        showInfoCandidateModal={showInfoCandidateModal}
+        selectedCandidate={selectedCandidate}
+        setSelectedCandidate={setSelectedCandidate}
+        examId = {id}
+        />}
     </div>
   )
 }

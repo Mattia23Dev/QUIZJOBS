@@ -120,4 +120,34 @@ export const addCandidate = async (payload) => {
     } catch (error) {
       return error
     }
-  };  
+  };
+  
+  export const addTrackLink = async(payload) => {
+    try{
+        const response = await axiosInstance.post(`/api/exams/addTrackLink`,payload)
+        return response.data
+    }
+    catch(error){
+        return error.response
+    }
+}
+
+export const deleteTrackLink = async(payload) => {
+    try{
+        const response = await axiosInstance.post(`/api/exams/deleteTrackLink`,payload)
+        return response.data
+    }
+    catch(error){
+        return error.response
+    }
+}
+
+export const changeCandidateStatus = async(payload) => {
+    try{
+        const response = await axiosInstance.post(`/api/users/changeCandidateStatus`,payload)
+        return response.data
+    }
+    catch(error){
+        return error.response
+    }
+}

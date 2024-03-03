@@ -126,7 +126,7 @@ const getCandidateCrm = async (req, res) => {
       const exams = await Exam.find({ company: userId })
           .populate({
               path: 'candidates.candidate',
-              select: 'name surname status',
+              select: 'name surname status tests createdAt',
           })
           .populate({
               path: 'candidates.report',
@@ -147,19 +147,25 @@ const getCandidateCrm = async (req, res) => {
               'tests.testId': { $in: exam._id}
           });
           if (exam.candidates && exam.candidates.length > 0){
-          const formattedCandidates = candidatesForExam.map(candidate => ({
-              examId: exam._id,
-              jobPosition: exam.jobPosition,
-              candidateId: candidate._id,
-              name: candidate.name,
-              surname: candidate.surname,
-              email: candidate.email,
-              phone: candidate.phone,
-              city: candidate.city,
-              status: candidate.status,
-              cv: candidate.cv,
-              report: exam.candidates.report,
-          }));
+          const formattedCandidates = candidatesForExam.map(candidate => {
+            const examCandidate = exam.candidates.find(c => c.candidate._id.toString() === candidate._id.toString());
+            console.log(examCandidate.status)
+              return {
+                  examId: exam._id,
+                  tests: candidate.tests,
+                  jobPosition: exam.jobPosition,
+                  createdAt: candidate.createdAt,
+                  candidateId: candidate._id,
+                  name: candidate.name,
+                  surname: candidate.surname,
+                  email: candidate.email,
+                  phone: candidate.phone,
+                  city: candidate.city,
+                  status: examCandidate.status,
+                  cv: candidate.cv,
+                  report: examCandidate.report,
+              };              
+        });
           candidates = [...candidates, ...formattedCandidates];
         }
       }
@@ -421,4 +427,50 @@ const getAllExamsByUser = async(req,res) => {
   }
 }
 
-module.exports = {addExam, getAllExams, getAllExamsByUser, getExamById, getCandidateCrm, editExam, deleteExam, addQuestionToExam, editQuestionInExam, deleteQuestionFromExam, saveTestProgress}
+const addTrackLink = async (req, res) => {
+  const { nome, examId } = req.body;
+
+  try {
+      const esame = await Exam.findById(examId);
+
+      if (!esame) {
+          return res.status(404).json({ message: 'Esame non trovato' });
+      }
+      esame.trackLink.push(nome);
+      await esame.save();
+
+      res.status(200).json({ message: 'Nome aggiunto con successo alla lista trackLink dell\'esame', data: esame.trackLink, success: true });
+  } catch (error) {
+      console.error('Errore durante l\'aggiunta del nome alla lista trackLink:', error);
+      res.status(500).json({ message: 'Si è verificato un errore durante l\'aggiunta del nome alla lista trackLink', error: error });
+  }
+};
+
+const deleteTrackLink = async (req, res) => {
+  const { nome, examId } = req.body;
+
+  try {
+      const esame = await Exam.findById(examId);
+
+      if (!esame) {
+          return res.status(404).json({ message: 'Esame non trovato' });
+      }
+
+      const index = esame.trackLink.indexOf(nome);
+      if (index === -1) {
+          return res.status(404).json({ message: 'Nome non trovato nella lista trackLink dell\'esame' });
+      }
+
+      esame.trackLink.splice(index, 1);
+      await esame.save();
+
+      res.status(200).json({ message: 'Nome eliminato con successo dalla lista trackLink dell\'esame', data: esame.trackLink, success: true });
+  } catch (error) {
+      console.error('Errore durante l\'eliminazione del nome dalla lista trackLink:', error);
+      res.status(500).json({ message: 'Si è verificato un errore durante l\'eliminazione del nome dalla lista trackLink', error: error });
+  }
+};
+
+module.exports = {addExam, getAllExams, getAllExamsByUser, getExamById, 
+  getCandidateCrm, editExam, deleteExam, addQuestionToExam, editQuestionInExam, 
+  deleteQuestionFromExam, saveTestProgress, addTrackLink, deleteTrackLink}

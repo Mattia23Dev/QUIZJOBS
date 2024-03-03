@@ -240,6 +240,18 @@
     align-items: center;
     width: 200px;
   }
+  .copy-link-track{
+    border: 1px solid var(--primary);
+    background-color: transparent;
+    color: var(--primary);
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 6px 12px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    align-items: center;
+  }
   .preview{
     background-color: transparent;
     text-decoration: underline;
@@ -440,4 +452,35 @@
     width: 17px;
     z-index: 1000;
     cursor: pointer;
+  }
+
+  .tracklink-modal-container{
+    display: flex;
+    justify-content: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .tracklink-modal-container div {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 7px;
+    width: 28%;
+  }
+  .tracklink-modal-container div img {
+    display: none;
+    width: 20px;
+    z-index: 1000;
+    cursor: pointer;
+  }
+  .tracklink-modal-container div:hover img {
+    display: block;
+  }
+  .tracklink-modal-add{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 3rem;
+    gap: 1rem;
   }

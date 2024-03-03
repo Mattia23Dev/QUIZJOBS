@@ -1,8 +1,8 @@
 import React,{useState,useEffect} from 'react';
 import PageTitle from '../../../components/PageTitle';
-import { Form, Row, Col, message, Tabs, DatePicker, Select, Popconfirm } from 'antd';
+import { Form, Row, Col, message, Tabs, DatePicker, Select, Popconfirm, Modal } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
-import { addExam, deleteQuestionFromExam, editExam, getExamById } from '../../../apicalls/exams';
+import { addExam, addTrackLink, deleteQuestionFromExam, deleteTrackLink, editExam, getExamById } from '../../../apicalls/exams';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
@@ -19,6 +19,7 @@ import rightArrow from '../../../imgs/arrowright.png'
 import edit from '../../../imgs/edit.png'
 import move from '../../../imgs/move.png'
 import cancel from '../../../imgs/cancel.png'
+import track from '../../../imgs/track.png'
 import { useLocation } from 'react-router-dom';
 const { Option } = Select;
 
@@ -142,7 +143,12 @@ function AddEditExam({setBigLoading}) {
   const [selectedQuestion, setSelectedQuestion] = useState();
   const [questions, setQuestions] = useState();
   const [showQuestions, setShowQuestions] = useState(false);
+  const [showTrackLink, setShowTrackLink] = useState(false);
+  const [passaOltre, setPassaOltre] = useState(1);
   const [copyLink, setCopyLink] = useState(false);
+  const [trackLink, setTrackLink] = useState("");
+  const [trackLinkArray, setTrackLinkArray] = useState([]);
+  const [examId, setExamId] = useState(null);
   const user = useSelector(state=>state.users.user)
   const [preview, setPreview] = useState(false);
   const [link, setLink] = useState("");
@@ -161,6 +167,21 @@ function AddEditExam({setBigLoading}) {
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(link)
+      .then(() => {
+        message.success('Link copiato negli appunti');
+      })
+      .catch((error) => {
+        console.error('Si è verificato un errore durante la copia del link:', error);
+        message.error('Si è verificato un errore durante la copia del link');
+      });
+  };
+
+  const handleCopyTrackLink = (name) => {
+    const baseUrl = link;
+    const queryParam = encodeURIComponent(name);
+    const trackLink = `${baseUrl}?name=${queryParam}`;
+    
+    navigator.clipboard.writeText(trackLink)
       .then(() => {
         message.success('Link copiato negli appunti');
       })
@@ -227,7 +248,7 @@ function AddEditExam({setBigLoading}) {
       return domandeArray;
   }
 
-  const handleSetInStorageQuestion = async () => {
+  const handleSetInStorageQuestion = async (questions) => {
     localStorage.setItem("questions", JSON.stringify(questions));
   }
 
@@ -284,19 +305,20 @@ function AddEditExam({setBigLoading}) {
         const response = await client.chat.completions.create(requestData);
         console.log(response.choices);
         const allQuestions = [];
-        response.choices.forEach(async  (choice) => {
-            const domandeOggetto = await convertiStringaInOggetti(choice.message.content);
-            const domandeFiltrate = domandeOggetto.filter(domanda => domanda.rispostaCorretta !== null && Object.keys(domanda.opzioni).length > 3);
-            allQuestions.push(...domandeFiltrate);
-        });
+        for (const choice of response.choices) {
+          const domandeOggetto = await convertiStringaInOggetti(choice.message.content);
+          const domandeFiltrate = domandeOggetto.filter(domanda => domanda.rispostaCorretta !== null && Object.keys(domanda.opzioni).length > 3);
+          allQuestions.push(...domandeFiltrate);
+        }
         
         console.log(allQuestions);
         setQuestions(allQuestions);
         setShowQuestions(true);
         setActiveTab(2);
+        setPassaOltre(2);
         setBigLoading(false);
         setPreview(true);
-        await handleSetInStorageQuestion();
+        handleSetInStorageQuestion(allQuestions);
       } catch (error) {
         console.error('Errore durante la generazione delle domande:', error);
         setBigLoading(false);
@@ -333,7 +355,9 @@ function AddEditExam({setBigLoading}) {
         message.success(response.message)
         setActiveTab(3);
         setCopyLink(true);
+        setExamId(response.data._id);
         setLink(response.data.examLink);
+        setPassaOltre(3);
         localStorage.removeItem("config");
         localStorage.removeItem("questions");
        }
@@ -378,6 +402,7 @@ function AddEditExam({setBigLoading}) {
       }
       setActiveTab(2)
       setPreview(true)
+      setPassaOltre(2)
       setShowQuestions(true)
     }
   }, [])
@@ -416,9 +441,50 @@ function AddEditExam({setBigLoading}) {
         window.open(url, '_blank');
       };
 
+      const addTrackLinkInput = async () => {
+        if (trackLink === ""){
+          window.alert("Inserire link track");
+          return;
+        }
+        const reqPayload = {
+          nome: trackLink,
+          examId: examId
+       }
+       console.log(reqPayload);
+       try {
+        const response = await addTrackLink(reqPayload);
+        console.log(response)
+        if (response.success){
+          message.success("Link creato")
+          setTrackLinkArray(response.data);
+          setTrackLink("");
+        }
+       } catch (error) {
+        console.log(error);
+       }
+      }
+
+      const deleteTrackLinkF = async (trackLink) => {
+        const reqPayload = {
+          nome: trackLink,
+          examId: examId
+       }
+        try {
+          const response = await deleteTrackLink(reqPayload);
+          console.log(response)
+          if (response.success){
+            message.success("Link eliminato")
+            setTrackLinkArray(response.data);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
   return (
       <div className='home-content'>
         <div className='copy-preview'>
+          {trackLinkArray && trackLinkArray.length > 0 && <button onClick={() => setShowTrackLink(true)} className='copy-link-active'><img src={track} alt='track link skilltest' />Track link</button>}
           {!examData && !id ? <button onClick={copyLink ? handleCopyLink : null} className={!copyLink ? 'copy-link' : 'copy-link-active'}><img src={!copyLink ? copia : copiablu} alt='copia link skilltest' />Copia link</button> : <button onClick={() => handleCopyLink()} className='copy-link-active'><img src={copiablu} alt='copia link skilltest' />Copia link</button>}
           <a onClick={preview ? handlePreviewClick : null} className={preview ? 'preview': 'preview-disabled'}><img src={eye} alt='Anteprima skilltest' />Anteprima</a>
         </div>
@@ -428,12 +494,12 @@ function AddEditExam({setBigLoading}) {
               <p>Dettagli test</p>
             </div>
             <hr />
-            <div onClick={() => setActiveTab(2)} className={activeTab === 2 ? 'active' : ''}>
+            <div onClick={passaOltre < 2 ? null : () => setActiveTab(2)} style={passaOltre < 2 ? {cursor: 'not-allowed'} : null} className={activeTab === 2 ? 'active' : ''}>
               <span></span>
               <p>Domande</p>
             </div>
             <hr />
-            <div onClick={() => setActiveTab(3)} className={activeTab === 3 ? 'active' : ''}>
+            <div onClick={passaOltre < 3 ? null : () => setActiveTab(3)} style={passaOltre < 3 ? {cursor: 'not-allowed'} : null} className={activeTab === 3 ? 'active' : ''}>
               <span></span>
               <p>Candidati</p>
             </div>
@@ -544,8 +610,8 @@ function AddEditExam({setBigLoading}) {
             <div>
                 <h2>Traccia la provenienza dei candidati</h2> 
                 <p>Puoi generare un link per il test con un nome di tracciamento che imposti tu (es. Linkedin, Indeed, Email ecc..)</p>
-                <input type='text' placeholder='Tracciamento' />
-                <button className='primary-outlined-btn'>Crea link tracciato</button>
+                <input value={trackLink} onChange={(e) => setTrackLink(e.target.value)} type='text' placeholder='Tracciamento' />
+                <button onClick={addTrackLinkInput} className='primary-outlined-btn'>Crea link tracciato</button>
              </div>
           </div>}
           {showAddEditQuestionModal&&<AddEditQuestion   setShowAddEditQuestionModal={setShowAddEditQuestionModal}
@@ -555,6 +621,23 @@ function AddEditExam({setBigLoading}) {
           selectedQuestion={selectedQuestion}
           setSelectedQuestion={setSelectedQuestion}
           />}
+      {showTrackLink &&
+        <Modal
+        title={"Track Link"} 
+         open={showTrackLink}
+         width={'40%'}
+         footer={false} onCancel={()=>{
+         setShowTrackLink(false)
+         }}>
+            <div className='tracklink-modal-container'>
+              {trackLinkArray.length > 0 && trackLinkArray.map((trackLink, index) => (
+                <div>
+                  <button className='copy-link-track' key={index} onClick={() => handleCopyTrackLink(trackLink)}>Link {trackLink}</button>
+                  <img alt='delete track link skilltest' onClick={() => deleteTrackLinkF(trackLink)} src={cancel} />
+                </div>
+              ))}
+            </div>   
+         </Modal>}
       </div>    
   )
 }

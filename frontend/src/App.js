@@ -27,8 +27,7 @@ import Crm from './pages/admin/Crm/Crm';
 import BigLoader from './components/bigLoader/BigLoader';
 import Preview from './pages/user/WriteExam/Preview';
 import Team from './pages/admin/Team';
-import Calendar from './pages/admin/Calendar';
-import Automation from './pages/admin/Automations';
+import CalendarComponent from './pages/admin/Calendar';
 
 function App() {
   const {loading} = useSelector(state=>state.loaders)
@@ -60,8 +59,7 @@ function App() {
         <Route path="/admin/home" element={<ProtectedRoute setLoginPopup={setLoginPopup}><HomePage/></ProtectedRoute>}/>
         <Route path="/admin/exams" element={<ProtectedRoute setLoginPopup={setLoginPopup}><ExamsPage/></ProtectedRoute>}/>
         <Route path="/admin/team" element={<ProtectedRoute setLoginPopup={setLoginPopup}><Team/></ProtectedRoute>}/>
-        <Route path="/admin/calendar" element={<ProtectedRoute setLoginPopup={setLoginPopup}><Calendar/></ProtectedRoute>}/>
-        <Route path="/admin/automations" element={<ProtectedRoute setLoginPopup={setLoginPopup}><Automation/></ProtectedRoute>}/>
+        <Route path="/admin/calendar" element={<ProtectedRoute setLoginPopup={setLoginPopup}><CalendarComponent/></ProtectedRoute>}/>
         <Route path="/admin/exams/add" element={<ProtectedRoute setLoginPopup={setLoginPopup}><AddEditExam setBigLoading={setBigLoading}/></ProtectedRoute>}/>
         <Route path="/admin/exams/add/preview" element={<ProtectedRoute setLoginPopup={setLoginPopup}><Preview /></ProtectedRoute>}/>
         <Route path="/admin/exams/edit/:id" element={<ProtectedRoute setLoginPopup={setLoginPopup}><AddEditExam setBigLoading={setBigLoading}/></ProtectedRoute>}/>

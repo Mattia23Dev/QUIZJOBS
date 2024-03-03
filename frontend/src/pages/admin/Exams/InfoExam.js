@@ -2,7 +2,7 @@ import React,{useState,useEffect} from 'react';
 import PageTitle from '../../../components/PageTitle';
 import { Modal, message, Table, Popconfirm } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
-import { addExam, deleteQuestionFromExam, editExam, getExamById } from '../../../apicalls/exams';
+import { addExam, addTrackLink, deleteQuestionFromExam, deleteTrackLink, editExam, getExamById } from '../../../apicalls/exams';
 import { useDispatch } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
 import AddEditQuestion from './AddEditQuestion';
@@ -14,9 +14,13 @@ import leftArrow from '../../../imgs/leftarrow.png'
 import rightArrow from '../../../imgs/arrowright.png'
 import edit from '../../../imgs/edit.png'
 import move from '../../../imgs/move.png'
+import time from '../../../imgs/time.png'
 import cancel from '../../../imgs/cancel.png'
+import track from '../../../imgs/track.png'
+import timered from '../../../imgs/timered.png'
+import timegreen from '../../../imgs/timegreen.png'
 import InfoCandidate from './InfoCandidate';
-import locale from 'antd/es/date-picker/locale/it_IT'; 
+import moment from 'moment';
 import './infoExam.css'
 
 const DomandeComponent = ({ domande, onUpdateDomande, setSelectedQuestion, setShowAddEditQuestionModal }) => {
@@ -143,6 +147,8 @@ function InfoExam() {
   const [showDettagliTest, setShowDettagliTest] = useState(false);
   const [showInfoCandidateModal, setShowInfoCandidateModal] = useState();
   const [selectedCandidate, setSelectedCandidate] = useState();
+  const [showTrackLink, setShowTrackLink] = useState(false);
+  const [trackLink, setTrackLink] = useState("");
   const [questions, setQuestions] = useState();
   const [config, setConfig] = useState({
    numOfQuestions: 30,
@@ -174,30 +180,6 @@ const handleCopyLink = () => {
    window.open(url, '_blank');
  };
 
-  const onFinish = async(values) => {
-     try{
-       dispatch(ShowLoading())
-       let response;
-       if(id){
-         response = await editExam(values,id)
-       }
-       else{
-         response = await addExam(values)
-       }
-       dispatch(HideLoading())
-       if(response.success){
-        message.success(response.message)
-        navigate("/admin/exams")
-       }
-       else{
-        message.error(response.message)
-       }
-     }
-     catch(error){
-          dispatch(HideLoading())
-          message.error(error.message)
-     }
-  }
   const getExamDataById = async(id) => {
       try{
          dispatch(ShowLoading())
@@ -260,46 +242,96 @@ const handleCopyLink = () => {
    });
   }
 
-const candidateColumns = [
-   {
-     title: "Nome completo",
-     render: (text, record) => record.candidate.name + ' ' + record.candidate.surname
-   },
-   {
-     title: "Email",
-     render: (text, record) => record.candidate.email
-   },
-   {
-     title: "Cellulare",
-     render: (text, record) => record.candidate.phone
-   },
-   {
-     title: "Città",
-     render: (text, record) => record.candidate.city
-   },
-   {
-     title: "Download CV",
-     render: (text, record) => (
-      <a href={`http://localhost:8000/uploads/${record.candidate.cv}`} target='__blank' download>
-         <i className="ri-download-line" />
-      </a>
-     )
-   },    
-   {
-     title: "Action",
-     dataIndex: "action",
-     render: (text,record) => {
-       return <div className='flex gap-2'>
-         <span className='cursor-pointer'
-         onClick={()=>{
-            setSelectedCandidate(record.candidate)
-            setShowInfoCandidateModal(true)
-         }}>Info</span>
-         <i className='ri-delete-bin-line cursor-pointer' onClick={()=>{deleteCandidateById(record.candidate._id)}}></i>
-       </div>
-     }
-   }
- ]
+  function formatTime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+  
+    const formattedHours = hours < 10 ? `0${hours}` : `${hours}`;
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+    const formattedSeconds = remainingSeconds < 10 ? `0${remainingSeconds}` : `${remainingSeconds}`;
+  
+    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+  }
+
+  const candidateColumns = [
+    {
+      title: "Nome",
+      dataIndex: "name",
+      key: "name",
+      render: (text, record) => (
+        <span className="custom-column-style">{record.candidate.name} {record.candidate.surname}</span>
+      ),
+    },
+    {
+      title: "Tempo",
+      dataIndex: "tempo",
+      key: "tempo",
+      render: (text, record) => {
+        const totalSeconds = Object.values(record.report?.result?.allSeconds).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+        const formattedTime = formatTime(totalSeconds);
+        return(
+        <span className={record.report?.result?.percentage.toFixed(2) > 60 ? "time-column-green" : "time-column-red"}><img alt='tempo medio' src={record.report?.result?.percentage.toFixed(2) > 60 ? timegreen : timered} />{formattedTime && formattedTime}</span>
+      )},
+    },
+    {
+      title: "Tracciamento",
+      dataIndex: "tracciamento",
+      key: "tracciamento",
+      render: (text, record) => {
+        return(
+        <span className="custom-column-style">{record?.trackLink && record?.trackLink !== null ? record.trackLink : 'Nessuno'}</span>
+      )},
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      render: (text, record) => (
+        <span className="custom-column-style">{record.candidate.email}</span>
+      ),
+    },
+    {
+      title: "Città",
+      dataIndex: "city",
+      key: "city",
+      render: (text, record) => (
+        <span className="custom-column-style">{record.candidate.city}</span>
+      ),
+    },
+    {
+      title: "CV",
+      dataIndex: "cv",
+      key: "cv",
+      render: (text, record) => (
+        <a style={{textAlign: 'center', fontSize: '18px'}} href={`http://localhost:8000/uploads/${record.candidate.cv}`} target="__blank" download className="custom-download-link">
+          <i className="ri-download-line" />
+        </a>
+      ),
+    },
+    {
+      title: "Scheda",
+      dataIndex: "action",
+      key: "action",
+      render: (text, record) => (
+        <div className="flex justify-center align-center gap-2 custom-action-column">
+          <span style={{fontSize: '14px'}} className="cursor-pointer" onClick={() => {
+            setSelectedCandidate(record.candidate);
+            setShowInfoCandidateModal(true);
+          }}><u>Info</u></span>
+          {/*<i className="ri-delete-bin-line cursor-pointer" onClick={() => deleteCandidateById(record.candidate._id)}></i>*/}
+        </div>
+      ),
+    },
+    {
+      title: "Punteggio",
+      dataIndex: "punteggio",
+      key: "punteggio",
+      render: (text, record) => (
+        <span className={record.report?.result?.percentage.toFixed(2) > 60 ? "punteggio-column-green":"punteggio-column-red"}>{record.report?.result?.percentage.toFixed(2)}%</span>
+      ),
+    },
+  ];  
 
 const handleUpdateDomande = (updatedDomande) => {
    setQuestions(updatedDomande);
@@ -313,11 +345,72 @@ const handleUpdateDomande = (updatedDomande) => {
   opzioni: selectedQuestion.options,
 };
 
+const deleteTrackLinkF = async (trackLink) => {
+  const reqPayload = {
+    nome: trackLink,
+    examId: examData._id
+ }
+  try {
+    const response = await deleteTrackLink(reqPayload);
+    console.log(response)
+    if (response.success){
+      message.success("Link eliminato")
+      const updatedExamData = { ...examData };
+      updatedExamData.trackLink = response.data;
+      setExamData(updatedExamData);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const handleCopyTrackLink = (name) => {
+  const baseUrl = examData.examLink;
+  const queryParam = encodeURIComponent(name);
+  const trackLink = `${baseUrl}?name=${queryParam}`;
+  
+  navigator.clipboard.writeText(trackLink)
+    .then(() => {
+      message.success('Link copiato negli appunti');
+    })
+    .catch((error) => {
+      console.error('Si è verificato un errore durante la copia del link:', error);
+      message.error('Si è verificato un errore durante la copia del link');
+    });
+};
+
+const addTrackLinkInput = async () => {
+  if (trackLink === ""){
+    window.alert("Inserire link track");
+    return;
+  }
+  const reqPayload = {
+    nome: trackLink,
+    examId: examData._id
+ }
+ console.log(reqPayload);
+ try {
+  const response = await addTrackLink(reqPayload);
+  console.log(response)
+  if (response.success){
+    message.success("Link creato")
+    const updatedExamData = { ...examData };
+    updatedExamData.trackLink = response.data;
+    setExamData(updatedExamData);
+    setTrackLink("");
+  }
+ } catch (error) {
+  console.log(error);
+ }
+}
+
   return (
     examData && <div className='home-content'>
       <div className='copy-preview'>
           <button onClick={handleCopyLink} className='copy-link-active'><img src={copiablu} alt='copia link skilltest' />Copia link</button>
-          <a onClick={handlePreviewClick} className='preview'><img src={eye} alt='Anteprima skilltest' />Anteprima</a>
+          {examData?.trackLink && examData?.trackLink.length > 0 ? 
+          <button onClick={() => setShowTrackLink(true)} className='copy-link-active'><img src={track} alt='track link skilltest' />Track link</button> :
+          <button onClick={() => setShowTrackLink(true)} className='copy-link-active'><img src={track} alt='track link skilltest' />Track link</button>}
       </div>
       <div className='create-exam-top'>
             <div onClick={() => setActiveTab(1)} className={activeTab === 1 ? 'active' : ''}>
@@ -371,7 +464,10 @@ const handleUpdateDomande = (updatedDomande) => {
          selectedQuestion={formattedSelectedQuestion}
          setSelectedQuestion={setSelectedQuestion}
         />}
-        {showInfoCandidateModal&&<InfoCandidate setShowInfoCandidateModal={setShowInfoCandidateModal}
+        {showInfoCandidateModal&&<InfoCandidate 
+        jobPosition={examData.jobPosition}
+        setShowInfoCandidateModal={setShowInfoCandidateModal}
+        examQuestion={questions}
         showInfoCandidateModal={showInfoCandidateModal}
         selectedCandidate={selectedCandidate}
         setSelectedCandidate={setSelectedCandidate}
@@ -388,34 +484,55 @@ const handleUpdateDomande = (updatedDomande) => {
                <div className='dettagli-test-modal'>
                   <div>
                      <h4>Settore generale</h4>
-                     <h4>{config?.generalSector}</h4>
+                     <h4>{examData?.generalSector}</h4>
                   </div>
                   <div>
                      <h4>Posizione lavorativa</h4>
-                     <h4>{config?.jobPosition}</h4>
+                     <h4>{examData?.jobPosition}</h4>
                   </div>
                </div>   
                <div className='dettagli-test-modal'>
                   <div>
                      <h4>Lingua</h4>
-                     <h4>{config?.testLanguage}</h4>
+                     <h4>{examData?.testLanguage}</h4>
                   </div>
                   <div>
                      <h4>Deadline</h4>
-                     <h4>{config?.deadline ? config.deadline : "Nessuna scadenza"}</h4>
+                     <h4>{examData?.deadline ? moment(examData.deadline).format('DD/MM/YYYY') : "Nessuna scadenza"}</h4>
                   </div>
                </div>
                <div className='dettagli-test-modal'>  
                   <div>
                      <h4>Difficoltà</h4>
-                     <h4>{config?.difficulty}</h4>
+                     <h4>{examData?.difficulty}</h4>
                   </div>
                   <div>
                      <h4>Competenze</h4>
-                     <h4>{config?.skills.join(', ')}</h4>
+                     <h4>{examData?.skills.map(skill => skill.charAt(0).toUpperCase() + skill.slice(1)).join(', ')}</h4>
                   </div>
                </div>
             </div>   
+         </Modal>}
+         {showTrackLink &&
+          <Modal
+          title={"Track Link"} 
+          open={showTrackLink}
+          width={'40%'}
+          footer={false} onCancel={()=>{
+          setShowTrackLink(false)
+          }}>
+            <div className='tracklink-modal-add'>
+              <input type='text' value={trackLink} onChange={(e) => setTrackLink(e.target.value)} />
+              <button className='primary-outlined-btn' onClick={addTrackLinkInput}>Aggiungi</button>
+            </div>
+              <div className='tracklink-modal-container'>
+                {examData.trackLink && examData?.trackLink.length > 0 && examData?.trackLink.map((trackLink, index) => (
+                  <div>
+                    <button className='copy-link-track' key={index} onClick={() => handleCopyTrackLink(trackLink)}>Link {trackLink}</button>
+                    <img alt='delete track link skilltest' onClick={() => deleteTrackLinkF(trackLink)} src={cancel} />
+                  </div>
+                ))}
+              </div>   
          </Modal>}
     </div>
   )

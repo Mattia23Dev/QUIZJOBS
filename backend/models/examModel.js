@@ -49,11 +49,19 @@ const examSchema = new mongoose.Schema({
         report: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "reports"
+        },
+        status: {
+            type: String,
+            default: "Da contattare"
+        },
+        trackLink: {
+            type: String
         }
     }],
     examLink: {
         type: String,
     },
+    trackLink: [String],
     company: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users",
