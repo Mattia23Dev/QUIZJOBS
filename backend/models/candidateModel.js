@@ -88,6 +88,9 @@ const candidateSchema = new mongoose.Schema({
     }],
     notes: {
         type: String
+    },
+    trackLead: {
+        type: String,
     }
 }, {
     timestamps: true

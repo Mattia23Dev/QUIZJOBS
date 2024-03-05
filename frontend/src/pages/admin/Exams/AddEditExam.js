@@ -27,6 +27,7 @@ const DomandeComponent = ({ domande, onUpdateDomande, setSelectedQuestion, setSh
    const [currentDomanda, setCurrentDomanda] = useState(domande[0]);
    const [currentDomandaIndex, setCurrentDomandaIndex] = useState(0); // Inizializza l'indice della domanda corrente a 0
    const [confirmVisible, setConfirmVisible] = useState(Array(domande.length).fill(false));
+   const [draggedDomanda, setDraggedDomanda] = useState(null);
 
    const handleConfirm = () => {
      const filteredDomande = domande.filter(domanda => domanda !== currentDomanda);
@@ -52,6 +53,7 @@ const DomandeComponent = ({ domande, onUpdateDomande, setSelectedQuestion, setSh
    const handleDragStart = (event, domanda, index) => {
      event.dataTransfer.setData('domanda', JSON.stringify(domanda));
      setDraggingIndex(index); // Imposta l'indice della domanda che viene trascinata
+     setDraggedDomanda(domanda);
    };
    
    const handleDragOver = (event) => {
@@ -67,21 +69,25 @@ const DomandeComponent = ({ domande, onUpdateDomande, setSelectedQuestion, setSh
    };
    
    const handleDrop = (event, index) => {
-     const droppedDomanda = JSON.parse(event.dataTransfer.getData('domanda'));
-     const updatedDomande = Array.from(domande);
-     const currentIndex = updatedDomande.indexOf(droppedDomanda);
-     
-     // Rimuovi la domanda dalla sua posizione precedente
-     updatedDomande.splice(currentIndex, 1);
-     
-     // Aggiungi la domanda nella nuova posizione
-     updatedDomande.splice(index, 0, droppedDomanda);
-     
-     // Aggiorna lo stato delle domande con la nuova posizione della domanda
-     onUpdateDomande(updatedDomande);
-   
-     setDraggingIndex(null); // Resettare l'indice della domanda trascinata dopo il rilascio
-   };
+    if (!draggedDomanda) return; // Se non c'è nessuna domanda trascinata, esci
+    
+    const droppedDomanda = JSON.parse(event.dataTransfer.getData('domanda'));
+    const updatedDomande = [...domande]; // Crea una copia dell'array delle domande
+    
+    // Rimuovi la domanda trascinata dalla sua posizione originale
+    const draggedIndex = updatedDomande.indexOf(draggedDomanda);
+    if (draggedIndex !== -1) {
+      updatedDomande.splice(draggedIndex, 1);
+    }
+    
+    // Inserisci la domanda trascinata nella nuova posizione
+    updatedDomande.splice(index, 0, droppedDomanda);
+    
+    onUpdateDomande(updatedDomande); // Aggiorna lo stato delle domande
+    
+    setDraggingIndex(null); // Resettare l'indice della domanda trascinata dopo il rilascio
+    setDraggedDomanda(null); // Resetta la domanda trascinata
+  };
  
    return (
      <div className="domande-container">
@@ -154,7 +160,7 @@ function AddEditExam({setBigLoading}) {
   const [link, setLink] = useState("");
   const storedConfig = JSON.parse(localStorage.getItem('config'));
   const [config, setConfig] = useState({
-      numOfQuestions: 30,
+      numOfQuestions: 20,
       difficulty: '',
       generalSector: '',
       jobPosition: '',
@@ -431,12 +437,11 @@ function AddEditExam({setBigLoading}) {
 
       const handleUpdateDomande = (updatedDomande) => {
          setQuestions(updatedDomande);
+         handleSetInStorageQuestion(updatedDomande);
        };
        const handlePreviewClick = () => {
       
-        const queryParams = new URLSearchParams();
-        queryParams.append('domande', JSON.stringify(questions));
-        const url = `/admin/exams/add/preview?${queryParams.toString()}`;
+        const url = `/admin/exams/add/preview`;
       
         window.open(url, '_blank');
       };
@@ -480,6 +485,24 @@ function AddEditExam({setBigLoading}) {
           console.log(error);
         }
       }
+
+      const aggiungiDomanda = (domanda) => {
+        const nuoveDomande = [...questions, domanda];
+        setQuestions(nuoveDomande);
+        handleSetInStorageQuestion(nuoveDomande)
+      };
+
+      const modificaDomanda = (domandaModificata) => {
+        const domandeModificate = questions.map(domanda => {
+          if (domanda.domanda === domandaModificata.domanda) {
+            return domandaModificata;
+          }
+          return domanda;
+        });
+      
+        setQuestions(domandeModificate);
+        handleSetInStorageQuestion(domandeModificate);
+      };
 
   return (
       <div className='home-content'>
@@ -614,7 +637,7 @@ function AddEditExam({setBigLoading}) {
                 <button onClick={addTrackLinkInput} className='primary-outlined-btn'>Crea link tracciato</button>
              </div>
           </div>}
-          {showAddEditQuestionModal&&<AddEditQuestion   setShowAddEditQuestionModal={setShowAddEditQuestionModal}
+          {showAddEditQuestionModal&&<AddEditQuestion editQuestionInExam={modificaDomanda} addQuestionToExam={aggiungiDomanda}   setShowAddEditQuestionModal={setShowAddEditQuestionModal}
           showAddEditQuestionModal={showAddEditQuestionModal}
           examId = {id}
           refreshData = {getExamDataById}

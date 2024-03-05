@@ -25,11 +25,17 @@ const BigLoader = () => {
       const interval = setInterval(() => {
         const now = Date.now();
         const elapsed = now - startTime;
-        const progressPercentage = (elapsed / 105000) * 100;
-        if (progressPercentage <= 100) {
-          setProgress(progressPercentage);
-        } else {
-          setProgress(0);
+        let progressPercentage = (elapsed / 105000) * 100;
+        
+        // Mantieni il progresso al 100% se è già al massimo del tempo
+        if (progressPercentage >= 100) {
+          progressPercentage = 100;
+        }
+        
+        setProgress(progressPercentage);
+        
+        if (now >= endTime) {
+          clearInterval(interval);
         }
       }, 100);
     
@@ -38,12 +44,11 @@ const BigLoader = () => {
     
     useEffect(() => {
       const interval = setInterval(() => {
-        const nextIndex = (textIndex + 1) % texts.length;
-        setTextIndex(nextIndex);
-      }, 5000);
+        setTextIndex(prevIndex => (prevIndex + 1) % texts.length);
+      }, 10000);
     
-      return () => clearInterval(interval); // Cancella l'intervallo precedente quando il componente viene smontato o quando l'indice della frase cambia
-    }, [textIndex, texts]);
+      return () => clearInterval(interval);
+    }, [texts.length]);
   
     return (
       <div className='container-big-loader'>

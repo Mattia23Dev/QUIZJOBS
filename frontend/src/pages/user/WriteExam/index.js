@@ -14,6 +14,7 @@ import arrowRight from '../../../imgs/arrowright.png'
 import alert from '../../../imgs/alert.png'
 import thanks from '../../../imgs/thanks.png'
 import v from '../../../imgs/v.png'
+import cbig from '../../../imgs/cbig.png'
 import './writeExamUser.css';
 
 function WriteExam() {
@@ -195,7 +196,7 @@ useEffect(()=>{
 },[])
 
   return (
-   examData && (
+   examData && examData.active === true ? (
     <div className='exam-user-container'>
         <div className='header-big-loader' style={{padding: '15px', position: 'sticky', top: '0', zIndex: 20, backgroundColor: '#fff'}}>
             <img src={logo} alt='logo skilltest' />
@@ -319,6 +320,16 @@ useEffect(()=>{
        <p>Ti informeremo <i>via email</i> riguardo i prossimi e eventuali <br /> aggiornamenti.</p>
        <button style={{zIndex: 10}} className='primary-contained-btn' onClick={() => navigate('/login')}>Registrati gratuitamente</button>
     </div>}
+    </div>
+   ) : (
+    <div className='thanks-exam-container flex flex-col gap-2'> 
+       <img alt='skilltest' src={thanks} className='back-img' />
+       <img src={cbig} alt='ok' />
+       <h2>Mi spiace!</h2>
+       <p>L'azienda che ha creato questo test l'ha disattivato momentaneamente. <br />
+       <b>Contatta l'azienda o riprova nei prossimi giorni.</b></p>
+       <p>Intanto potresti iscriverti per non perderti i prossimi<br /> aggiornamenti.</p>
+       <button style={{zIndex: 10}} className='primary-contained-btn' onClick={() => navigate('/login')}>Registrati gratuitamente</button>
     </div>
    )
   )

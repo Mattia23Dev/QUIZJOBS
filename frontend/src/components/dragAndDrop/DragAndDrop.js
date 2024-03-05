@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 
 const typesHero = ['Da contattare', 'Primo colloquio', 'Secondo colloquio', 'Offerta', 'Offerta accettata'];
 
-const DragAndDrop = ({status, initialData, setInitialData, selectedCandidate, setShowInfoCandidateModal, setSelectedCandidate}) => {
+const DragAndDrop = ({status, showAddCandidateModal, setAddStatus, setShowAddCandidateModal, initialData, setInitialData, selectedCandidate, setShowInfoCandidateModal, setSelectedCandidate}) => {
     const [isDragging, setIsDragging] = useState(false);
     const [listItems, setListItems] = useState(initialData);
     const user = useSelector(state=>state.users.user)
@@ -67,7 +67,7 @@ const DragAndDrop = ({status, initialData, setInitialData, selectedCandidate, se
                     data-status={container}
                   >
                     <p>{container}</p>
-                    <button>+</button>
+                    <button onClick={() => {setShowAddCandidateModal(true); setAddStatus(container)}}>+</button>
                     {listItems.length > 0 && listItems.map((item) => container === item.status && <CardItem setSelectedCandidate={setSelectedCandidate} selectedCandidate={selectedCandidate} setShowInfoCandidateModal={setShowInfoCandidateModal} data={item} key={item.id} handleDragging={handleDragging} />)}
                   </div>
                 ))

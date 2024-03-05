@@ -5,7 +5,7 @@ import {Table,message, Row, Col, Popconfirm, Switch} from 'antd'
 import { MdMore } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux'
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice'
-import { getAllExams, deleteExam, getExamByUser } from '../../../apicalls/exams'
+import { getAllExams, deleteExam, getExamByUser, changeStatusExam } from '../../../apicalls/exams'
 import './index.css'
 import moment from 'moment';
 import candidateNumber from '../../../imgs/candidate.png'
@@ -20,6 +20,7 @@ function ExamsPage() {
   const [numCandidati, setNumCandidati] = useState('tutti');
   const user = useSelector(state=>state.users.user)
   const storedQuestions = JSON.parse(localStorage.getItem('questions'));
+  const [confirmVisible, setConfirmVisible] = useState(Array(exams).fill(false));
 
   /*
   <div className='flex gap-2'>
@@ -46,6 +47,7 @@ function ExamsPage() {
        //message.success(response.message)
        console.log(response);
        setExams(response.data)
+       setConfirmVisible(Array(exams).fill(false))
       }
       else{
        message.error(response.message)
@@ -124,13 +126,36 @@ function ExamsPage() {
   useEffect(()=>{
      getExamsData()
   },[])
-  const handleSwitchChange = (examId, checked) => {
-    setExams((prevExams) =>
-    prevExams.map((exam) =>
-      exam._id === examId ? { ...exam, active: checked } : exam
-    )
-  );
+  const handleSwitchChange = (index) => {
+    setConfirmVisible((prevState) => {
+      const updatedConfirmVisible = [...prevState];
+      updatedConfirmVisible[index] = true;
+      return updatedConfirmVisible;
+    })
   };
+
+  const handleCancel = () => {
+    setConfirmVisible(Array(exams).fill(false));
+   };
+
+   const handleOnOff = async (exam) => {
+    console.log(exam)
+    const payload = {
+      examId: exam._id,
+      active: exam.active === true ? false : true,
+    }
+    try {
+      const response = await changeStatusExam(payload)
+      console.log(response.data)
+      const updatedExams = exams.map(item =>
+        item._id === exam._id ? { ...item, active: !exam.active } : item
+      );  
+      setExams(updatedExams);
+      setConfirmVisible(Array(exams).fill(false))
+    } catch (error) {
+      console.error(error);
+    }
+   }
   return (
     <div className='exams-container'>
       <div className='flex justify-between items-center mt-1'>
@@ -194,9 +219,23 @@ function ExamsPage() {
                         </li>                    
                       ))}
                     </ul>
+                    <Popconfirm
+                      visible={confirmVisible[index]}
+                      title={exam.active ? "Sei sicuro di voler disattivare il link?" : "Sei sicuro di voler attivare il link?"}
+                      onConfirm={async () => {
+                        try {
+                            await handleOnOff(exam); 
+                        } catch (error) {
+                            console.error('Si è verificato un errore durante la conferma:', error);
+                        }
+                      }}
+                      onCancel={handleCancel}
+                      okText="Sì"
+                      cancelText="No"
+                    />
                     <Switch 
                     checked={exam.active} 
-                    onChange={(checked) => handleSwitchChange(exam.id, checked)}/>
+                    onChange={(checked) => handleSwitchChange(index)}/>
                   </div>
 
                   <div className='card-exam-bottom'>

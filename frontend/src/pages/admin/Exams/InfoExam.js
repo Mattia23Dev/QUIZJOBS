@@ -447,7 +447,7 @@ const addTrackLinkInput = async () => {
                </div>
                {examData?.questions && questions && 
                <div className='domande-container-save'>
-                     <a onClick={() => setActiveTab(1)}><img alt='left arrow' src={leftArrow} /> Torna ai dettagli del test</a>
+                     <a onClick={() => setActiveTab(1)}><img alt='left arrow' src={leftArrow} /> Torna ai candidati</a>
                      <DomandeComponent
                      domande={questions && questions} 
                      onUpdateDomande={handleUpdateDomande}

@@ -151,3 +151,13 @@ export const changeCandidateStatus = async(payload) => {
         return error.response
     }
 }
+
+export const changeStatusExam = async(payload) => {
+    try{
+        const response = await axiosInstance.post(`/api/exams/changeStatusExam`,payload)
+        return response.data
+    }
+    catch(error){
+        return error.response
+    }
+}

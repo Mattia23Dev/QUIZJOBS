@@ -13,6 +13,8 @@ function Crm() {
   const [initialData, setInitialData] = useState([])
   const id = useSelector(state=>state.users.user._id);
   const [showInfoCandidateModal, setShowInfoCandidateModal] = useState();
+  const [showAddCandidateModal, setShowAddCandidateModal] = useState();
+  const [addStatus, setAddStatus] = useState();
   const [selectedCandidate, setSelectedCandidate] = useState();
   const [filters, setFilters] = useState({
     examName: "",
@@ -47,14 +49,28 @@ function Crm() {
       <DragAndDrop 
       setSelectedCandidate={setSelectedCandidate}
       selectedCandidate={selectedCandidate} 
-      setShowInfoCandidateModal={setShowInfoCandidateModal} 
-      setInitialData={setInitialData} 
+      setShowInfoCandidateModal={setShowInfoCandidateModal}
+      setShowAddCandidateModal={setShowAddCandidateModal}
+      showAddCandidateModal={showAddCandidateModal}
+      setInitialData={setInitialData}
+      setAddStatus={setAddStatus}
       initialData={initialData} />
+
       {showInfoCandidateModal&&<InfoCandidate 
         jobPosition={selectedCandidate.jobPosition}
         setShowInfoCandidateModal={setShowInfoCandidateModal}
         exams={selectedCandidate.tests}
         showInfoCandidateModal={showInfoCandidateModal}
+        selectedCandidate={selectedCandidate}
+        setSelectedCandidate={setSelectedCandidate}
+        examId = {id}
+        />}
+
+       {showAddCandidateModal&&<InfoCandidate 
+        jobPosition={selectedCandidate.jobPosition}
+        setShowAddCandidateModal={setShowAddCandidateModal}
+        exams={selectedCandidate.tests}
+        showAddCandidateModal={showAddCandidateModal}
         selectedCandidate={selectedCandidate}
         setSelectedCandidate={setSelectedCandidate}
         examId = {id}

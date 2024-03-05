@@ -25,25 +25,25 @@ const CalendarComponent = () => {
   };
   const events = [
     {
-      date: '2024-02-14',
+      date: '2024-03-14',
       time: '10:00',
       candidateName: 'Mario Rossi',
       jobPosition: 'Sviluppatore Frontend',
     },
     {
-      date: '2024-02-20',
+      date: '2024-03-20',
       time: '14:30',
       candidateName: 'Giulia Bianchi',
       jobPosition: 'Sviluppatore Backend',
     },
     {
-      date: '2024-02-16',
+      date: '2024-03-16',
       time: '10:00',
       candidateName: 'Marco Rossi',
       jobPosition: 'Sviluppatore Frontend',
     },
     {
-      date: '2024-02-21',
+      date: '2024-03-21',
       time: '18:30',
       candidateName: 'Jhon Bianchi',
       jobPosition: 'Sviluppatore Backend',

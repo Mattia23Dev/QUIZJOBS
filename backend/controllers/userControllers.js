@@ -216,7 +216,8 @@ const getCandidateInfo = async (req, res) => {
                 cv,
                 coverLetter,
                 degree,
-                tests: [{ testId, testName }]
+                tests: [{ testId, testName }],
+                trackLead: "test",
             });
 
             await newCandidate.save();

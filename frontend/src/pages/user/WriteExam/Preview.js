@@ -6,10 +6,7 @@ import time from '../../../imgs/time.png'
 
 const Preview = () => {
     const [questions, setQuestions] = useState([])
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const domandeString = queryParams.get('domande');
-    const domande = JSON.parse(domandeString);
+    const domande = JSON.parse(localStorage.getItem("questions"));
     const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0)
     const [selectedOptions, setSelectedOptions] = useState({})
     const [seconds, setSeconds] = useState({})
@@ -75,16 +72,16 @@ const Preview = () => {
         <div className='mt-2'>
         <h1 className='text-center user-select-none'>{jobPositionSlug && jobPositionSlug.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</h1>
         <div className='flex flex-col gap-2 mt-2'>
-         <div className='flex justify-between'>
-         <h1 className='text-2xl user-select-none'>
+         <div className='flex justify-between' style={{padding: '30px'}}>
+         <h1 style={{width: '60%'}} className='text-2xl user-select-none'>
            {selectedQuestionIndex+1} : {questions[selectedQuestionIndex].domanda}
          </h1>
-         <div className='timer'>
+         <div style={{height: '50px'}} className='timer'>
             <img alt='time user' src={time} />
             <span className='text-2xl user-select-none'>00:{secondsLeft <10 ? '0' : null}{secondsLeft}:00</span>
           </div>
          </div>
-         <div className='flex flex-col gap-2'>
+         <div className='flex flex-col gap-2' style={{padding: '0px 0 0 30px'}}>
           {Object.entries(questions[selectedQuestionIndex].opzioni).map(([lettera, risposta], index) => (
               <div
                 className={`flex gap-2 items-center ${selectedOptions[selectedQuestionIndex] === risposta ? "selected-option" : "option" }`}
@@ -100,7 +97,7 @@ const Preview = () => {
               </div>
             ))}
          </div>
-         <div className='flex justify-between'>
+         <div style={{padding: '0 0 0 30px'}} className='flex justify-between'>
           {selectedQuestionIndex<questions.length-1&&
             <button className='primary-contained-btn'
             onClick={()=> handleNextButtonClick()}

@@ -471,6 +471,24 @@ const deleteTrackLink = async (req, res) => {
   }
 };
 
+const changeStatus = async (req, res) => {
+  try {
+    const examId = req.body.examId;
+    const active = req.body.active;
+    console.log(examId)
+    const exam = await Exam.findByIdAndUpdate(examId, { active: active }, { new: true });
+
+    if (!exam) {
+      return res.status(404).json({ message: 'Esame non trovato' });
+    }
+
+    return res.status(200).json({ message: 'Stato dell\'esame aggiornato con successo', data: exam });
+  } catch (error) {
+    console.error('Errore durante l\'aggiornamento dello stato dell\'esame:', error);
+    return res.status(500).json({ message: 'Si è verificato un errore durante l\'aggiornamento dello stato dell\'esame' });
+  }
+}
+
 module.exports = {addExam, getAllExams, getAllExamsByUser, getExamById, 
   getCandidateCrm, editExam, deleteExam, addQuestionToExam, editQuestionInExam, 
-  deleteQuestionFromExam, saveTestProgress, addTrackLink, deleteTrackLink}
+  deleteQuestionFromExam, saveTestProgress, addTrackLink, deleteTrackLink, changeStatus}
