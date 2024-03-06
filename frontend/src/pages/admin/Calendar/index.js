@@ -51,9 +51,9 @@ const CalendarComponent = () => {
   ];
 
   const handleEventClick = (event) => {
-    console.log('Evento cliccato:', event);
     setEventVisible(true)
     setSelectedEvent(event);
+    setSelectedDate(event.date)
   };
 
   const dateCellRender = (value) => {
@@ -62,9 +62,9 @@ const CalendarComponent = () => {
 
     return (
       <ul>
-        {eventsForDate.map((event, index) => (
+        {eventsForDate.length > 0 && eventsForDate?.map((event, index) => (
           <li key={index} onClick={() => handleEventClick(event)}>
-            {event.time} - {event.candidateName} ({event.jobPosition})
+            {event.time} - {event.candidateName} - {event.jobPosition}
           </li>
         ))}
       </ul>
@@ -114,7 +114,7 @@ const CalendarComponent = () => {
           <Button key="submit" type="primary" onClick={handleModalOk}>Aggiungi</Button>,
         ]}
       >
-        {selectedEvent && <p>Selezionato: {selectedEvent}</p>}
+        {selectedEvent && <p>Selezionato: {selectedEvent.candidateName}</p>}
       </Modal>
     </div>
   )

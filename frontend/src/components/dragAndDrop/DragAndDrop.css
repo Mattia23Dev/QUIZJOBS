@@ -74,3 +74,62 @@
 .card-container > div > p > img {
     width: 15px;
 }
+.filter-crm{
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+    margin: 20px 0;
+}
+.filter-crm > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.filter-crm > div > div {
+    display: flex;
+    align-items: center;
+}
+.filter-crm input {
+    border: none;
+    background-color: transparent;
+}
+.filter-crm > div:last-of-type{
+    gap: 2rem;
+    width: 70%;
+}
+.filter-crm > div:first-of-type{
+    border: 1px solid var(--primary);
+    border-radius: 5px;
+    padding: 0 5px 0 10px;
+}
+.filter-crm > div:last-of-type label{
+    font-size: 12px;
+    width: fit-content;
+}
+.filter-crm > div:last-of-type select{
+    border: none;
+    background-color: transparent;
+    border-radius: 0;
+    font-size: 13px;
+    padding: 0px 10px;
+    width: 150px;
+    border-bottom: 1px solid var(--primary);
+    margin-left: 10px;
+}
+
+@media screen and (max-width: 1400px){
+    .filter-crm > div:first-of-type input{
+        padding: 0 5px 0 10px;
+        font-size: 12px;
+    }
+    .filter-crm > div:last-of-type label{
+        font-size: 11px;
+        width: fit-content;
+    }
+    .filter-crm > div:last-of-type select{
+        font-size: 12px;
+        padding: 0px 7px;
+        width: 150px;
+    }
+}

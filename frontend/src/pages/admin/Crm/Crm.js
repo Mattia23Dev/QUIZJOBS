@@ -8,6 +8,7 @@ import moment from 'moment'
 import { getCandidateCrm } from '../../../apicalls/exams'
 import DragAndDrop from '../../../components/dragAndDrop/DragAndDrop'
 import InfoCandidate from './InfoCandidate'
+import AddCandidate from './AddCandidate'
 
 function Crm() {
   const [initialData, setInitialData] = useState([])
@@ -66,14 +67,10 @@ function Crm() {
         examId = {id}
         />}
 
-       {showAddCandidateModal&&<InfoCandidate 
-        jobPosition={selectedCandidate.jobPosition}
+       {showAddCandidateModal&&<AddCandidate 
         setShowAddCandidateModal={setShowAddCandidateModal}
-        exams={selectedCandidate.tests}
         showAddCandidateModal={showAddCandidateModal}
-        selectedCandidate={selectedCandidate}
-        setSelectedCandidate={setSelectedCandidate}
-        examId = {id}
+        addStatus={addStatus}
         />}
     </div>
   )
