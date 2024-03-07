@@ -21,7 +21,7 @@ const addExam = async (req, res) => {
 
           const newExam = new Exam(req.body);
           const jobPositionSlug = req.body.jobPosition.toLowerCase().replace(/\s/g, '_'); 
-          const examLink = `http://localhost:3000/user/${jobPositionSlug}/${newExam._id}`;
+          const examLink = `https://skilltestapp.netlify.app/user/${jobPositionSlug}/${newExam._id}`;
           newExam.examLink = examLink;
           newExam.company = req.body.userId;
           console.log(req.body);
