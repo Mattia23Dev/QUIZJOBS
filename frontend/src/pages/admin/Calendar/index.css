@@ -29,5 +29,51 @@
     padding: 15px 10px;
 }
 .ant-picker-calendar-date{
+    padding: 0 !important;
+}
+.ant-picker-calendar-date ul {
     padding: 0;
+}
+
+.top-calendar{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 3rem;
+    width: 100%;
+}
+.filter-appointment{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.filter-appointment > div {
+    display: flex;
+    width: 40%;
+    align-items: center;
+    gap: 10px;
+}
+.filter-appointment .ant-picker{
+    width: 60%;
+    margin-left: 50px;
+}
+.filter-appointment button{
+    background-color: transparent;
+    border: none;
+    text-decoration: underline;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.filter-appointment > div > button:nth-of-type(2){
+    text-decoration: none;
+    border: 1px solid var(--primary);
+    border-radius: 5px;
+}
+.filter-appointment > div > .active{
+    background-color: var(--primary);
+    color: white;
+    text-decoration: none;
+}
+.ant-picker-cell-in-view{
+    padding: 0 !important;
 }

@@ -34,9 +34,7 @@ const DragAndDrop = ({status, showAddCandidateModal, setAddStatus, setShowAddCan
 
     const getExamsData = async() => {
       try{
-        dispatch(ShowLoading())
         const response = await getExamByUser(user._id)
-        dispatch(HideLoading())
         if(response.success){
          setFilterTestOption(response.data)
         }

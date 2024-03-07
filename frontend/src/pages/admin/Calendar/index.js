@@ -1,22 +1,30 @@
 import React, { useState } from 'react'
 import PageTitle from '../../../components/PageTitle'
-import { Calendar, Modal, Button } from 'antd';
+import { Calendar, Modal, Button, DatePicker } from 'antd';
 import './index.css'
+import locale from 'antd/es/date-picker/locale/it_IT'; 
+import moment from 'moment';
+import logo from '../../../imgs/logo.png'
 
 const CalendarComponent = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [eventVisible, setEventVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [activeTab, setActiveTab] = useState(1);
+  const [eventAppointment, setEventAppointment] = useState(moment());
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
     setModalVisible(true);
+    setEventVisible(true)
+    setActiveTab(2)
   };
 
   const handleModalCancel = () => {
     setModalVisible(false);
     setEventVisible(false)
+    setSelectedEvent(null)
   };
 
   const handleModalOk = () => {
@@ -72,7 +80,23 @@ const CalendarComponent = () => {
   };
   return (
     <div className='home-content'>
-        <PageTitle title={"Calendario"} />
+        <div className='top-calendar'>
+        <PageTitle title={"Calendario"} />      
+        <div className='filter-appointment'>
+              <div>
+                <button 
+                className={eventAppointment.isSame(moment().subtract(1, 'day'), 'day') ? 'active' : ''}
+                onClick={() => setEventAppointment(moment().subtract(1, 'day'))}>Ieri</button>
+                <button 
+                className={eventAppointment.isSame(moment(), 'day') ? 'active' : ''}
+                onClick={() => setEventAppointment(moment())}>Oggi</button>
+                <button 
+                className={eventAppointment.isSame(moment().add(1, 'day'), 'day') ? 'active' : ''}
+                onClick={() => setEventAppointment(moment().add(1, 'day'))}>Domani</button>
+              </div>
+              <DatePicker className='datepicker' locale={locale} value={eventAppointment} onChange={(date, dateString) => setEventAppointment(moment(dateString))} />
+          </div>  
+        </div>
         <div className='calendar-container'>
           <div>
             <h4>Prossimi appuntamenti</h4>
@@ -95,18 +119,11 @@ const CalendarComponent = () => {
           </div>
         </div>
       <Modal
-        title="Aggiungi Evento"
-        visible={modalVisible}
-        onCancel={handleModalCancel}
-        footer={[
-          <Button key="cancel" onClick={handleModalCancel}>Annulla</Button>,
-          <Button key="submit" type="primary" onClick={handleModalOk}>Aggiungi</Button>,
-        ]}
-      >
-        {selectedDate && <p>Selezionato: {selectedDate.format('DD/MM/YYYY')}</p>}
-      </Modal>
-      <Modal
-        title="Aggiungi Evento"
+        title={
+          <div className="modal-header">
+            <img src={logo} alt="logo skilltest" />
+          </div>
+          }
         visible={eventVisible}
         onCancel={handleModalCancel}
         footer={[
@@ -114,7 +131,18 @@ const CalendarComponent = () => {
           <Button key="submit" type="primary" onClick={handleModalOk}>Aggiungi</Button>,
         ]}
       >
-        {selectedEvent && <p>Selezionato: {selectedEvent.candidateName}</p>}
+          <div className='modal-candidate-top'>
+            <div onClick={() => setActiveTab(1)} className={activeTab === 1 ? 'active' : ''}>
+              <span></span>
+              <p>Appuntamenti</p>
+            </div>
+            <hr />
+            <div onClick={() => setActiveTab(2)} className={activeTab === 2 ? 'active' : ''}>
+              <span></span>
+              <p>Aggiungi</p>
+            </div>
+          </div>
+        {selectedEvent ? <p>Selezionato: {selectedEvent.candidateName}</p> : <p>Nessun evento, aggiungilo</p>}
       </Modal>
     </div>
   )
