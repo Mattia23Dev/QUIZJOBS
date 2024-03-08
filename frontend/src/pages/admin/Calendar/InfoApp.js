@@ -7,6 +7,7 @@ import moment from 'moment';
 import edit from '../../../imgs/edit.png'
 import move from '../../../imgs/move.png'
 import cancel from '../../../imgs/cancel.png'
+import indietro from '../../../imgs/indietro.png'
 const { Option } = Select
 
 const InfoApp = ({eventVisible, handleModalCancel, setSelectedEvent, id, handleDeleteApp, handlePushNewApp, activeTab, setActiveTab, selectedDate, selectedEvent}) => {
@@ -15,6 +16,7 @@ const InfoApp = ({eventVisible, handleModalCancel, setSelectedEvent, id, handleD
     const [candidate, setCandidate] = useState('');
     const [date, setDate] = useState(selectedDate ? selectedDate : null);
     const [time, setTime] = useState(null);
+    const [appToEdit, setAppToEdit] = useState();
     const [description, setDescription] = useState('');
     const [searchValue, setSearchValue] = useState('');
     const [filterCandidate, setFilterCandidate] = useState(candidateOptions) 
@@ -40,16 +42,27 @@ const InfoApp = ({eventVisible, handleModalCancel, setSelectedEvent, id, handleD
       getData()
     },[])
 
-    const handleDateChange = (value) => {
-        setDate(value);
+    const handleDateChange = (value, edit) => {
+      if (edit && edit === 'edit'){
+        setAppToEdit({...appToEdit, date: value})
+        } else {
+          setDate(value);
+        }
       };
     
-      const handleTimeChange = (value) => {
-        setTime(value);
-      };
+      const handleTimeChange = (value, edit) => {
+        if (edit && edit === 'edit'){
+          setAppToEdit({...appToEdit, time: value})
+          } else {
+            setTime(value);
+          }
+        };
     
       const handleCandidateChange = (value) => {
         setCandidate(value);
+      };
+      const handleCandidateEditChange = (value) => {
+        setAppToEdit({...appToEdit, candidate: value});
       };
     
       const handleSubmit = async () => {
@@ -109,7 +122,18 @@ const InfoApp = ({eventVisible, handleModalCancel, setSelectedEvent, id, handleD
           setFilterCandidate(filteredCandidates)      
         }
       };
-      console.log(selectedEvent)
+      const editApp = (app, time, date) => {
+        setActiveTab(3);
+        const appointment = {
+          title: app.title,
+          description: app.description,
+          date: moment(date),
+          time: moment(time, 'HH:mm'),
+          candidate: app.candidate._id
+        }
+        setAppToEdit(appointment);
+    };
+    console.log(appToEdit)
   return (
     <Modal
     title={
@@ -123,12 +147,12 @@ const InfoApp = ({eventVisible, handleModalCancel, setSelectedEvent, id, handleD
     onCancel={handleModalCancel}
   >
       <div className='modal-candidate-top'>
-        <div onClick={() => setActiveTab(1)} className={activeTab === 1 ? 'active' : ''}>
+        <div onClick={() => setActiveTab(1)} className={activeTab === 1 || activeTab === 3 ? 'active' : ''}>
           <span></span>
           <p>Appuntamenti</p>
         </div>
         <hr />
-        <div onClick={() => setActiveTab(2)} className={activeTab === 2 ? 'active' : ''}>
+        <div onClick={() => setActiveTab(2)} className={activeTab === 2  ? 'active' : ''}>
           <span></span>
           <p>Aggiungi</p>
         </div>
@@ -154,7 +178,7 @@ const InfoApp = ({eventVisible, handleModalCancel, setSelectedEvent, id, handleD
                 </div>
                 <div>
                     <p><u>Info</u></p>
-                    <img alt='modifica appuntamento skilltest' src={edit}/>
+                    <img alt='modifica appuntamento skilltest' onClick={() => editApp(e, formattedTime, selectedDate)} src={edit}/>
                     <img alt='elimina appuntamento skilltest' onClick={() => deleteApp(e._id)} src={cancel}/>
                 </div>
             </div>
@@ -162,7 +186,7 @@ const InfoApp = ({eventVisible, handleModalCancel, setSelectedEvent, id, handleD
          : <p>Nessun evento, aggiungilo</p>
         }
        </div>  
-      ) : (
+      ) : activeTab === 2 ? (
     <div className='form-add-appointment'>
         <div>
           <label>Titolo dell'evento</label>
@@ -199,7 +223,47 @@ const InfoApp = ({eventVisible, handleModalCancel, setSelectedEvent, id, handleD
         </div>
         <button className='primary-outlined-btn' onClick={handleSubmit}>Pianifica appuntamento</button>
       </div>
-      )}
+      ) : activeTab === 3 ? (
+        <div className='form-add-appointment'>
+          <div onClick={() => {setAppToEdit(); setActiveTab(1)}} className='indietro'>
+            <img src={indietro} alt='indietro' /> 
+          </div>
+        <div>
+          <label>Titolo dell'evento</label>
+          <input placeholder="Titolo" value={appToEdit?.title} onChange={(e) => setAppToEdit({...appToEdit, title: e.target.value})} />
+        </div>
+        <div>
+          <label>Candidato</label>
+          <Select 
+          showSearch={true}
+          onSearch={handleSearchCandidate}
+          placeholder="Candidato"
+          defaultActiveFirstOption={true}
+          maxTagCount={10}
+          filterOption={false}
+          value={appToEdit?.candidate} 
+          onChange={handleCandidateEditChange}>
+            {filterCandidate?.slice(0, 10).map((candidate) => (
+              <Option key={candidate.candidateId} value={candidate.candidateId}>
+                {candidate.name + ' ' + candidate.surname}
+              </Option>
+            ))}
+          </Select>
+        </div>
+        <div>
+          <label>Data e ora</label>
+          <div>
+            <DatePicker placeholder="Data" value={appToEdit?.date} onChange={(value) => handleDateChange(value,'edit')} />
+            <TimePicker placeholder="Ora" value={appToEdit?.time} onChange={(value) => handleTimeChange(value, 'edit')} format="HH:mm" />        
+          </div>        
+        </div>
+        <div>
+          <label>Descrizione (opzionale)</label>
+          <textarea style={{minHeight: '100px'}} placeholder="Descrizione" value={appToEdit?.description} onChange={(e) => setAppToEdit({...appToEdit, description: e.target.value})} />
+        </div>
+        <button className='primary-outlined-btn' onClick={handleSubmit}>Modifica appuntamento</button>
+      </div>
+      ) : null}
   </Modal>
   )
 }

@@ -41,7 +41,7 @@
     border-radius: 10px;
     padding: 15px 20px;
     width: 31%;
-    min-height: 300px;
+    min-height: 250px;
     position: relative;
 }
 .card-exam h1 {
@@ -76,7 +76,8 @@
 .card-exam-bottom{
     display: flex;
     justify-content: space-between;
-    gap: 5rem;
+    width: 90%;
+    gap: 0rem;
     align-items: flex-end;
     position: absolute;
     bottom: 20px;
@@ -129,4 +130,26 @@
 .card-exam-bottom > h4 > img {
     width: 20px;
     height: auto;
+}
+
+@media screen and (max-width: 1400px){
+    .card-exam h1 {
+        font-size: 17px;
+    }
+    .card-exam-top > button {
+        padding: 4px 12px;
+        font-size: 12px;
+    }
+    .card-exam-middle-skills > li {
+        font-size: 12px;
+    }
+    .card-exam-bottom h4 {
+        font-size: 12px;
+    }
+    .easy-diff,
+    .middle-diff,
+    .hard-diff {
+    width: 15px; /* Larghezza del pallino */
+    height: 15px; /* Altezza del pallino */
+    }
 }
