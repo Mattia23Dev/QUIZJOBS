@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import { useNavigate } from 'react-router-dom'
 import PageTitle from '../../../components/PageTitle'
-import {Table,message, Row, Col, Popconfirm, Switch} from 'antd'
+import {Table,message, Row, Col, Popconfirm, Switch, Select} from 'antd'
 import { MdMore } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux'
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice'
@@ -9,6 +9,7 @@ import { getAllExams, deleteExam, getExamByUser, changeStatusExam } from '../../
 import './index.css'
 import moment from 'moment';
 import candidateNumber from '../../../imgs/candidate.png'
+const { Option } = Select;
 
 function ExamsPage() {
   const navigate = useNavigate()
@@ -163,30 +164,30 @@ function ExamsPage() {
         <div className='test-filter'>
           <div>
             <label>Filtra per attività:</label>
-            <select value={attivo} onChange={(e) => setAttivo(e.target.value)}>
-              <option value='tutti'>Tutti</option>
-              <option value='attivo'>Attivo</option>
-              <option value='non attivo'>Non attivo</option>
-            </select>
+            <Select value={attivo} onChange={(value) => setAttivo(value)}>
+              <Option value='tutti'>Tutti</Option>
+              <Option value='attivo'>Attivo</Option>
+              <Option value='non attivo'>Non attivo</Option>
+            </Select>
           </div>
           <div>
             <label>filtra per difficoltà:</label>
-            <select value={difficolta} onChange={(e) => setDifficolta(e.target.value)}>
-              <option value='tutti'>Tutti</option>
-              <option value='facile'>Facile</option>
-              <option value='medio'>Medio</option>
-              <option value='difficile'>Difficile</option>
-            </select>
+            <Select value={difficolta} onChange={(value) => setDifficolta(value)}>
+              <Option value='tutti'>Tutti</Option>
+              <Option value='facile'>Facile</Option>
+              <Option value='medio'>Medio</Option>
+              <Option value='difficile'>Difficile</Option>
+            </Select>
           </div>
           <div>
             <label>Numero di Candidati:</label>
-            <select value={numCandidati} onChange={(e) => setNumCandidati(e.target.value)}>
-              <option value='tutti'>Tutti</option>
-              <option value='0-50'>0 - 50</option>
-              <option value='51-100'>51 - 100</option>
-              <option value='101-500'>101 - 500</option>
-              <option value='oltre500'>Oltre 500</option>
-            </select>
+            <Select value={numCandidati} onChange={(value) => setNumCandidati(value)}>
+              <Option value='tutti'>Tutti</Option>
+              <Option value='0-50'>0 - 50</Option>
+              <Option value='51-100'>51 - 100</Option>
+              <Option value='101-500'>101 - 500</Option>
+              <Option value='oltre500'>Oltre 500</Option>
+            </Select>
           </div>
         </div>
         {storedQuestions &&

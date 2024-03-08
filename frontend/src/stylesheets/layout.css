@@ -42,6 +42,9 @@
     font-size: 20px !important;
     width: 100%;
 }
+.menu-item-bottom i {
+  font-size: 20px;
+}
 .menu-item-bottom{
   display: flex;
   align-items: center;
@@ -73,7 +76,8 @@
     color: #ffffff;
 }
 .sidebar-close .active-menu-item,
-.sidebar-close .menu-item{
+.sidebar-close .menu-item,
+.sidebar-close .menu-item-bottom{
   padding: 4px 10px 4px 20px;
 }
 .header .logo,

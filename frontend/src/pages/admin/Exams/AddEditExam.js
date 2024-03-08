@@ -287,7 +287,12 @@ function AddEditExam({setBigLoading}) {
        
        `;
       const prompt = `Immagina di essere un recruiter e devi testare le competenze di un candidato per un'offerta lavorativa per la posizione ${config.jobPosition}. Genera ${config.numOfQuestions} domande a risposta multipla con 4 possibilità e con le rispettive risposte. Ripeti le stesse risposte SOLO SE NECESSARIO inserirle nel contesto della domanda. 
-      Assicurati di non inserire opzioni che non centrano con il contesto della domanda o del ruolo, Assicurati di fare domande non banali e specifiche alle competenze fornite: ${config.skills.join(', ')}, con difficoltà ${config.difficulty}, nella lingua ${config.testLanguage}.`;
+      Assicurati di non inserire opzioni che non centrano con il contesto della domanda o del ruolo, Assicurati di fare domande non banali e specifiche alle competenze fornite: ${config.skills.join(', ')}, con difficoltà ${config.difficulty}, nella lingua ${config.testLanguage}.
+      Descrizione della difficoltà delle domande, prendi in considerazione il campo sopra con la discrezione sotto:
+       - Facile (Junior): Le domande si concentrano su concetti di base e conoscenze fondamentali legate alle competenze junior. Utilizza un linguaggio chiaro e comprensibile.
+       - Medio (Middle): Le domande coinvolgono scenari più realistici e situazioni di lavoro quotidiane che richiedono una comprensione più approfondita delle competenze. Coinvolgi terminologia tecnica più avanzata e problemi che richiedono una valutazione critica.
+       - Difficile (Senior): Le domande sono complesse e richiedono un'elevata competenza e esperienza. Coinvolgi scenari pratici e problemi avanzati che richiedono una solida comprensione del dominio e una valutazione strategica.       
+      `;
 
       const requestData = {
          max_tokens: 2600, 

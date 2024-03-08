@@ -22,6 +22,10 @@
     width: 120px;
     border-bottom: 1px solid var(--primary);
 }
+.test-filter > div > .ant-select{
+    min-width: 120px;
+    margin-left: 10px;
+}
 .test-filter label {
     font-size: 12px;
     width: fit-content;

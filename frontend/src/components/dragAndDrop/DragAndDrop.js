@@ -3,9 +3,9 @@ import CardItem from './CardItem';
 import { changeCandidateStatus, getExamByUser } from '../../apicalls/exams';
 import { useDispatch, useSelector } from 'react-redux'
 import {FaSearch} from 'react-icons/fa'
-import {message} from 'antd'
+import {message, Select} from 'antd'
 import { HideLoading, ShowLoading } from '../../redux/loaderSlice';
-
+const { Option } = Select;
 const typesHero = ['Da contattare', 'Primo colloquio', 'Secondo colloquio', 'Offerta', 'Offerta accettata'];
 
 const DragAndDrop = ({status, showAddCandidateModal, setAddStatus, setShowAddCandidateModal, initialData, setInitialData, selectedCandidate, setShowInfoCandidateModal, setSelectedCandidate}) => {
@@ -106,30 +106,30 @@ const DragAndDrop = ({status, showAddCandidateModal, setAddStatus, setShowAddCan
           <div>
             <div>
               <label>filtra per test:</label>
-              <select value={filterTest} onChange={(e) => setFilterTest(e.target.value)}>
-                <option value='tutti'>Tutti</option>
+              <Select value={filterTest} onChange={(value) => setFilterTest(value)}>
+                <Option value='tutti'>Tutti</Option>
                 {filterTestOption && filterTestOption.length > 0 && filterTestOption.map((test) => (
-                  <option key={test._id} value={test._id}>{test.jobPosition}</option>
+                  <Option key={test._id} value={test._id}>{test.jobPosition}</Option>
                 ))}
-              </select>
+              </Select>
             </div>
             <div>
               <label>filtra per punteggio:</label>
-              <select value={filterScore} onChange={(e) => setFilterScore(e.target.value)}>
-                <option value='tutti'>Tutti</option>
-                <option value='low'>0 - 40%</option>
-                <option value='medium'>41% - 70%</option>
-                <option value='high'>71% - 100%</option>
-              </select>
+              <Select value={filterScore} onChange={(value) => setFilterScore(value)}>
+                <Option value='tutti'>Tutti</Option>
+                <Option value='low'>0 - 40%</Option>
+                <Option value='medium'>41% - 70%</Option>
+                <Option value='high'>71% - 100%</Option>
+              </Select>
             </div>
             <div>
               <label>filtra per città:</label>
-              <select value={filterCity} onChange={(e) => setFilterCity(e.target.value)}>
-                <option value='tutti'>Tutti</option>
+              <Select value={filterCity} onChange={(value) => setFilterCity(value)}>
+                <Option value='tutti'>Tutti</Option>
                 {cityOption && cityOption.length > 0 && cityOption.map((city) => (
-                  <option key={city} value={city}>{city}</option>
+                  <Option key={city} value={city}>{city}</Option>
                 ))}
-              </select>
+              </Select>
             </div>
           </div>
         </div>

@@ -9,6 +9,7 @@ const db = require("./config/dbConfig")
 const userRoute = require("./routes/userRoutes")
 const examRoute = require("./routes/examRoutes")
 const reportRoute = require("./routes/reportRoutes")
+const appRoute = require("./routes/appointmentRoute")
 
 const port = process.env.PORT || 5000
 
@@ -20,7 +21,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use("/api/users",userRoute)
 app.use("/api/exams",examRoute)
 app.use("/api/reports",reportRoute)
-
+app.use("/api/app",appRoute)
 
 // app.use(express.urlencoded({ extended: true }))
 const _dirname = path.resolve();

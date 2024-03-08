@@ -196,7 +196,8 @@ useEffect(()=>{
 },[])
 
   return (
-   examData && examData.active === true ? (
+   examData && (
+    examData.active === true ?
     <div className='exam-user-container'>
         <div className='header-big-loader' style={{padding: '15px', position: 'sticky', top: '0', zIndex: 20, backgroundColor: '#fff'}}>
             <img src={logo} alt='logo skilltest' />
@@ -321,7 +322,7 @@ useEffect(()=>{
        <button style={{zIndex: 10}} className='primary-contained-btn' onClick={() => navigate('/login')}>Registrati gratuitamente</button>
     </div>}
     </div>
-   ) : (
+    : 
     <div className='thanks-exam-container flex flex-col gap-2'> 
        <img alt='skilltest' src={thanks} className='back-img' />
        <img src={cbig} alt='ok' />

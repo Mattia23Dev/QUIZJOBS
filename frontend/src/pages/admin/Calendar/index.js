@@ -1,83 +1,83 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PageTitle from '../../../components/PageTitle'
-import { Calendar, Modal, Button, DatePicker } from 'antd';
+import { Calendar, Modal, Button, DatePicker, TimePicker, Select, Input } from 'antd';
 import './index.css'
 import locale from 'antd/es/date-picker/locale/it_IT'; 
 import moment from 'moment';
-import logo from '../../../imgs/logo.png'
+import InfoApp from './InfoApp';
+import {useDispatch, useSelector} from 'react-redux'
+import { getAppointmentUser } from '../../../apicalls/appointment';
+import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
+const { Option } = Select;
 
 const CalendarComponent = () => {
-  const [modalVisible, setModalVisible] = useState(false);
   const [eventVisible, setEventVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
+  const dispatch = useDispatch();
+  const user = useSelector(state=>state.users.user);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [activeTab, setActiveTab] = useState(1);
   const [eventAppointment, setEventAppointment] = useState(moment());
+  const [events, setEvents] = useState([])
+
+  const getAppointment = async () => {
+    try {
+      const response = await getAppointmentUser(user._id);
+      console.log(response)
+      setEvents(response.data)
+      dispatch(HideLoading())
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
-    setModalVisible(true);
+    const eventsForDate = events?.filter(e => moment(e.date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD'));
+    console.log(eventsForDate)
+    if (eventsForDate){
+      setSelectedEvent(eventsForDate);
+      setActiveTab(1)
+    } else {
+      setActiveTab(2)
+    }
     setEventVisible(true)
-    setActiveTab(2)
   };
 
   const handleModalCancel = () => {
-    setModalVisible(false);
     setEventVisible(false)
     setSelectedEvent(null)
   };
 
-  const handleModalOk = () => {
-    alert(`Evento aggiunto per la data: ${selectedDate.format('DD/MM/YYYY')}`);
-    setModalVisible(false);
-  };
-  const events = [
-    {
-      date: '2024-03-14',
-      time: '10:00',
-      candidateName: 'Mario Rossi',
-      jobPosition: 'Sviluppatore Frontend',
-    },
-    {
-      date: '2024-03-20',
-      time: '14:30',
-      candidateName: 'Giulia Bianchi',
-      jobPosition: 'Sviluppatore Backend',
-    },
-    {
-      date: '2024-03-16',
-      time: '10:00',
-      candidateName: 'Marco Rossi',
-      jobPosition: 'Sviluppatore Frontend',
-    },
-    {
-      date: '2024-03-21',
-      time: '18:30',
-      candidateName: 'Jhon Bianchi',
-      jobPosition: 'Sviluppatore Backend',
-    },
-  ];
-
-  const handleEventClick = (event) => {
-    setEventVisible(true)
-    setSelectedEvent(event);
-    setSelectedDate(event.date)
-  };
-
   const dateCellRender = (value) => {
     const formattedDate = value.format('YYYY-MM-DD');
-    const eventsForDate = events.filter(event => event.date === formattedDate);
-
+    const eventsForDate = events?.filter(event => moment(event.date).format('YYYY-MM-DD') === formattedDate);
     return (
       <ul>
-        {eventsForDate.length > 0 && eventsForDate?.map((event, index) => (
-          <li key={index} onClick={() => handleEventClick(event)}>
-            {event.time} - {event.candidateName} - {event.jobPosition}
+        {eventsForDate.length > 0 && eventsForDate?.map((event, index) => {
+          const formattedTime = moment(event.date).format('HH:mm');
+          const formatDate = moment(event.date).format("DD-MM-YYYY");
+          return(
+          <li key={index}>
+            {formattedTime} - {event.candidate.name + ' ' + event.candidate.surname} - {event.jobPosition}
           </li>
-        ))}
+        )})}
       </ul>
     );
   };
+
+  useEffect(() => {
+    dispatch(ShowLoading())
+    getAppointment()
+  }, [])
+  const handlePushNewApp = (app) => {
+    const updatedEvents = [...events, app];
+    setEvents(updatedEvents);
+  }
+  const handleDeleteApp = (id) => {
+    const updatedEvents = events.filter(event => event._id !== id);
+    setEvents(updatedEvents)
+  }
   return (
     <div className='home-content'>
         <div className='top-calendar'>
@@ -101,49 +101,39 @@ const CalendarComponent = () => {
           <div>
             <h4>Prossimi appuntamenti</h4>
             <ul>
-              {events.map((event, index) => (
+              {events && events.length > 0 && events?.map((event, index) => {
+                const formattedDate = moment(event.date).format('DD-MM-YYYY');
+                const formattedTime = moment(event.date).format('HH:mm');
+                return(
                 <li key={index}>
-                  <strong>Data:</strong> {event.date}, <strong>Ora:</strong> {event.time}, <br />
-                  <strong>Candidato:</strong> {event.candidateName}, <br />
+                  <strong>Data:</strong> {formattedDate}, <strong>Ora:</strong> {formattedTime} <br />
+                  <strong>Candidato:</strong> {event.candidate.name + ' ' + event.candidate.surname}, <br />
                   <strong>Posizione lavorativa:</strong> {event.jobPosition}
                 </li>
-              ))}
+              )})}
             </ul>
           </div>
           <div>
             <Calendar
-            dateCellRender={dateCellRender}
+            dateCellRender={events && dateCellRender}
             onSelect={handleDateClick}
             mode="month"
           />            
           </div>
         </div>
-      <Modal
-        title={
-          <div className="modal-header">
-            <img src={logo} alt="logo skilltest" />
-          </div>
-          }
-        visible={eventVisible}
-        onCancel={handleModalCancel}
-        footer={[
-          <Button key="cancel" onClick={handleModalCancel}>Annulla</Button>,
-          <Button key="submit" type="primary" onClick={handleModalOk}>Aggiungi</Button>,
-        ]}
-      >
-          <div className='modal-candidate-top'>
-            <div onClick={() => setActiveTab(1)} className={activeTab === 1 ? 'active' : ''}>
-              <span></span>
-              <p>Appuntamenti</p>
-            </div>
-            <hr />
-            <div onClick={() => setActiveTab(2)} className={activeTab === 2 ? 'active' : ''}>
-              <span></span>
-              <p>Aggiungi</p>
-            </div>
-          </div>
-        {selectedEvent ? <p>Selezionato: {selectedEvent.candidateName}</p> : <p>Nessun evento, aggiungilo</p>}
-      </Modal>
+        {eventVisible &&
+        <InfoApp
+        eventVisible={eventVisible}
+        handleModalCancel={handleModalCancel}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        selectedDate={selectedDate}
+        selectedEvent={selectedEvent}
+        handlePushNewApp={handlePushNewApp}
+        setSelectedEvent={setSelectedEvent}
+        handleDeleteApp={handleDeleteApp}
+        id={user._id}
+         />}
     </div>
   )
 }

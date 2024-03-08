@@ -114,7 +114,12 @@
     font-size: 13px;
     padding: 0px 10px;
     width: 150px;
+    min-width: 150px;
     border-bottom: 1px solid var(--primary);
+    margin-left: 10px;
+}
+.filter-crm > div:last-of-type .ant-select{
+    min-width: 150px;
     margin-left: 10px;
 }
 

@@ -77,3 +77,61 @@
 .ant-picker-cell-in-view{
     padding: 0 !important;
 }
+
+.form-add-appointment{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+    width: 100%;
+    margin: 20px 0;
+}
+.form-add-appointment .ant-select{
+    min-width: 100%;
+}
+.form-add-appointment > div {
+    width: 100%;
+}
+.form-add-appointment > div > div{
+    width: 100%;
+    display: flex;
+    gap: 10px;
+}
+.form-add-appointment .ant-picker{
+    min-width: 49% !important;
+    border-radius: 5px !important;
+    height: 40px;
+}
+.form-add-appointment .ant-select-selector{
+    height: 40px !important;
+}
+
+
+.appointmend-modal{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
+    margin: 20px 0;
+}
+.appointment-item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid var(--primary);
+    padding: 5px 10px;
+}
+.appointment-item img {
+    width: 20px;
+    cursor: pointer;
+}
+.appointment-item > div:last-of-type{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}

@@ -161,7 +161,7 @@ function ProtectedRoute({children, setLoginPopup}) {
               )
             })}
             <div onClick={() => setLoginPopup(true)} className='menu-item-bottom'>
-              <span><i className='ri-logout-box-line'></i> Logout</span>
+              <i className='ri-logout-box-line'></i> <span className={!collapsed ? '' : 'hide-menu-title'}>Logout</span>
             </div>
          </div>
        </div>
