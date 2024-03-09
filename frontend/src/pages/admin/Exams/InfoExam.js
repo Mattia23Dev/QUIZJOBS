@@ -104,12 +104,14 @@ const DomandeComponent = ({ domande, onUpdateDomande, setSelectedQuestion, setSh
               onCancel={handleCancel}
               okText="Sì"
               cancelText="No"
-            />
+              placement="top"
+            >
             <img alt='cancel question' src={cancel} onClick={() => { setConfirmVisible((prevState) => {
                 const updatedConfirmVisible = [...prevState];
                 updatedConfirmVisible[index] = true;
                 return updatedConfirmVisible;
               }); setCurrentDomanda(domanda) }} />
+              </Popconfirm>
             <img alt='edit question' src={edit} onClick={() => {setSelectedQuestion(domanda); setShowAddEditQuestionModal(true)}} />
             <img
             className='drag-handle'

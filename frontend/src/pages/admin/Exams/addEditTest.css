@@ -484,3 +484,41 @@
     margin-bottom: 3rem;
     gap: 1rem;
   }
+
+
+
+
+
+  @media screen and (max-width: 1400px) {
+    .domande-container-save > a {
+      color: var(--primary);
+      font-size: 14px;
+      text-decoration: underline;
+      position: absolute;
+      left: 3rem;
+      top: -2rem;
+    }
+    .create-exam-top > div > p {
+      font-size: 13px;
+      margin-top: 3px;
+    }
+    .copy-link{
+      border: 1px solid #b4b4b4;
+      background-color: transparent;
+      color: #b4b4b4;
+      border-radius: 5px;
+      cursor: not-allowed;
+      padding: 6px 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      width: 170px;
+    }
+    .copy-preview button {
+      font-size: 13px;
+    }
+    .copy-preview img {
+      width: 20px;
+    }
+  }

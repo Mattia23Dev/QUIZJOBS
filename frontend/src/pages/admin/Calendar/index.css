@@ -8,12 +8,12 @@
 .calendar-container > div:first-of-type{
     width: 30%;
 }
-.calendar-container > div:first-of-type > ul{
+.calendar-container > div:first-of-type ul{
     max-height: 500px;
     overflow-y: auto;
     padding-left: 0;
 }
-.calendar-container > div:first-of-type > ul > li{
+.calendar-container > div:first-of-type ul > li{
     list-style-type: none;
     width: 90%;
     margin: 10px 0;

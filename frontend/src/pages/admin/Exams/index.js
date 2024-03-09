@@ -233,10 +233,12 @@ function ExamsPage() {
                       onCancel={handleCancel}
                       okText="Sì"
                       cancelText="No"
-                    />
+                      placement="top"
+                    >
                     <Switch 
                     checked={exam.active} 
                     onChange={(checked) => handleSwitchChange(index)}/>
+                    </Popconfirm>
                   </div>
 
                   <div className='card-exam-bottom'>

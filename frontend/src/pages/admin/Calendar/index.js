@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PageTitle from '../../../components/PageTitle'
-import { Calendar, Modal, Button, DatePicker, TimePicker, Select, Input } from 'antd';
+import { Calendar, DatePicker, Select, Affix, Drawer, Button, Space, Popover } from 'antd';
 import './index.css'
 import locale from 'antd/es/date-picker/locale/it_IT'; 
 import moment from 'moment';
@@ -12,6 +12,7 @@ const { Option } = Select;
 
 const CalendarComponent = () => {
   const [eventVisible, setEventVisible] = useState(false);
+  const [openDrawerApp, setOpenDrawerApp] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const dispatch = useDispatch();
   const user = useSelector(state=>state.users.user);
@@ -51,18 +52,30 @@ const CalendarComponent = () => {
 
   const dateCellRender = (value) => {
     const formattedDate = value.format('YYYY-MM-DD');
+    const rightDate = moment(value).format('DD-MM-YYYY')
     const eventsForDate = events?.filter(event => moment(event.date).format('YYYY-MM-DD') === formattedDate);
+    const content = (
+      <div>
+        {eventsForDate?.length > 0 && eventsForDate.map((event) => {
+          const formattedTime = moment(event.date).format('HH:mm');
+          return(
+            <p>{event.title} - {formattedTime}</p>
+        )})}
+      </div>
+    );
     return (
-      <ul>
+      <Popover placement="top" title={rightDate} content={content}>
         {eventsForDate.length > 0 && eventsForDate?.map((event, index) => {
           const formattedTime = moment(event.date).format('HH:mm');
           const formatDate = moment(event.date).format("DD-MM-YYYY");
           return(
-          <li key={index}>
-            {formattedTime} - {event.candidate.name + ' ' + event.candidate.surname} - {event.jobPosition}
-          </li>
+        <ul style={{padding: '20px 0'}}>
+            <li style={{backgroundColor: 'green', borderRadius: '5px', padding: '4px 8px', color: 'white'}} key={index}>
+              {eventsForDate.length > 1 ? eventsForDate.length + ' eventi' : '1 evento'}
+            </li>
+        </ul>
         )})}
-      </ul>
+      </Popover>
     );
   };
 
@@ -78,10 +91,23 @@ const CalendarComponent = () => {
     const updatedEvents = events.filter(event => event._id !== id);
     setEvents(updatedEvents)
   }
+  const onCloseDrawer = () => {
+    setOpenDrawerApp(false)
+  }
+  const handleEditNewApp = (newEvent) => {
+    const updatedEvents = events.map(event => {
+      if (event._id === newEvent._id){
+        return newEvent;
+      } else {
+        return event;
+      }
+    });
+    setEvents(updatedEvents)
+  }
   return (
     <div className='home-content'>
-        <div className='top-calendar'>
-        <PageTitle title={"Calendario"} />      
+      <div className='top-calendar'>
+        <PageTitle title={"Calendario"} />
         <div className='filter-appointment'>
               <div>
                 <button 
@@ -97,30 +123,33 @@ const CalendarComponent = () => {
               <DatePicker className='datepicker' locale={locale} value={eventAppointment} onChange={(date, dateString) => setEventAppointment(moment(dateString))} />
           </div>  
         </div>
-        <div className='calendar-container'>
-          <div>
-            <h4>Prossimi appuntamenti</h4>
-            <ul>
-              {events && events.length > 0 && events?.map((event, index) => {
-                const formattedDate = moment(event.date).format('DD-MM-YYYY');
-                const formattedTime = moment(event.date).format('HH:mm');
-                return(
-                <li key={index}>
-                  <strong>Data:</strong> {formattedDate}, <strong>Ora:</strong> {formattedTime} <br />
-                  <strong>Candidato:</strong> {event.candidate.name + ' ' + event.candidate.surname}, <br />
-                  <strong>Posizione lavorativa:</strong> {event.jobPosition}
-                </li>
-              )})}
-            </ul>
+          <div className='calendar-container'>
+            <div>
+            <Affix offsetTop={160}>
+              <h4>Prossimi appuntamenti</h4>
+              <ul>
+                {events && events.length > 0 && events?.map((event, index) => {
+                  const formattedDate = moment(event.date).format('DD-MM-YYYY');
+                  const formattedTime = moment(event.date).format('HH:mm');
+                  return(
+                  <li style={{cursor: 'pointer'}} key={index} onClick={() => setOpenDrawerApp(true)}>
+                    <strong>Data:</strong> {formattedDate}, <strong>Ora:</strong> {formattedTime} <br />
+                    <strong>Candidato:</strong> {event.candidate.name + ' ' + event.candidate.surname}, <br />
+                    <strong>Posizione lavorativa:</strong> {event.jobPosition}
+                  </li>
+                )})}
+              </ul>
+              </Affix>
+            </div>
+            <div>
+              <Calendar
+              dateCellRender={events && dateCellRender}
+              onSelect={handleDateClick}
+              mode="month"
+            />            
+            </div>
           </div>
-          <div>
-            <Calendar
-            dateCellRender={events && dateCellRender}
-            onSelect={handleDateClick}
-            mode="month"
-          />            
-          </div>
-        </div>
+
         {eventVisible &&
         <InfoApp
         eventVisible={eventVisible}
@@ -132,8 +161,29 @@ const CalendarComponent = () => {
         handlePushNewApp={handlePushNewApp}
         setSelectedEvent={setSelectedEvent}
         handleDeleteApp={handleDeleteApp}
+        handleEditNewApp={handleEditNewApp}
         id={user._id}
          />}
+        <Drawer
+            title="Info appuntamento"
+            width={500}
+            className='drawer-dash'
+            onClose={onCloseDrawer}
+            open={openDrawerApp}
+            placement='right'
+            extra={
+            <Space>
+                <Button onClick={onCloseDrawer}>Cancel</Button>
+                <Button type='primary' className='outlined-primary-btn' onClick={onCloseDrawer}>
+                OK
+                </Button>
+            </Space>
+            }
+        >
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+        </Drawer>
     </div>
   )
 }

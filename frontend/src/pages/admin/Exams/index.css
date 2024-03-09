@@ -133,6 +133,14 @@
 }
 
 @media screen and (max-width: 1400px){
+    .test-filter > div > .ant-select{
+        min-width: 120px;
+        margin-left: 5px;
+        font-size: 11px;
+    }
+    .test-filter label {
+        font-size: 11px;
+    }
     .card-exam h1 {
         font-size: 17px;
     }
@@ -144,6 +152,37 @@
         font-size: 12px;
     }
     .card-exam-bottom h4 {
+        font-size: 12px;
+    }
+    .easy-diff,
+    .middle-diff,
+    .hard-diff {
+    width: 15px; /* Larghezza del pallino */
+    height: 15px; /* Altezza del pallino */
+    }
+}
+
+@media screen and (max-width: 1300px){
+    .test-filter{
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        gap: 0.2rem;
+        width: 75%;
+    }
+    .card-exam{
+        border: 1px solid var(--primary);
+        width: 30%;
+        min-height: 220px;
+    }
+    .card-exam h1 {
+        font-size: 15px;
+    }
+    .card-exam-bottom h4 {
+        font-size: 11px;
+    }
+    .card-exam-top > button {
+        padding: 4px 12px;
         font-size: 12px;
     }
     .easy-diff,

@@ -195,7 +195,16 @@
 .auth-img-mobile{
   display: none;
 }
-
+@media screen and (max-width: 1400px){
+  .page-title{
+    font-size: 20px;
+  }
+}
+@media screen and (max-width: 1400px){
+  .page-title{
+    font-size: 18px;
+  }
+}
 @media screen and (max-width: 650px) {
   .sidebar{
     background-color: #fff;

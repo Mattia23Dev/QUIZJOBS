@@ -9,7 +9,7 @@ import './stylesheets/layout.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/common/Login';
 import RegisterPage from './pages/common/Register';
-import HomePage from './pages/common/Home';
+import HomePage from './pages/admin/Home';
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
 import ReportsPage from './pages/user/Reports';

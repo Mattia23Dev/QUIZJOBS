@@ -56,10 +56,12 @@ const saveAppointment = async (req, res) => {
 };
 
 const updateAppointment = async (req, res) => {
+  console.log(req.body)
     try {
         const appointmentId = req.params.appointmentId;
         const { title, candidate, date, time, description } = req.body;
         const dateTime = new Date(`${date}T${time}`);
+        const candidateDetails = await candidateModel.findById(candidate);
 
         const appointment = await Appointment.findById(appointmentId);
         if (!appointment) {
@@ -72,8 +74,9 @@ const updateAppointment = async (req, res) => {
         appointment.description = description;
 
         await appointment.save();
+        appointment.candidate = candidateDetails;
 
-        res.status(200).json({ success: true, message: 'Appuntamento aggiornato con successo' });
+        res.status(200).json({ success: true, message: 'Appuntamento aggiornato con successo', data: appointment });
     } catch (error) {
         console.error('Errore durante l\'aggiornamento dell\'appuntamento:', error);
         res.status(500).json({ message: 'Si è verificato un errore durante l\'aggiornamento dell\'appuntamento' });

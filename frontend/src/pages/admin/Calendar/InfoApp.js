@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import { Modal, Select, DatePicker, TimePicker, message } from 'antd'
 import logo from '../../../imgs/logo.png'
 import { getCandidateCrm } from '../../../apicalls/exams';
-import { deleteAppointmentUser, saveAppointment } from '../../../apicalls/appointment';
+import { deleteAppointmentUser, saveAppointment, updateAppointmentUser } from '../../../apicalls/appointment';
 import moment from 'moment';
 import edit from '../../../imgs/edit.png'
 import move from '../../../imgs/move.png'
@@ -10,7 +10,7 @@ import cancel from '../../../imgs/cancel.png'
 import indietro from '../../../imgs/indietro.png'
 const { Option } = Select
 
-const InfoApp = ({eventVisible, handleModalCancel, setSelectedEvent, id, handleDeleteApp, handlePushNewApp, activeTab, setActiveTab, selectedDate, selectedEvent}) => {
+const InfoApp = ({eventVisible, handleModalCancel, setSelectedEvent, id, handleEditNewApp, handleDeleteApp, handlePushNewApp, activeTab, setActiveTab, selectedDate, selectedEvent}) => {
     const [candidateOptions, setCandidateOptions] = useState([])
     const [title, setTitle] = useState('');
     const [candidate, setCandidate] = useState('');
@@ -129,11 +129,39 @@ const InfoApp = ({eventVisible, handleModalCancel, setSelectedEvent, id, handleD
           description: app.description,
           date: moment(date),
           time: moment(time, 'HH:mm'),
-          candidate: app.candidate._id
+          candidate: app.candidate._id,
+          id: app._id
         }
         setAppToEdit(appointment);
     };
-    console.log(appToEdit)
+    const handleUpdateApp = async () => {
+      const editApp = {
+        title: appToEdit.title,
+        description: appToEdit.description,
+        candidate: appToEdit.candidate,
+        date: appToEdit.date ? appToEdit.date.format('YYYY-MM-DD') : null,
+        time: appToEdit.time ? appToEdit.time.format('HH:mm') : null,
+      }
+      console.log(editApp)
+      try {
+        const response = await updateAppointmentUser(appToEdit.id,editApp)
+        console.log(response)
+        if (response.success){
+          const updatedEvents = selectedEvent.map(event => {
+            if (event._id === response.data._id){
+              return response.data;
+            } else {
+              return event;
+            }
+          });
+          setSelectedEvent(updatedEvents);
+          handleEditNewApp(response.data);  
+          setActiveTab(1)        
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
   return (
     <Modal
     title={
@@ -177,7 +205,6 @@ const InfoApp = ({eventVisible, handleModalCancel, setSelectedEvent, id, handleD
                     <p>{e.candidate.name}</p>                    
                 </div>
                 <div>
-                    <p><u>Info</u></p>
                     <img alt='modifica appuntamento skilltest' onClick={() => editApp(e, formattedTime, selectedDate)} src={edit}/>
                     <img alt='elimina appuntamento skilltest' onClick={() => deleteApp(e._id)} src={cancel}/>
                 </div>
@@ -261,7 +288,7 @@ const InfoApp = ({eventVisible, handleModalCancel, setSelectedEvent, id, handleD
           <label>Descrizione (opzionale)</label>
           <textarea style={{minHeight: '100px'}} placeholder="Descrizione" value={appToEdit?.description} onChange={(e) => setAppToEdit({...appToEdit, description: e.target.value})} />
         </div>
-        <button className='primary-outlined-btn' onClick={handleSubmit}>Modifica appuntamento</button>
+        <button className='primary-outlined-btn' onClick={handleUpdateApp}>Modifica appuntamento</button>
       </div>
       ) : null}
   </Modal>

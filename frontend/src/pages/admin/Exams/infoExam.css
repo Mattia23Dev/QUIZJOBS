@@ -272,3 +272,9 @@
   .modal-candidate-question > div:last-of-type > span{
     font-size: 12px;
   }
+
+
+
+  @media screen and (max-width: 1400px) {
+
+  }
