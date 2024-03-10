@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import PageTitle from '../../../components/PageTitle'
 import { Calendar, DatePicker, Select, Affix, Drawer, Button, Space, Popover } from 'antd';
 import './index.css'
@@ -8,11 +8,15 @@ import InfoApp from './InfoApp';
 import {useDispatch, useSelector} from 'react-redux'
 import { getAppointmentUser } from '../../../apicalls/appointment';
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
+import allegati from '../../../imgs/allegati.png'
+import Tour from 'reactour';
 const { Option } = Select;
 
-const CalendarComponent = () => {
+const CalendarComponent = ({tour, openTour, setOpenTour}) => {
+  console.log(tour, openTour)
   const [eventVisible, setEventVisible] = useState(false);
   const [openDrawerApp, setOpenDrawerApp] = useState(false);
+  const [drawerEvent, setDrawerEvent] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const dispatch = useDispatch();
   const user = useSelector(state=>state.users.user);
@@ -20,6 +24,21 @@ const CalendarComponent = () => {
   const [activeTab, setActiveTab] = useState(1);
   const [eventAppointment, setEventAppointment] = useState(moment());
   const [events, setEvents] = useState([])
+
+  const steps = [
+    {
+      content: 'Aggiungi eventi',
+      selector: '.elemento1', // Selettore CSS dell'elemento
+    },
+    {
+      content: 'Salva',
+      selector: '.elemento2', // Selettore CSS dell'elemento
+    },
+    {
+      content: 'Altre azioni',
+      selector: '.elemento3', // Selettore CSS dell'elemento
+    },
+  ];
 
   const getAppointment = async () => {
     try {
@@ -70,7 +89,7 @@ const CalendarComponent = () => {
           const formatDate = moment(event.date).format("DD-MM-YYYY");
           return(
         <ul style={{padding: '20px 0'}}>
-            <li style={{backgroundColor: 'green', borderRadius: '5px', padding: '4px 8px', color: 'white'}} key={index}>
+            <li className='li-calendar' key={index}>
               {eventsForDate.length > 1 ? eventsForDate.length + ' eventi' : '1 evento'}
             </li>
         </ul>
@@ -108,7 +127,7 @@ const CalendarComponent = () => {
     <div className='home-content'>
       <div className='top-calendar'>
         <PageTitle title={"Calendario"} />
-        <div className='filter-appointment'>
+        <div className='filter-appointment elemento1'>
               <div>
                 <button 
                 className={eventAppointment.isSame(moment().subtract(1, 'day'), 'day') ? 'active' : ''}
@@ -121,31 +140,38 @@ const CalendarComponent = () => {
                 onClick={() => setEventAppointment(moment().add(1, 'day'))}>Domani</button>
               </div>
               <DatePicker className='datepicker' locale={locale} value={eventAppointment} onChange={(date, dateString) => setEventAppointment(moment(dateString))} />
-          </div>  
+          </div>
         </div>
           <div className='calendar-container'>
             <div>
             <Affix offsetTop={160}>
               <h4>Prossimi appuntamenti</h4>
-              <ul>
-                {events && events.length > 0 && events?.map((event, index) => {
-                  const formattedDate = moment(event.date).format('DD-MM-YYYY');
-                  const formattedTime = moment(event.date).format('HH:mm');
+              <ul className='elemento2'>
+                {events && events.length > 0 && events?.filter(event => {
+                    const eventDate = moment(event.date).format('DD-MM-YYYY');
+                    return eventDate === moment(eventAppointment).format("DD-MM-YYYY");
+                }).length > 0 ? events?.filter(event => {
+                    const eventDate = moment(event.date).format('DD-MM-YYYY');
+                    return eventDate === moment(eventAppointment).format("DD-MM-YYYY");
+                }).map((event, index) => {
+                    const formattedDate = moment(event.date).format('DD-MM-YYYY');
+                    const formattedTime = moment(event.date).format('HH:mm');
                   return(
-                  <li style={{cursor: 'pointer'}} key={index} onClick={() => setOpenDrawerApp(true)}>
+                  <li style={{cursor: 'pointer'}} key={index} onClick={() => {setOpenDrawerApp(true); setDrawerEvent(event)}}>
                     <strong>Data:</strong> {formattedDate}, <strong>Ora:</strong> {formattedTime} <br />
                     <strong>Candidato:</strong> {event.candidate.name + ' ' + event.candidate.surname}, <br />
                     <strong>Posizione lavorativa:</strong> {event.jobPosition}
                   </li>
-                )})}
+                )}): <p style={{margin: '30px 0', fontWeight: '600'}}>Non ci sono appuntamenti oggi</p>}
               </ul>
               </Affix>
             </div>
-            <div>
+            <div className='elemento3'>
               <Calendar
               dateCellRender={events && dateCellRender}
               onSelect={handleDateClick}
               mode="month"
+              locale={{ locale: 'it' }}
             />            
             </div>
           </div>
@@ -180,10 +206,44 @@ const CalendarComponent = () => {
             </Space>
             }
         >
-            <p>Some contents...</p>
-            <p>Some contents...</p>
-            <p>Some contents...</p>
+            <h2>{drawerEvent?.title}</h2>
+            <p>{moment(drawerEvent?.date).format("DD-MM-YYYY")} - {moment(drawerEvent?.date).format('HH:mm')}</p>
+            <p>{drawerEvent?.description}</p>
+            <hr />
+            <div className='modal-candidate-data'>
+              <div>
+                  <p>Nome:</p>
+                  <p>{drawerEvent?.candidate.name + ' ' + drawerEvent?.candidate.surname}</p>
+              </div>
+              <div>
+                  <p>Email:</p>
+                  <p>{drawerEvent?.candidate.email}</p>
+              </div>
+              <div>
+                  <p>Cellulare:</p>
+                  <p>{drawerEvent?.candidate?.phone}</p>
+              </div>
+              <div>
+                  <p>Città</p>
+                  <p>{drawerEvent?.candidate?.city}</p>
+              </div>
+              <div>
+                  <p>Titolo</p>
+                  <p>{drawerEvent?.candidate?.degree}</p>
+              </div>
+              <div>
+                  <p>Posizione</p>
+                  <p>{drawerEvent?.candidate.jobPosition}</p>
+              </div>
+              <a className='allegati' href={`http://localhost:5000/uploads/${drawerEvent?.candidate.cv}`}><img src={allegati} alt='documento link'/>Scarica CV</a>
+          </div>
         </Drawer>
+        <Tour
+        isOpen={openTour && tour === "calendar"}
+        onRequestClose={() => {setOpenTour(false)}}
+        steps={steps}
+        rounded={5}
+      />
     </div>
   )
 }

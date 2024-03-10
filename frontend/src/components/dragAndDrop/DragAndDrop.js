@@ -5,10 +5,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import {FaSearch} from 'react-icons/fa'
 import {message, Select} from 'antd'
 import { HideLoading, ShowLoading } from '../../redux/loaderSlice';
+import Tour from 'reactour'
 const { Option } = Select;
 const typesHero = ['Da contattare', 'Primo colloquio', 'Secondo colloquio', 'Offerta', 'Offerta accettata'];
 
-const DragAndDrop = ({status, showAddCandidateModal, setAddStatus, setShowAddCandidateModal, initialData, setInitialData, selectedCandidate, setShowInfoCandidateModal, setSelectedCandidate}) => {
+const DragAndDrop = ({openTour, setOpenTour, tour, showAddCandidateModal, setAddStatus, setShowAddCandidateModal, initialData, setInitialData, selectedCandidate, setShowInfoCandidateModal, setSelectedCandidate}) => {
     const [isDragging, setIsDragging] = useState(false);
     const [listItems, setListItems] = useState(initialData);
     const user = useSelector(state=>state.users.user)
@@ -19,7 +20,20 @@ const DragAndDrop = ({status, showAddCandidateModal, setAddStatus, setShowAddCan
     const [filterScore, setFilterScore] = useState("tutti");
     const [filterTestOption, setFilterTestOption] = useState()
     const [cityOption, setCityOption] = useState()
-
+    const steps = [
+      {
+        content: 'Filtra tutti i candidati',
+        selector: '.elemento1', // Selettore CSS dell'elemento
+      },
+      {
+        content: 'Trascina i candidati per cambiargli il percorso.',
+        selector: '.elemento2', // Selettore CSS dell'elemento
+      },
+      {
+        content: 'Aggiungi i candidati manualmente.',
+        selector: '.elemento3', // Selettore CSS dell'elemento
+      },
+    ]
     const extractCities = (items) => {
       const citiesSet = new Set();
       items.forEach(item => {
@@ -57,7 +71,7 @@ const DragAndDrop = ({status, showAddCandidateModal, setAddStatus, setShowAddCan
     const handleDragging = dragging => setIsDragging(dragging);
     const handleDrop = async (e) => {
         e.preventDefault();
-        const dataString = e.dataTransfer.getData('text'); // Ottengo la stringa JSON
+        const dataString = e.dataTransfer.getData('text');
         const draggedItem = JSON.parse(dataString);
         console.log(draggedItem)
         const { status } = e.currentTarget.dataset;
@@ -103,7 +117,7 @@ const DragAndDrop = ({status, showAddCandidateModal, setAddStatus, setShowAddCan
             <FaSearch />
             <input type='text' placeholder='Cerca candidato' value={searchValue} onChange={(e) => setSearchValue(e.target.value)} />
           </div>
-          <div>
+          <div className='elemento1'>
             <div>
               <label>filtra per test:</label>
               <Select value={filterTest} onChange={(value) => setFilterTest(value)}>
@@ -133,7 +147,7 @@ const DragAndDrop = ({status, showAddCandidateModal, setAddStatus, setShowAddCan
             </div>
           </div>
         </div>
-        <div className="grid">
+        <div className="grid elemento2">
             {
                 typesHero.map(container => (
                  <div
@@ -143,7 +157,7 @@ const DragAndDrop = ({status, showAddCandidateModal, setAddStatus, setShowAddCan
                     data-status={container}
                   >
                     <p>{container}</p>
-                    <button onClick={() => {setShowAddCandidateModal(true); setAddStatus(container)}}>+</button>
+                    <button className='elemento3' onClick={() => {setShowAddCandidateModal(true); setAddStatus(container)}}>+</button>
                     {listItems.length > 0 && listItems
                     .filter(item => {
                       if (filterCity === "tutti" && filterTest === "tutti" && filterScore === "tutti") {
@@ -187,6 +201,12 @@ const DragAndDrop = ({status, showAddCandidateModal, setAddStatus, setShowAddCan
                 ))
             }
         </div>
+        <Tour
+        isOpen={openTour && tour === "crm"}
+        onRequestClose={() => {setOpenTour(false)}}
+        steps={steps}
+        rounded={5}
+      />
       </div>  
     );
 };

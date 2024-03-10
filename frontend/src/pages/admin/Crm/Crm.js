@@ -10,7 +10,7 @@ import DragAndDrop from '../../../components/dragAndDrop/DragAndDrop'
 import InfoCandidate from './InfoCandidate'
 import AddCandidate from './AddCandidate'
 
-function Crm() {
+function Crm({openTour, setOpenTour, tour}) {
   const [initialData, setInitialData] = useState([])
   const id = useSelector(state=>state.users.user._id);
   const [showInfoCandidateModal, setShowInfoCandidateModal] = useState();
@@ -47,13 +47,16 @@ function Crm() {
   return (
     <div className='home-content'>
       <PageTitle title="Reports"/>
-      <DragAndDrop 
+      <DragAndDrop
       setSelectedCandidate={setSelectedCandidate}
       selectedCandidate={selectedCandidate} 
       setShowInfoCandidateModal={setShowInfoCandidateModal}
       setShowAddCandidateModal={setShowAddCandidateModal}
       showAddCandidateModal={showAddCandidateModal}
       setInitialData={setInitialData}
+      tour={tour}
+      setOpenTour={setOpenTour}
+      openTour={openTour}
       setAddStatus={setAddStatus}
       initialData={initialData} />
 

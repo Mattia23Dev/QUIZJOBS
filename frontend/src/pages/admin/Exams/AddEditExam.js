@@ -13,7 +13,6 @@ import openai from 'openai';
 import copia from '../../../imgs/copia.png';
 import copiablu from '../../../imgs/copiablu.png';
 import eye from '../../../imgs/eye.png';
-import 'antd/dist/antd.css';
 import leftArrow from '../../../imgs/leftarrow.png'
 import rightArrow from '../../../imgs/arrowright.png'
 import edit from '../../../imgs/edit.png'
@@ -21,6 +20,7 @@ import move from '../../../imgs/move.png'
 import cancel from '../../../imgs/cancel.png'
 import track from '../../../imgs/track.png'
 import { useLocation } from 'react-router-dom';
+import Tour from 'reactour'
 const { Option } = Select;
 
 const DomandeComponent = ({ domande, onUpdateDomande, setSelectedQuestion, setShowAddEditQuestionModal }) => {
@@ -140,7 +140,7 @@ const DomandeComponent = ({ domande, onUpdateDomande, setSelectedQuestion, setSh
  };
  
 
-function AddEditExam({setBigLoading}) {
+function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {id} = useParams()
@@ -172,6 +172,20 @@ function AddEditExam({setBigLoading}) {
   });
   const location = useLocation();
   const { storedQuestions } = location.state ?? {};
+  const steps = [
+    {
+      content: 'Compila il modulo per fornire all\'AI istruzioni su come deve essere il Test',
+      selector: '.elemento1', // Selettore CSS dell'elemento
+    },
+    {
+      content: 'Modifica le domande a tuo piacimento, puoi aggiungere anche un modulo aggiuntivo con domande non in focus sulle competenze',
+      selector: '.elemento2', // Selettore CSS dell'elemento
+    },
+    {
+      content: 'Condividi il link del test, e crea dei link appositi per i vari canali che utilizzi',
+      selector: '.elemento3', // Selettore CSS dell'elemento
+    },
+  ];
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(link)
@@ -519,24 +533,24 @@ function AddEditExam({setBigLoading}) {
           <a onClick={preview ? handlePreviewClick : null} className={preview ? 'preview': 'preview-disabled'}><img src={eye} alt='Anteprima skilltest' />Anteprima</a>
         </div>
           <div className='create-exam-top'>
-            <div onClick={() => setActiveTab(1)} className={activeTab === 1 ? 'active' : ''}>
+            <div onClick={() => setActiveTab(1)} className={activeTab === 1 ? 'active' : 'elemento1'}>
               <span></span>
               <p>Dettagli test</p>
             </div>
             <hr />
-            <div onClick={passaOltre < 2 ? null : () => setActiveTab(2)} style={passaOltre < 2 ? {cursor: 'not-allowed'} : null} className={activeTab === 2 ? 'active' : ''}>
+            <div onClick={passaOltre < 2 ? null : () => setActiveTab(2)} style={passaOltre < 2 ? {cursor: 'not-allowed'} : null} className={activeTab === 2 ? 'active' : 'elemento2'}>
               <span></span>
               <p>Domande</p>
             </div>
             <hr />
-            <div onClick={passaOltre < 3 ? null : () => setActiveTab(3)} style={passaOltre < 3 ? {cursor: 'not-allowed'} : null} className={activeTab === 3 ? 'active' : ''}>
+            <div onClick={passaOltre < 3 ? null : () => setActiveTab(3)} style={passaOltre < 3 ? {cursor: 'not-allowed'} : null} className={activeTab === 3 ? 'active' : 'elemento3'}>
               <span></span>
               <p>Candidati</p>
             </div>
           </div>
           {(examData || !id) &&
           activeTab === 1 ?
-          <div className='create-exam-body'>
+          <div className={activeTab === 1 ? 'create-exam-body elemento1' : 'create-exam-body'}>
           <PageTitle title={"Genera un nuovo test"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
           <button className='button-ligh-blue' onClick={() => navigate('/admin/exams')}>Visualizza test salvati</button>
           <Form layout="vertical" onFinish={generateQuestions} initialValues={examData} className="create-exam-form">
@@ -613,7 +627,7 @@ function AddEditExam({setBigLoading}) {
               </div>
           </Form>
           </div> : activeTab === 2 ? 
-          <div className='create-exam-body'>
+          <div className={activeTab === 2 ? 'create-exam-body elemento2' : 'create-exam-body'}>
             <PageTitle title={"Domande"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
               <div className='flex justify-end'> 
                 <button className="button-ligh-blue"
@@ -632,7 +646,7 @@ function AddEditExam({setBigLoading}) {
                     <button onClick={onFinish}><img alt='arrow right' src={rightArrow} />Salva e Genera Test</button>
               </div>}
           </div> : 
-          <div className='candidati-add-exam'>
+          <div className={activeTab === 3 ? 'candidati-add-exam elemento3' : 'candidati-add-exam'}>
             <PageTitle title={"Candidati"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
             <h4>Non ci sono ancora candidati, <b>condividi il link</b> per profilare i tuoi talenti, puoi inserire il link nell'offerta
               di lavoro su Linkedin o Indeed. <br /><br />
@@ -668,6 +682,12 @@ function AddEditExam({setBigLoading}) {
               ))}
             </div>   
          </Modal>}
+         <Tour
+        isOpen={openTour && tour === "addexam"}
+        onRequestClose={() => {setOpenTour(false)}}
+        steps={steps}
+        rounded={5}
+      />
       </div>    
   )
 }

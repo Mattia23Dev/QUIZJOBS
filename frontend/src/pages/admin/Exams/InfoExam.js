@@ -9,7 +9,6 @@ import AddEditQuestion from './AddEditQuestion';
 import copia from '../../../imgs/copia.png';
 import copiablu from '../../../imgs/copiablu.png';
 import eye from '../../../imgs/eye.png';
-import 'antd/dist/antd.css';
 import leftArrow from '../../../imgs/leftarrow.png'
 import rightArrow from '../../../imgs/arrowright.png'
 import edit from '../../../imgs/edit.png'
@@ -22,6 +21,7 @@ import timegreen from '../../../imgs/timegreen.png'
 import InfoCandidate from './InfoCandidate';
 import moment from 'moment';
 import './infoExam.css'
+import Tour from 'reactour';
 
 const DomandeComponent = ({ domande, onUpdateDomande, setSelectedQuestion, setShowAddEditQuestionModal }) => {
    const [currentDomanda, setCurrentDomanda] = useState(domande[0]);
@@ -137,7 +137,7 @@ const DomandeComponent = ({ domande, onUpdateDomande, setSelectedQuestion, setSh
    );
  };
 
-function InfoExam() {
+function InfoExam({openTour, setOpenTour, tour}) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {id} = useParams()
@@ -161,7 +161,20 @@ function InfoExam() {
    skills: [examData?.skills] || ["",],
 });
 
-
+const steps = [
+  {
+    content: 'Crea dei link con un nome di tracciamento che decidi tu',
+    selector: '.elemento1', // Selettore CSS dell'elemento
+  },
+  {
+    content: 'Vedi le info dei candidati, il punteggio e le risposte corrette',
+    selector: '.elemento2', // Selettore CSS dell'elemento
+  },
+  {
+    content: 'Modifica le domande',
+    selector: '.elemento3', // Selettore CSS dell'elemento
+  },
+];
 const handleCopyLink = () => {
    navigator.clipboard.writeText(examData?.examLink)
      .then(() => {
@@ -411,16 +424,16 @@ const addTrackLinkInput = async () => {
       <div className='copy-preview'>
           <button onClick={handleCopyLink} className='copy-link-active'><img src={copiablu} alt='copia link skilltest' />Copia link</button>
           {examData?.trackLink && examData?.trackLink.length > 0 ? 
-          <button onClick={() => setShowTrackLink(true)} className='copy-link-active'><img src={track} alt='track link skilltest' />Track link</button> :
-          <button onClick={() => setShowTrackLink(true)} className='copy-link-active'><img src={track} alt='track link skilltest' />Track link</button>}
+          <button onClick={() => setShowTrackLink(true)} className='copy-link-active elemento1'><img src={track} alt='track link skilltest' />Track link</button> :
+          <button onClick={() => setShowTrackLink(true)} className='copy-link-active elemento1'><img src={track} alt='track link skilltest' />Track link</button>}
       </div>
       <div className='create-exam-top'>
-            <div onClick={() => setActiveTab(1)} className={activeTab === 1 ? 'active' : ''}>
+            <div onClick={() => setActiveTab(1)} className={activeTab === 1 ? 'active' : 'elemento2'}>
               <span></span>
               <p>Candidati</p>
             </div>
             <hr />
-            <div onClick={() => setActiveTab(2)} className={activeTab === 2 ? 'active' : ''}>
+            <div onClick={() => setActiveTab(2)} className={activeTab === 2 ? 'active' : 'elemento3'}>
               <span></span>
               <p>Domande</p>
             </div>
@@ -432,14 +445,14 @@ const addTrackLinkInput = async () => {
       </div>
         {(examData || !id) &&
         activeTab === 1 ?
-         <div className='info-exam-candidate'>
+         <div className={activeTab === 1 ? 'info-exam-candidate elemento2' : 'info-exam-candidate'}>
             <PageTitle title={"Candidati"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
             <Table columns={candidateColumns} dataSource={examData?.candidates} rowKey={(record) => record._id} className="mt-1">
 
             </Table>
          </div>   
          : activeTab === 2 ?
-         <div className='create-exam-body'>
+         <div className={activeTab === 2 ? 'create-exam-body elemento3' : 'create-exam-body'}>
                <PageTitle title={"Domande"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
                <div className='flex justify-end'> 
                   <button className="button-ligh-blue"
@@ -536,6 +549,12 @@ const addTrackLinkInput = async () => {
                 ))}
               </div>   
          </Modal>}
+      <Tour
+        isOpen={openTour && tour === "infoexam"}
+        onRequestClose={() => {setOpenTour(false)}}
+        steps={steps}
+        rounded={5}
+      />
     </div>
   )
 }

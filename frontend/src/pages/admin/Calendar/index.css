@@ -22,6 +22,15 @@
     padding: 10px;
     font-size: 12px;
 }
+.li-calendar{
+    list-style-type: none;
+    width: 90%;
+    border-radius: 5px;
+    background-color: var(--primary);
+    font-size: 12px;
+    padding: 6px 10px;
+    color: white;
+}
 .calendar-container > div:last-of-type{
     width: 70%;
 }

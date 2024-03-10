@@ -3,28 +3,30 @@
 }
 
 .sidebar{
-  background-color: #fff;
+  background-color: #121430;
   padding: 10px 14px 10px 6px;
-  color: #5D7285;
+  color: #8d9ead;
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  box-shadow: 20px 0px 10px 2px rgba(128, 128, 128, 0.312);
+  /*box-shadow: 20px 0px 10px 2px rgba(128, 128, 128, 0.312);*/
   transition: 0.3s all;
+  position: relative;
 }
 .sidebar-close{
-  background-color: #fff;
+  background-color: #121430;
   padding: 10px 8px 10px 1px;
-  color: #5D7285;
+  color: #8d9ead;
   height: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: flex-start;
-  box-shadow: 20px 0px 10px 2px rgba(128, 128, 128, 0.36);
+  /*box-shadow: 20px 0px 10px 2px rgba(128, 128, 128, 0.36);*/
   transition: 0.3s all;
+  position: relative;
 }
 .layout .menu {
   margin-top: 25px;
@@ -82,13 +84,13 @@
 }
 .header .logo,
 .sidebar .logo {
-  height: 20px;
+  height: 17px;
   transition: 0.2s all;
+  margin-top: 10px;
+  margin-left: -30px;
 }
 .sidebar-close .logo{
-  transform: scale(1);
-  height: 10px;
-  margin-top: 10px;
+  display: none;
   transition: 0.2s all;
 }
 .page-title{
@@ -109,7 +111,7 @@
 }
 
 .body::-webkit-scrollbar-thumb {
-  background-color: #c4c4c4; /* Colore della thumb (il pulsante trascinabile) */
+  background-color: var(--primary); /* Colore della thumb (il pulsante trascinabile) */
 }
 
 /* Stile per la scrollbar su Firefox */
@@ -131,7 +133,7 @@
   position: relative;
 }
 .header{
-  background-color: #fff;
+  background-color: #F0F6FF;
   box-shadow: 15px 5px 10px 2px rgba(128, 128, 128, 0.216);
   color: #5D7285 !important;
   width: 100%; 
@@ -140,13 +142,58 @@
   top: 0;
   z-index: 10;
 }
+.header > div:first-of-type{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.header > div:first-of-type > div:last-of-type{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border: 1px solid var(--primary);
+  border-radius: 5px;
+  padding: 0 5px 0 10px;
+  gap: 3px;
+  height: 37px;
+}
+.header input {
+  border: none;
+  background-color: transparent;
+  font-size: 13px;
+}
 .content{
   padding: 15px;
 }
-
 .cursor-pointer{
+  cursor: pointer;
+  margin-top: 5px;
+}
+.sidebar .cursor-pointer{
     cursor: pointer;
     margin-top: 5px;
+    top: 10px;
+    position: absolute;
+    right: 5px;
+}
+.sidebar .cursor-pointer > i,
+.sidebar-close .cursor-pointer > i {
+  border: 1px solid #aac5d7;
+  border-radius: 50%;
+  height: 27px;
+  width: 27px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  color: white;
+  font-size: 18px;
+}
+.sidebar-close .cursor-pointer{
+  padding-left: 10px;
+}
+.sidebar-close .cursor-pointer > i {
+  font-size: 15px;
 }
 .cursor-pointer-mobile{
   display: none;

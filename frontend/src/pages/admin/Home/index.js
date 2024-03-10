@@ -1,13 +1,14 @@
-import { Card, Row, Col, Statistic, message, Timeline, Tag, Drawer, Button, Space } from 'antd';
+import { Card, Row, Col, Statistic, message, Timeline, Tag, Drawer, Button, Space, Select } from 'antd';
 import React,{useState,useEffect} from 'react'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { getAllExams } from '../../../apicalls/exams'
+import { getAllExams, getExamByUser } from '../../../apicalls/exams'
 import PageTitle from '../../../components/PageTitle'
-import "antd/dist/antd.css";
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice'
+import Tour from 'reactour'
 import './testPage.css';
+const {Option} = Select;
 
 const SalesDashboard = () => {
     return (
@@ -97,10 +98,12 @@ const SalesDashboard = () => {
     );
   }
 
-function HomePage() {
+function HomePage({tour, setOpenTour, openTour}) {
   const [exams, setExams] = useState([])
   const [openDrawer, setOpenDrawer] = useState(false);
   const dispatch = useDispatch()
+  const [filterTestOption, setFilterTestOption] = useState()
+  const [filterTest, setFilterTest] = useState('Tutti')
   const navigate = useNavigate()
   const user = useSelector(state=>state.users.user)
   const getExams = async() => {
@@ -129,16 +132,65 @@ function HomePage() {
   const onCloseDrawer = () => {
     setOpenDrawer(false)
   }
+  const steps = [
+    {
+      content: 'Analizza il numero di candidati',
+      selector: '.elemento1', // Selettore CSS dell'elemento
+    },
+    {
+      content: 'Analizza i punteggi',
+      selector: '.elemento2', // Selettore CSS dell'elemento
+    },
+    {
+      content: 'Altre azioni',
+      selector: '.elemento3', // Selettore CSS dell'elemento
+    },
+  ];
+  const getExamsData = async() => {
+    try{
+      const response = await getExamByUser(user._id)
+      if(response.success){
+       setFilterTestOption(response.data)
+      }
+      else{
+       message.error(response.message)
+      }
+    }
+    catch(error){
+         dispatch(HideLoading())
+         message.error(error.message)
+    }
+  }
+  useEffect(() => {
+    getExamsData()
+  }, [])
   return (
     user && <div className='home-content'>
       <div className='test-header'>
-        <PageTitle title={`Dashboard`}/>
+        <div>
+          <PageTitle title={`Dashboard`}/>
+          <div>
+              <label>filtra per test:</label>
+              <Select value={filterTest} onChange={(value) => setFilterTest(value)}>
+                <Option value='tutti'>Tutti</Option>
+                {filterTestOption && filterTestOption.length > 0 && filterTestOption.map((test) => (
+                  <Option key={test._id} value={test._id}>{test.jobPosition}</Option>
+                ))}
+              </Select>
+          </div>
+        </div>
         <button onClick={() => setOpenDrawer(true)}>Vedi dati</button>
-      </div>  
+      </div> 
       <div>
-        <SalesDashboard />
-        <UserStatsDashboard />
-        <ActivityDashboard />
+        <div className='elemento1'>
+          <SalesDashboard />
+        </div>
+        <div className='elemento2'>
+          <UserStatsDashboard />
+        </div>
+        <div className='elemento3'>
+         <ActivityDashboard /> 
+        </div>
         <StatisticsDashboard />
         <TagDashboard />
       </div>
@@ -162,6 +214,12 @@ function HomePage() {
             <p>Some contents...</p>
             <p>Some contents...</p>
         </Drawer>
+        <Tour
+        isOpen={openTour && tour === "home"}
+        onRequestClose={() => {setOpenTour(false)}}
+        steps={steps}
+        rounded={5}
+      />
     </div>
   )
 }

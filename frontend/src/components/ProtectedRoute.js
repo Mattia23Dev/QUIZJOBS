@@ -1,14 +1,17 @@
 import React, {useEffect, useState} from 'react'
 import { getUserInfo } from '../apicalls/users'
-import {message} from 'antd'
+import {message, Popover} from 'antd'
 import { useDispatch } from 'react-redux'
 import { SetUser } from '../redux/usersSlice'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { HideLoading, ShowLoading } from '../redux/loaderSlice'
 import logo from '../imgs/logo.png'
+import logob from '../imgs/logobianco.png'
+import { FaSearch } from 'react-icons/fa'
+import Tour from 'reactour'
 
-function ProtectedRoute({children, setLoginPopup}) {
+function ProtectedRoute({children, setLoginPopup, handleStartTour, tour, openTour, setOpenTour}) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const user = useSelector(state=>state.users.user)
@@ -43,24 +46,50 @@ function ProtectedRoute({children, setLoginPopup}) {
       }
     }
   ] 
+  const steps = [
+    {
+      content: 'Analizza l\'andamento dei tuoi test e delle tue candidature',
+      selector: '.elemento1', 
+    },
+    {
+      content: 'Crea, modifica o analizza i candidati del test',
+      selector: '.elemento2', // Selettore CSS dell'elemento
+    },
+    {
+      content: 'Gestisci il processo di candidatura',
+      selector: '.elemento3', // Selettore CSS dell'elemento
+    },
+    {
+      content: 'Gestisci gli eventi e gli appuntamenti',
+      selector: '.elemento4', 
+    },
+    {
+      content: 'Aggiungi o elimina membri del team',
+      selector: '.elemento5', // Selettore CSS dell'elemento
+    },
+    {
+      content: 'Gestisci i dati di profilazione',
+      selector: '.elemento6', // Selettore CSS dell'elemento
+    },
+  ];
   const adminMenu = [
     {
       title: "Home",
       paths: ["/admin/home"],
       icon: <i className="ri-home-line"></i>,
-      onClick: () => navigate("/admin/home")
+      onClick: () => navigate("/admin/home"),
     },
     {
       title: "Test",
       paths: ["/admin/exams", "/admin/exams/add", "/admin/exams/edit/:id", "/admin/exams/info/:id"],
       icon: <i className='ri-file-list-line'></i>,
-      onClick: () => navigate("/admin/exams")
+      onClick: () => navigate("/admin/exams"),
     },
     {
       title: "CRM",
       paths: ["/admin/crm"],
       icon: <i className="ri-bar-chart-line"></i>,
-      onClick: ()=>navigate("/admin/crm")
+      onClick: ()=>navigate("/admin/crm"),
     },
     /*{
       title: "Reports",
@@ -72,13 +101,13 @@ function ProtectedRoute({children, setLoginPopup}) {
       title: "Calendar",
       paths: ["/admin/calendar"],
       icon: <i className='ri-calendar-line'></i>, // Icona del calendario
-      onClick: () => navigate("/admin/calendar")
+      onClick: () => navigate("/admin/calendar"),
     },
     {
       title: "Team",
       paths: ["/admin/team"],
       icon: <i className='ri-team-line'></i>, // Icona del team
-      onClick: () => navigate("/admin/team")
+      onClick: () => navigate("/admin/team"),
     },
     /*{
       title: "Automations",
@@ -88,9 +117,15 @@ function ProtectedRoute({children, setLoginPopup}) {
     },*/
     {
       title: "Profilo",
-      paths: ["/profile"],
+      paths: ["/admin/profile"],
       icon: <i className='ri-user-line'></i>,
-      onClick: ()=>navigate("/profile")
+      onClick: ()=>navigate("/admin/profile"),
+    },
+    {
+      title: "Assistenza",
+      paths: ["/admin/help"],
+      icon: <i className="ri-headphone-line"></i>,
+      onClick: ()=>navigate("/admin/help")
     },
   ]
   const getUserData = async() => {
@@ -146,15 +181,44 @@ function ProtectedRoute({children, setLoginPopup}) {
         return false;
       }
   }
+  const getClassTour = (paths) => {
+    if (tour === "total"){
+      if(paths === "Home"){
+        return 'elemento1';
+      } else if (paths === "Test"){
+        return 'elemento2'
+      } else if (paths === "CRM"){
+        return 'elemento3'
+      } else if (paths === "Calendar"){
+        return 'elemento4'
+      } else if (paths === "Team"){
+        return 'elemento5'
+      } else if (paths === "Profilo"){
+        return 'elemento6'
+      }      
+    }
+}
   return (
     user && <div className='layout'>
      <div className='flex h-100'>
        <div className={!collapsed ? 'sidebar' : 'sidebar-close'}>
-       <img className='logo' alt='logo di SkillTest' src={logo} />
+       <div className='cursor-pointer'>
+          {!collapsed&&<i className="ri-close-line text-2xl flex items-center"
+          onClick={()=>setCollapsed(true)}></i>}
+          {collapsed&&<i className="ri-menu-2-line text-2xl flex items-center" onClick={()=>setCollapsed(false)}></i>}
+        </div>
+       <img className='logo' alt='logo di SkillTest' src={logob} />
          <div className='menu'>
             {menu.map((item,index)=>{
               return(
-                <div className={`menu-item ${getIsActiveOrNot(item.paths)&&"active-menu-item"}`} key={index} onClick={item.onClick}>
+                collapsed ? 
+                <Popover style={{borderRadius: '5px', padding: '5px 20px'}} placement="right" title={''} content={item.title}>
+                <div className={`menu-item ${getIsActiveOrNot(item.paths)&&"active-menu-item"} ${getClassTour(item.title)}`} key={index} onClick={item.onClick}>
+                    {item.icon}
+                    <span className={!collapsed ? '' : 'hide-menu-title'}>{item.title}</span>
+                </div>
+                </Popover> :
+                <div className={`menu-item ${getIsActiveOrNot(item.paths)&&"active-menu-item"} ${getClassTour(item.title)}`} key={index} onClick={item.onClick}>
                     {item.icon}
                     <span className={!collapsed ? '' : 'hide-menu-title'}>{item.title}</span>
                 </div>
@@ -167,22 +231,25 @@ function ProtectedRoute({children, setLoginPopup}) {
        </div>
        <div className='body'>
          <div className='header flex justify-between'>
+          <div>
             <div className='cursor-pointer-mobile'>
                 {!collapsed&&<i className="ri-close-line text-2xl flex items-center"
                 onClick={()=>setCollapsed(true)}></i>}
                 {collapsed&&<i className="ri-menu-2-line text-2xl flex items-center" onClick={()=>setCollapsed(false)}></i>}
             </div>
-            <div className='cursor-pointer'>
-              {!collapsed&&<i className="ri-close-line text-2xl flex items-center"
-              onClick={()=>setCollapsed(true)}></i>}
-              {collapsed&&<i className="ri-menu-2-line text-2xl flex items-center" onClick={()=>setCollapsed(false)}></i>}
-            </div>
             <div>
-              <div className='flex justify-center items-center gap-1'>
+            <FaSearch />
+              <input type='text' placeholder='Cerca candidato' />
+            </div>
+          </div>
+            <div style={{display: 'flex', gap: '3rem', alignItems: 'center'}}>
+              <div style={{cursor: 'pointer', fontSize: '14px'}} onClick={handleStartTour}>
+                <u>Come funziona?</u>
+              </div>
+              <div onClick={() => navigate('/admin/profile')} style={{cursor: 'pointer', ontSize: '14px'}} className='flex justify-center items-center gap-1'>
                 <i className="ri-user-line"></i>
                 {user?.name}
               </div>
-              <span>Role : {(user?.isAdmin)?"Admin":"User"}</span>
             </div>
          </div>
          <div className='content'>
@@ -190,6 +257,12 @@ function ProtectedRoute({children, setLoginPopup}) {
          </div>
        </div>
      </div>
+     <Tour
+        isOpen={openTour && tour === "total"}
+        onRequestClose={() => {setOpenTour(false)}}
+        steps={steps}
+        rounded={5}
+      />
     </div>
   )
 }

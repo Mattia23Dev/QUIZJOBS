@@ -2,9 +2,9 @@ const express = require("express")
 const app = express()
 const cors = require("cors");
 const path = require("path");
-
+const multer = require("multer")
 require("dotenv").config()
-// const cors = require("cors")
+
 const db = require("./config/dbConfig")
 const userRoute = require("./routes/userRoutes")
 const examRoute = require("./routes/examRoutes")
@@ -23,9 +23,31 @@ app.use("/api/exams",examRoute)
 app.use("/api/reports",reportRoute)
 app.use("/api/app",appRoute)
 
-// app.use(express.urlencoded({ extended: true }))
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'images/')
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+    }
+  });
+  const upload = multer({ storage: storage });
+app.post('/api/upload-image', upload.single('image'), (req, res) => {
+    try {
+
+      const imageUrl = `http://localhost:5000/${req.file.path}`;
+      res.json({ imageUrl });
+    } catch (error) {
+      console.error('Errore durante il caricamento dell\'immagine:', error);
+      res.status(500).json({ error: 'Errore durante il caricamento dell\'immagine' });
+    }
+});
+
+//app.use(express.urlencoded({ extended: true }))
 const _dirname = path.resolve();
 app.use(express.static(path.join(_dirname, "/frontend/build")));
+app.use("/images", express.static(path.join(__dirname, "images")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.get("*",(req,res)=>{
 res.sendFile(path.join(_dirname, "/frontend/build/index.html"))
 });

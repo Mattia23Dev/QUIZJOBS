@@ -10,7 +10,6 @@ import { FiEye, FiEyeOff } from 'react-icons/fi';
 import logobianco from '../../../imgs/logobianco.png'
 import { GoogleLogin } from 'react-google-login';
 import { gapi } from "gapi-script";
-import 'antd/dist/antd.css';
 
 function LoginPage() {
   const dispatch = useDispatch()

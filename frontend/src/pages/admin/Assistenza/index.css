@@ -1,0 +1,82 @@
+.assistenza{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+.assistenza > div:first-of-type{
+    width: 100%;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+}
+.assistenza > div:last-of-type{
+    width: 100%;
+}
+.faq-help{
+    width: 70% !important;
+}
+.faq-help > div {
+    width: 100%;
+}
+.assistenza textarea{
+    min-height: 300px;
+    margin: 20px 0;
+}
+.assistenza .ant-collapse{
+    background-color: transparent;
+    border: none;
+    text-align: left;
+}
+.assistenza .ant-collapse-item{
+    color: var(--primary);
+    border: none;
+}
+.assistenza .ant-collapse-item-active{
+    background-color: var(--primary) !important;
+    color: white;
+}
+.assistenza .ant-collapse-item-active span{
+    color: white !important
+}
+.help-top{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20%;
+    margin: 0 auto;
+    margin-top: 0.5rem;
+  }
+  .help-top > hr {
+    width: 90px;
+    color: var(--primary);
+    height: 0.8px;
+    background-color: var(--primary);
+    margin-top: 12px;
+  }
+  .help-top > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .help-top > div > span {
+    display: inline-block;
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background-color: gray;
+  }
+  .help-top > div > p {
+    color: #b4b4b4;
+  }
+  .help-top > div.active > span {
+    background-color: var(--secondary);
+  }
+  .help-top > div.active > p {
+    color: var(--secondary);
+  }

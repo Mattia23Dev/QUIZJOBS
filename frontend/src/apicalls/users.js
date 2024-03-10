@@ -48,3 +48,23 @@ export const getCandidateInfo = async(payload) => {
     return error.response.data
   }
 }
+
+export const sendHelpEmail = async(payload) => {
+  try{
+    const response = await axiosInstance.post('/api/users/sendHelpEmail', payload)
+    return response.data
+  }
+  catch(error){
+    return error.response.data
+  }
+}
+
+export const updateUserData = async(payload,id) => {
+  try{
+      const response = await axiosInstance.post(`/api/users/update/${id}`,payload)
+      return response.data
+  }
+  catch(error){
+      return error.response.data
+  }
+}

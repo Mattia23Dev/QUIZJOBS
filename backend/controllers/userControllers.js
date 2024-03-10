@@ -314,4 +314,33 @@ const googleLogin = async (req, res) => {
   })
 };
 
-module.exports = { register, login, getUserInfo, addCandidate, getCandidateInfo, googleLogin, changeStatusCandidate }
+const modifyUserData = async (req, res) => {
+  const userId = req.params.userId;
+  const { name, partitaIva, email, password, profileImage, codeSdi, address, companyName } = req.body;
+
+  try {
+      const user = await User.findById(userId);
+
+      if (!user) {
+          return res.status(404).json({ message: 'Utente non trovato' });
+      }
+
+      user.name = name;
+      user.partitaIva = partitaIva;
+      user.email = email;
+      user.password = password;
+      user.profileImage = profileImage;
+      user.codeSdi = codeSdi;
+      user.address = address;
+      user.companyName = companyName;
+
+      await user.save();
+
+      return res.status(200).json({ message: 'Dati utente aggiornati con successo', user: user, success: true });
+  } catch (error) {
+      console.error('Errore durante l\'aggiornamento dei dati utente:', error);
+      return res.status(500).json({ message: 'Errore durante l\'aggiornamento dei dati utente', success: false });
+  }
+};
+
+module.exports = { register, login, getUserInfo, addCandidate, getCandidateInfo, googleLogin, changeStatusCandidate, modifyUserData }

@@ -1,6 +1,9 @@
 .info-exam-candidate{
     margin-top: 1rem;
 }
+.info-exam-candidate .ant-table{
+  background-color: transparent !important;
+}
 .dettagli-test-modal{
     display: flex;
     justify-content: center;

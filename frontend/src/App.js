@@ -28,11 +28,20 @@ import BigLoader from './components/bigLoader/BigLoader';
 import Preview from './pages/user/WriteExam/Preview';
 import Team from './pages/admin/Team';
 import CalendarComponent from './pages/admin/Calendar';
+import Assistenza from './pages/admin/Assistenza';
+import Profile from './pages/admin/Profile';
 
 function App() {
   const {loading} = useSelector(state=>state.loaders)
   const [logoutPopup, setLoginPopup] = useState(false);
   const [bigLoading, setBigLoading] = useState(false);
+  const [openTour, setOpenTour] = useState(false);
+  const [whichTour, setWhichTour] = useState(false);
+  const handleStartTour = (tour) => {
+    setWhichTour(tour)
+    setOpenTour(true)
+    console.log(tour)
+  }
 
   return (
     <>
@@ -56,19 +65,19 @@ function App() {
         <Route path="/register" element={<PublicRoute><RegisterPage/></PublicRoute>}/>
         <Route path="/" element={<PublicRoute><Home/></PublicRoute>}/>
         <Route path="/user/:jobPositionSlug/:uniqueId" element={<PublicRoute><WriteExam /></PublicRoute>} />
-        <Route path="/admin/home" element={<ProtectedRoute setLoginPopup={setLoginPopup}><HomePage/></ProtectedRoute>}/>
-        <Route path="/admin/exams" element={<ProtectedRoute setLoginPopup={setLoginPopup}><ExamsPage/></ProtectedRoute>}/>
-        <Route path="/admin/team" element={<ProtectedRoute setLoginPopup={setLoginPopup}><Team/></ProtectedRoute>}/>
-        <Route path="/admin/calendar" element={<ProtectedRoute setLoginPopup={setLoginPopup}><CalendarComponent/></ProtectedRoute>}/>
-        <Route path="/admin/exams/add" element={<ProtectedRoute setLoginPopup={setLoginPopup}><AddEditExam setBigLoading={setBigLoading}/></ProtectedRoute>}/>
-        <Route path="/admin/exams/add/preview" element={<ProtectedRoute setLoginPopup={setLoginPopup}><Preview /></ProtectedRoute>}/>
-        <Route path="/admin/exams/edit/:id" element={<ProtectedRoute setLoginPopup={setLoginPopup}><AddEditExam setBigLoading={setBigLoading}/></ProtectedRoute>}/>
-        <Route path="/admin/exams/info/:id" element={<ProtectedRoute setLoginPopup={setLoginPopup}><InfoExam/></ProtectedRoute>}/>
-        <Route path="/user/reports" element={<ProtectedRoute setLoginPopup={setLoginPopup}><ReportsPage/></ProtectedRoute>}/>
-        <Route path="/admin/reports" element={<ProtectedRoute setLoginPopup={setLoginPopup}><AdminReportsPage/></ProtectedRoute>}/>
-        <Route path="/admin/crm" element={<ProtectedRoute setLoginPopup={setLoginPopup}><Crm/></ProtectedRoute>}/>
-        <Route path="/profile" element={<ProtectedRoute setLoginPopup={setLoginPopup}><ProfilePage/></ProtectedRoute>}/>
-        <Route path="/user/write-exam/:id" element={<ProtectedRoute setLoginPopup={setLoginPopup}><WriteExam/></ProtectedRoute>}/>
+        <Route path="/admin/home" element={<ProtectedRoute handleStartTour={() => handleStartTour('home')} setLoginPopup={setLoginPopup}><HomePage tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
+        <Route path="/admin/exams" element={<ProtectedRoute handleStartTour={() => handleStartTour('exam')} setLoginPopup={setLoginPopup}><ExamsPage tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
+        <Route path="/admin/team" element={<ProtectedRoute handleStartTour={() => handleStartTour('team')} setLoginPopup={setLoginPopup}><Team tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
+        <Route path="/admin/calendar" element={<ProtectedRoute handleStartTour={() => handleStartTour('calendar')} setLoginPopup={setLoginPopup}><CalendarComponent tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
+        <Route path="/admin/exams/add" element={<ProtectedRoute handleStartTour={() => handleStartTour('addexam')} setLoginPopup={setLoginPopup}><AddEditExam tour={whichTour} openTour={openTour} setOpenTour={setOpenTour} setBigLoading={setBigLoading}/></ProtectedRoute>}/>
+        <Route path="/admin/exams/add/preview" element={<ProtectedRoute handleStartTour={() => handleStartTour('preview')} setLoginPopup={setLoginPopup}><Preview tour={whichTour} openTour={openTour} setOpenTour={setOpenTour} /></ProtectedRoute>}/>
+        <Route path="/admin/exams/edit/:id" element={<ProtectedRoute handleStartTour={() => handleStartTour('editexam')} setLoginPopup={setLoginPopup}><AddEditExam tour={whichTour} openTour={openTour} setOpenTour={setOpenTour} setBigLoading={setBigLoading}/></ProtectedRoute>}/>
+        <Route path="/admin/exams/info/:id" element={<ProtectedRoute handleStartTour={() => handleStartTour('infoexam')} setLoginPopup={setLoginPopup}><InfoExam tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
+        <Route path="/user/reports" element={<ProtectedRoute handleStartTour={handleStartTour} setLoginPopup={setLoginPopup}><ReportsPage tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
+        <Route path="/admin/crm" element={<ProtectedRoute handleStartTour={() => handleStartTour('crm')} setLoginPopup={setLoginPopup}><Crm tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
+        <Route path="/admin/profile" element={<ProtectedRoute tour={whichTour} openTour={openTour} setOpenTour={setOpenTour} handleStartTour={() => handleStartTour('total')} setLoginPopup={setLoginPopup}><Profile tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
+        <Route path="/admin/help" element={<ProtectedRoute tour={whichTour} openTour={openTour} setOpenTour={setOpenTour} handleStartTour={() => handleStartTour('total')} setLoginPopup={setLoginPopup}><Assistenza tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
+        <Route path="/user/write-exam/:id" element={<ProtectedRoute handleStartTour={handleStartTour} setLoginPopup={setLoginPopup}><WriteExam tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
       </Routes>
     </Router>
     </>

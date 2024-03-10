@@ -9,9 +9,10 @@ import { getAllExams, deleteExam, getExamByUser, changeStatusExam } from '../../
 import './index.css'
 import moment from 'moment';
 import candidateNumber from '../../../imgs/candidate.png'
+import Tour from 'reactour'
 const { Option } = Select;
 
-function ExamsPage() {
+function ExamsPage({openTour, setOpenTour, tour}) {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [exams,setExams] = useState([])
@@ -32,6 +33,20 @@ function ExamsPage() {
           <i className='ri-delete-bin-line cursor-pointer' onClick={()=>{deleteExamById(record._id)}}></i>
   </div>
   */
+  const steps = [
+    {
+      content: 'Crea un nuovo AI test',
+      selector: '.elemento1', 
+    },
+    {
+      content: 'Vedi le info dei test creati',
+      selector: '.elemento2', // Selettore CSS dell'elemento
+    },
+    {
+      content: 'Attiva/Disattiva il test',
+      selector: '.elemento3', // Selettore CSS dell'elemento
+    },
+  ];
  const continueExam = () => {
   navigate('/admin/exams/add',{
     state: {
@@ -195,7 +210,7 @@ function ExamsPage() {
         <i style={{marginRight: '3px'}} className='ri-pencil-line'></i>
         Continue Exam
         </button>}
-        <button className='primary-outlined-btn flex items-center cursor-pointer' onClick={()=>navigate('/admin/exams/add')}>
+        <button className='primary-outlined-btn flex items-center cursor-pointer elemento1' onClick={()=>navigate('/admin/exams/add')}>
           <i className='ri-add-line' style={{marginRight: '7px'}}></i>
           Crea Test
         </button>
@@ -209,7 +224,7 @@ function ExamsPage() {
                     <h1>
                       {exam.jobPosition}
                     </h1>
-                    <button onClick={()=>navigate(`/admin/exams/info/${exam._id}`)}>Info candidati</button>
+                    <button className='elemento2' onClick={()=>navigate(`/admin/exams/info/${exam._id}`)}>Info candidati</button>
                   </div>
                   <div className='divider'></div>
                   <div className='card-exam-middle'>
@@ -235,7 +250,8 @@ function ExamsPage() {
                       cancelText="No"
                       placement="top"
                     >
-                    <Switch 
+                    <Switch
+                    className='elemento3' 
                     checked={exam.active} 
                     onChange={(checked) => handleSwitchChange(index)}/>
                     </Popconfirm>
@@ -258,6 +274,12 @@ function ExamsPage() {
             )
           })}
         </Row>
+        <Tour
+        isOpen={openTour && tour === "exam"}
+        onRequestClose={() => {setOpenTour(false)}}
+        steps={steps}
+        rounded={5}
+      />
     </div>
   )
 }

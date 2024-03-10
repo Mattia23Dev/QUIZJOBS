@@ -22,6 +22,18 @@ const userSchema = new mongoose.Schema({
     required: true,
     default: true
    },
+   profileImage: {
+    type: String,
+   },
+   codeSdi: {
+    type: String,
+   },
+   address: {
+    type: String,
+   },
+   companyName: {
+    type: String,
+   }
 },{
     timestamps: true
 })
