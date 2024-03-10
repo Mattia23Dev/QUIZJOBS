@@ -43,7 +43,7 @@ function Profile() {
           const formData = new FormData();
           formData.append('image', imageFile);
       
-          const response = await axios.post('http://localhost:5000/api/upload-image', formData, {
+          const response = await axios.post('https://quizjobs-production.up.railway.app/api/upload-image', formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               'authorization': `Bearer ${localStorage.getItem('token')}`

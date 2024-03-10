@@ -35,7 +35,7 @@ const storage = multer.diskStorage({
 app.post('/api/upload-image', upload.single('image'), (req, res) => {
     try {
 
-      const imageUrl = `http://localhost:5000/${req.file.path}`;
+      const imageUrl = `https://quizjobs-production.up.railway.app/${req.file.path}`;
       res.json({ imageUrl });
     } catch (error) {
       console.error('Errore durante il caricamento dell\'immagine:', error);
