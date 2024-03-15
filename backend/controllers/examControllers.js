@@ -4,57 +4,159 @@ const Question = require('../models/questionModel');
 const candidateModel = require("../models/candidateModel");
 
 const addExam = async (req, res) => {
-  try {
-      const user = await User.findOne({
-          _id: req.body.userId
-      });
+  if (req.body.tag && req.body.tag === "manual"){
+      try {
+        const user = await User.findOne({
+            _id: req.body.userId
+        });
 
-      if (user.isAdmin) {
+        if (user.isAdmin) {
+          const examWithIdExists = await Exam.findOne({ idEsame: req.body.idEsame });
+            if (examWithIdExists) {
+                return res.send({
+                    message: "Exam with the same ID already exists",
+                    success: false
+                });
+            }
 
-        const examWithIdExists = await Exam.findOne({ idEsame: req.body.idEsame });
-          if (examWithIdExists) {
+            const newExam = new Exam(req.body);
+            const jobPositionSlug = req.body.jobPosition.toLowerCase().replace(/\s/g, '_'); 
+            const examLink = `https://skilltestapp.netlify.app/user/${jobPositionSlug}/${newExam._id}`;
+            newExam.examLink = examLink;
+            const convertedArray = req.body.domande.map(domanda => ({
+              question: domanda.domanda,
+              options: domanda.opzioni ? domanda.opzioni: undefined,
+            }));
+            newExam.questions = convertedArray;
+            newExam.company = req.body.userId;
+            console.log(req.body);
+
+            await newExam.save();
+            res.send({
+                message: "Exam added successfully",
+                success: true,
+                data: newExam,
+            });
+        }
+    } catch (error) {
+        res.send({
+            message: error.message,
+            data: error,
+            success: false
+        });
+    }
+  } else {
+    try {
+        const user = await User.findOne({
+            _id: req.body.userId
+        });
+
+        if (user.isAdmin) {
+          const examWithIdExists = await Exam.findOne({ idEsame: req.body.idEsame });
+            if (examWithIdExists) {
+                return res.send({
+                    message: "Exam with the same ID already exists",
+                    success: false
+                });
+            }
+
+            const newExam = new Exam(req.body);
+            const jobPositionSlug = req.body.jobPosition.toLowerCase().replace(/\s/g, '_'); 
+            const examLink = `https://skilltestapp.netlify.app/user/${jobPositionSlug}/${newExam._id}`;
+            newExam.examLink = examLink;
+            newExam.company = req.body.userId;
+            console.log(req.body);
+            if (req.body.domande && req.body.domande.length > 0) {
+              const savedQuestions = [];
+                for (const domanda of req.body.domande) {
+                  const newQuestion = new Question({
+                      question: domanda.domanda,
+                      correctOption: domanda.rispostaCorretta !== null ?
+                        domanda.rispostaCorretta.lettera + ' ' + domanda.rispostaCorretta.risposta
+                        : "Nullo",
+                      options: domanda.opzioni,
+                      exam: newExam._id,
+                  });
+                  const savedQuestion = await newQuestion.save();
+                  savedQuestions.push(savedQuestion);
+              }
+              newExam.questions = savedQuestions;
+            }
+
+            await newExam.save();
+            res.send({
+                message: "Exam added successfully",
+                success: true,
+                data: newExam,
+            });
+        }
+    } catch (error) {
+        res.send({
+            message: error.message,
+            data: error,
+            success: false
+        });
+    }    
+  }
+};
+
+const ModificaExam = async (req, res) => {
+  if (req.body.tag && req.body.tag === "manual"){
+      try {
+        const user = await User.findOne({
+            _id: req.body.userId
+        });
+
+          const examWithIdExists = await Exam.findById(req.body.examId);
+            if (!examWithIdExists) {
+                return res.send({
+                    message: "Exam with the same ID not exists",
+                    success: false
+                });
+            }
+            examWithIdExists.questions = req.body.questions;
+
+            await examWithIdExists.save();
+            res.send({
+                message: "Exam added successfully",
+                success: true,
+                data: examWithIdExists,
+            });
+    } catch (error) {
+        res.send({
+            message: error.message,
+            data: error,
+            success: false
+        });
+    }
+  } else {
+    try {
+        const user = await User.findOne({
+            _id: req.body.userId
+        });
+
+          const examWithIdExists = await Exam.findById(req.body.examId);
+          if (!examWithIdExists) {
               return res.send({
-                  message: "Exam with the same ID already exists",
+                  message: "Exam with the same ID not exists",
                   success: false
               });
           }
+            examWithIdExists.questions = req.body.questions;
 
-          const newExam = new Exam(req.body);
-          const jobPositionSlug = req.body.jobPosition.toLowerCase().replace(/\s/g, '_'); 
-          const examLink = `https://skilltestapp.netlify.app/user/${jobPositionSlug}/${newExam._id}`;
-          newExam.examLink = examLink;
-          newExam.company = req.body.userId;
-          console.log(req.body);
-          if (req.body.domande && req.body.domande.length > 0) {
-            const savedQuestions = [];
-              for (const domanda of req.body.domande) {
-                const newQuestion = new Question({
-                    question: domanda.domanda,
-                    correctOption: domanda.rispostaCorretta !== null ?
-                      domanda.rispostaCorretta.lettera + ' ' + domanda.rispostaCorretta.risposta
-                      : "Nullo",
-                    options: domanda.opzioni,
-                    exam: newExam._id,
-                });
-                const savedQuestion = await newQuestion.save();
-                savedQuestions.push(savedQuestion);
-            }
-            newExam.questions = savedQuestions;
-          }
-
-          await newExam.save();
-          res.send({
-              message: "Exam added successfully",
-              success: true,
-              data: newExam,
-          });
-      }
-  } catch (error) {
-      res.send({
-          message: error.message,
-          data: error,
-          success: false
-      });
+            await examWithIdExists.save();
+            res.send({
+                message: "Exam added successfully",
+                success: true,
+                data: examWithIdExists,
+            });
+    } catch (error) {
+        res.send({
+            message: error.message,
+            data: error,
+            success: false
+        });
+    }    
   }
 };
 
@@ -491,4 +593,4 @@ const changeStatus = async (req, res) => {
 
 module.exports = {addExam, getAllExams, getAllExamsByUser, getExamById, 
   getCandidateCrm, editExam, deleteExam, addQuestionToExam, editQuestionInExam, 
-  deleteQuestionFromExam, saveTestProgress, addTrackLink, deleteTrackLink, changeStatus}
+  deleteQuestionFromExam, saveTestProgress, addTrackLink, deleteTrackLink, changeStatus, ModificaExam}

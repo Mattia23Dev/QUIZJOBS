@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import PageTitle from '../../../components/PageTitle';
-import { Form, Row, Col, message, Tabs, DatePicker, Select, Popconfirm, Modal } from 'antd';
+import { Form, Row, Col, message, Segmented, DatePicker, Select, Popconfirm, Modal } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { addExam, addTrackLink, deleteQuestionFromExam, deleteTrackLink, editExam, getExamById } from '../../../apicalls/exams';
 import { useDispatch } from 'react-redux';
@@ -17,6 +17,7 @@ import leftArrow from '../../../imgs/leftarrow.png'
 import rightArrow from '../../../imgs/arrowright.png'
 import edit from '../../../imgs/edit.png'
 import move from '../../../imgs/move.png'
+import logo from '../../../imgs/logo.png'
 import cancel from '../../../imgs/cancel.png'
 import track from '../../../imgs/track.png'
 import { useLocation } from 'react-router-dom';
@@ -143,23 +144,26 @@ const DomandeComponent = ({ domande, onUpdateDomande, setSelectedQuestion, setSh
 function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const {id} = useParams()
+  const {id, tag} = useParams()
   const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
   const [examData,setExamData] = useState();
   const [activeTab, setActiveTab] = useState(1);
   const [showAddEditQuestionModal, setShowAddEditQuestionModal] = useState(false)
   const [selectedQuestion, setSelectedQuestion] = useState();
-  const [questions, setQuestions] = useState();
+  const [questions, setQuestions] = useState([]);
   const [showQuestions, setShowQuestions] = useState(false);
   const [showTrackLink, setShowTrackLink] = useState(false);
   const [passaOltre, setPassaOltre] = useState(1);
   const [copyLink, setCopyLink] = useState(false);
   const [trackLink, setTrackLink] = useState("");
+  const [domandaType, setDomandaType] = useState("Caratteriali");
+  const [categoryType, setCategoryType] = useState("Attitudinali e Soft skills")
   const [trackLinkArray, setTrackLinkArray] = useState([]);
   const [examId, setExamId] = useState(null);
   const user = useSelector(state=>state.users.user)
   const [preview, setPreview] = useState(false);
   const [link, setLink] = useState("");
+  const [addOurModule, setAddOurModule] = useState(false);
   const storedConfig = JSON.parse(localStorage.getItem('config'));
   const [config, setConfig] = useState({
       numOfQuestions: 20,
@@ -169,12 +173,14 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
       testLanguage: '',
       skills: [''],
       deadline: null,
+      description: '',
+      tag: tag,
   });
   const location = useLocation();
   const { storedQuestions } = location.state ?? {};
   const steps = [
     {
-      content: 'Compila il modulo per fornire all\'AI istruzioni su come deve essere il Test',
+      content: tag === "ai" || tag === 'mix' ? 'Compila il modulo per fornire all\'AI istruzioni su come deve essere il Test' : 'Inserisci le informazioni dell\'annuncio di lavoro',
       selector: '.elemento1', // Selettore CSS dell'elemento
     },
     {
@@ -182,8 +188,12 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
       selector: '.elemento2', // Selettore CSS dell'elemento
     },
     {
-      content: 'Condividi il link del test, e crea dei link appositi per i vari canali che utilizzi',
+      content: 'Inserisci i moduli che vuoi inserire nel test, crea delle domande oppure scegli le nostre.',
       selector: '.elemento3', // Selettore CSS dell'elemento
+    },
+    {
+      content: 'Condividi il link del test, e crea dei link appositi per i vari canali che utilizzi',
+      selector: '.elemento4', // Selettore CSS dell'elemento
     },
   ];
 
@@ -368,8 +378,10 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
          deadline: config.deadline,
          idEsame: uniqueId,
          userId: user._id,
+         description: config.description,
+         tag: config.tag,
        };
-
+       console.log(examData)
        let response;
        if(id){
          response = await editExam(examData, id)
@@ -525,25 +537,47 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
         handleSetInStorageQuestion(domandeModificate);
       };
 
+      const nextTab = () => {
+        console.log(config);
+        if (!config.numOfQuestions || !config.difficulty || !config.generalSector || !config.jobPosition || !config.testLanguage || config.skills.length < 1) {
+           console.error('Tutti i campi di config devono essere definiti.');
+           return;
+       }
+        localStorage.setItem('config', JSON.stringify(config));
+        setActiveTab(2)
+        setShowQuestions(true);
+        setPassaOltre(2);
+      }
+
   return (
       <div className='home-content'>
+        {tag === "manual" &&
+        <div onClick={() => setAddOurModule(true)} className='add-our-question'>
+          <span>+</span> Aggiungi i nostri moduli
+        </div>}
         <div className='copy-preview'>
           {trackLinkArray && trackLinkArray.length > 0 && <button onClick={() => setShowTrackLink(true)} className='copy-link-active'><img src={track} alt='track link skilltest' />Track link</button>}
           {!examData && !id ? <button onClick={copyLink ? handleCopyLink : null} className={!copyLink ? 'copy-link' : 'copy-link-active'}><img src={!copyLink ? copia : copiablu} alt='copia link skilltest' />Copia link</button> : <button onClick={() => handleCopyLink()} className='copy-link-active'><img src={copiablu} alt='copia link skilltest' />Copia link</button>}
-          <a onClick={preview ? handlePreviewClick : null} className={preview ? 'preview': 'preview-disabled'}><img src={eye} alt='Anteprima skilltest' />Anteprima</a>
+          {tag!=="manual" &&<a onClick={preview ? handlePreviewClick : null} className={preview ? 'preview': 'preview-disabled'}><img src={eye} alt='Anteprima skilltest' />Anteprima</a>}
         </div>
-          <div className='create-exam-top'>
+          <div className={tag === "mix" ? 'create-exam-top2' : 'create-exam-top'}>
             <div onClick={() => setActiveTab(1)} className={activeTab === 1 ? 'active' : 'elemento1'}>
               <span></span>
               <p>Dettagli test</p>
             </div>
             <hr />
+            {tag === "mix" &&
+            <div onClick={passaOltre < 2 ? null : () => setActiveTab(4)} style={passaOltre < 2 ? {cursor: 'not-allowed'} : null} className={activeTab === 4 ? 'active' : 'elemento3'}>
+              <span></span>
+              <p>Moduli</p>
+            </div>}
+            {tag === "mix" && <hr />}
             <div onClick={passaOltre < 2 ? null : () => setActiveTab(2)} style={passaOltre < 2 ? {cursor: 'not-allowed'} : null} className={activeTab === 2 ? 'active' : 'elemento2'}>
               <span></span>
               <p>Domande</p>
             </div>
             <hr />
-            <div onClick={passaOltre < 3 ? null : () => setActiveTab(3)} style={passaOltre < 3 ? {cursor: 'not-allowed'} : null} className={activeTab === 3 ? 'active' : 'elemento3'}>
+            <div onClick={passaOltre < 3 ? null : () => setActiveTab(3)} style={passaOltre < 3 ? {cursor: 'not-allowed'} : null} className={activeTab === 3 ? 'active' : 'elemento4'}>
               <span></span>
               <p>Candidati</p>
             </div>
@@ -553,7 +587,7 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
           <div className={activeTab === 1 ? 'create-exam-body elemento1' : 'create-exam-body'}>
           <PageTitle title={"Genera un nuovo test"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
           <button className='button-ligh-blue' onClick={() => navigate('/admin/exams')}>Visualizza test salvati</button>
-          <Form layout="vertical" onFinish={generateQuestions} initialValues={examData} className="create-exam-form">
+          <Form layout="vertical" onFinish={tag === "manual" ? nextTab : generateQuestions} initialValues={examData} className="create-exam-form">
             <Row gutter={[10,10]}>
                   <Col flex="auto">
                     <Form.Item label="Settore" name="general-sector">
@@ -569,7 +603,7 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
             <Row style={{margin: '20px 0'}} gutter={[10,10]}>      
                   <Col flex="auto">
                     <Form.Item label="Lingua del test" name="test-language">
-                      <select value={config.testLanguage} onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, testLanguage: e.target.value }))}>
+                      <Select className='ant-styiling' value={config.testLanguage} onChange={(value) => setConfig(prevConfig => ({ ...prevConfig, testLanguage: value }))}>
                           <option value="">Seleziona</option>
                           <option value="Italiano">Italiano</option>
                           <option value="Inglese">Inglese</option>
@@ -577,7 +611,7 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
                           <option value="Spagnolo">Spagnolo</option>
                           <option value="Francese">Francese</option>
                           <option value="Portoghese">Portoghese</option>
-                      </select>
+                      </Select>
                     </Form.Item>
                   </Col>
                   <Col flex="auto">
@@ -589,12 +623,12 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
             <Row gutter={[10,10]}>    
                   <Col span={12}>
                     <Form.Item label="Difficoltà" name="seniority">
-                      <select value={config.difficulty} onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, difficulty: e.target.value }))}>
+                      <Select className='ant-styiling' value={config.difficulty} onChange={(value) => setConfig(prevConfig => ({ ...prevConfig, difficulty: value }))}>
                           <option value="">Seleziona</option>
                           <option value="Facile">Facile</option>
                           <option value="Medio">Medio</option>
                           <option value="Difficile">Difficile</option>
-                      </select>
+                      </Select>
                     </Form.Item>
                   </Col>
                   <Col span={12}>
@@ -614,10 +648,21 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
                     </Form.Item>
                   </Col>
               </Row>
+              <Row gutter={[10,10]}>
+                <Col span={24}>
+                  <Form.Item label="Descrizione" name="description">
+                    <textarea placeholder='Inserisci la descrizione' value={config.description} onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, description: e.target.value }))} />
+                  </Form.Item>
+                </Col>
+              </Row>
               <div className='flex justify-center gap-2 flex-column items-center' style={{flexDirection: 'column', marginTop: '40px'}}>
+                {tag === "ai" || tag === "mix" ? 
                 <button className='primary-outlined-btn w-25 cursor-pointer' type="submit">
                     Genera test
-                </button>
+                </button> : 
+                <button className='primary-outlined-btn w-25 cursor-pointer' type="submit">
+                    Aggiungi le domande
+                </button>}
                 <button className='btn btn-link'
                 style={{ textDecoration: 'underline', cursor: 'pointer', backgroundColor: 'transparent', border: 'none' }}
                 onClick={()=>navigate('/admin/exams')}
@@ -635,18 +680,38 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
                 setShowAddEditQuestionModal(true)
                 }}>+ Aggiungi domanda</button>
               </div>
-              {showQuestions && questions && 
+              {showQuestions && questions.length > 0 && 
               <div className='domande-container-save'>
                     <a onClick={() => setActiveTab(1)}><img alt='left arrow' src={leftArrow} /> Torna ai dettagli del test</a>
-                    <DomandeComponent 
+                    {tag === "manual" ? 
+                    <DomandeMixComponent 
                     domande={questions} 
                     onUpdateDomande={handleUpdateDomande}
                     setSelectedQuestion={setSelectedQuestion}
                     setShowAddEditQuestionModal={setShowAddEditQuestionModal} />
+                    :
+                    <DomandeComponent 
+                    domande={questions} 
+                    onUpdateDomande={handleUpdateDomande}
+                    setSelectedQuestion={setSelectedQuestion}
+                    setShowAddEditQuestionModal={setShowAddEditQuestionModal} />}
                     <button onClick={onFinish}><img alt='arrow right' src={rightArrow} />Salva e Genera Test</button>
               </div>}
-          </div> : 
-          <div className={activeTab === 3 ? 'candidati-add-exam elemento3' : 'candidati-add-exam'}>
+          </div> : activeTab === 4 ?
+            <div className={activeTab === 4 ? 'moduli elemento3' : 'moduli'}>
+                <PageTitle title={"Aggiungi moduli"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
+                <h4>Scegli uno dei nostri test pre creati, o passa direttamente alla sezione domande.</h4>
+                <div className='moduli-container'>
+                    <div>
+                      <h4>Test linguistico</h4>
+                    </div>
+                    <div>
+                      <h4>Test attitudinale</h4>
+                    </div>
+                </div>
+              </div>
+           : 
+          <div className={activeTab === 3 ? 'candidati-add-exam elemento4' : 'candidati-add-exam'}>
             <PageTitle title={"Candidati"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
             <h4>Non ci sono ancora candidati, <b>condividi il link</b> per profilare i tuoi talenti, puoi inserire il link nell'offerta
               di lavoro su Linkedin o Indeed. <br /><br />
@@ -658,7 +723,7 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
                 <button onClick={addTrackLinkInput} className='primary-outlined-btn'>Crea link tracciato</button>
              </div>
           </div>}
-          {showAddEditQuestionModal&&<AddEditQuestion editQuestionInExam={modificaDomanda} addQuestionToExam={aggiungiDomanda}   setShowAddEditQuestionModal={setShowAddEditQuestionModal}
+          {showAddEditQuestionModal&&<AddEditQuestion tag={tag} editQuestionInExam={modificaDomanda} addQuestionToExam={aggiungiDomanda}   setShowAddEditQuestionModal={setShowAddEditQuestionModal}
           showAddEditQuestionModal={showAddEditQuestionModal}
           examId = {id}
           refreshData = {getExamDataById}
@@ -682,6 +747,48 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
               ))}
             </div>   
          </Modal>}
+         <Modal
+                  title={
+                    <div className="modal-header">
+                        <img style={{width: '15%'}} src={logo} alt="logo skilltest" />
+                    </div>
+                    } 
+         open={addOurModule}
+         width={'70%'}
+         footer={false} onCancel={()=>{
+         setAddOurModule(false)
+         }}>
+            <div style={{display: 'flex', justifyContent: 'center', margin: '0px 0 20px 0'}}>
+              <Segmented
+                  options={['Attitudinali e Soft skills', 'Screening']}
+                  onChange={(value) => {
+                    console.log(value);
+                    setCategoryType(value)
+                  }}
+                />
+            </div>
+            {categoryType === "Attitudinali e Soft skills" ? (
+            <div style={{display: 'flex', justifyContent: 'center', margin: '0px 0 20px 0'}}>
+              <Segmented
+                  options={['Caratteriali', 'Problem solving', 'Creatività', 'Decision Making', 'Etica', 'Leadership', 'Relazioni']}
+                  onChange={(value) => {
+                    console.log(value);
+                    setDomandaType(value)
+                  }}
+                />
+                {domandaType === "Caratteriali" ? 
+                <div>
+
+                </div> : null}
+            </div>
+            ) : (
+            <div style={{display: 'flex', justifyContent: 'center', margin: '0px 0 20px 0'}}>
+                <div>
+                  
+                </div>
+            </div>
+            )} 
+         </Modal>
          <Tour
         isOpen={openTour && tour === "addexam"}
         onRequestClose={() => {setOpenTour(false)}}
@@ -691,5 +798,122 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
       </div>    
   )
 }
+
+const DomandeMixComponent = ({ domande, onUpdateDomande, setSelectedQuestion, setShowAddEditQuestionModal }) => {
+  const [currentDomanda, setCurrentDomanda] = useState(domande[0]);
+  const [currentDomandaIndex, setCurrentDomandaIndex] = useState(0); // Inizializza l'indice della domanda corrente a 0
+  const [confirmVisible, setConfirmVisible] = useState(Array(domande.length).fill(false));
+  const [draggedDomanda, setDraggedDomanda] = useState(null);
+
+  const handleConfirm = () => {
+    const filteredDomande = domande.filter(domanda => domanda !== currentDomanda);
+    onUpdateDomande(filteredDomande);
+    setCurrentDomanda(domande[0]);
+    const updatedConfirmVisible = [...confirmVisible];
+    const index = domande.indexOf(currentDomanda);
+    updatedConfirmVisible[index] = false;
+    setConfirmVisible(updatedConfirmVisible); 
+  };
+
+  const handleCancel = () => {
+   setConfirmVisible(Array(domande.length).fill(false));
+  };
+
+  const handleDomandaClick = (domanda, index) => {
+    setCurrentDomanda(domanda);
+    setCurrentDomandaIndex(index)
+  };
+
+  const [draggingIndex, setDraggingIndex] = useState(null); // Stato per tener traccia dell'indice della domanda che viene trascinata
+
+  const handleDragStart = (event, domanda, index) => {
+    event.dataTransfer.setData('domanda', JSON.stringify(domanda));
+    setDraggingIndex(index); // Imposta l'indice della domanda che viene trascinata
+    setDraggedDomanda(domanda);
+  };
+  
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+  
+  const handleDragEnter = (index) => {
+    setDraggingIndex(index); // Imposta l'indice della domanda su cui passa sopra
+  };
+  
+  const handleDragLeave = () => {
+    setDraggingIndex(null); // Resettare l'indice della domanda quando si lascia l'area di trascinamento
+  };
+  
+  const handleDrop = (event, index) => {
+   if (!draggedDomanda) return; // Se non c'è nessuna domanda trascinata, esci
+   
+   const droppedDomanda = JSON.parse(event.dataTransfer.getData('domanda'));
+   const updatedDomande = [...domande]; // Crea una copia dell'array delle domande
+   
+   // Rimuovi la domanda trascinata dalla sua posizione originale
+   const draggedIndex = updatedDomande.indexOf(draggedDomanda);
+   if (draggedIndex !== -1) {
+     updatedDomande.splice(draggedIndex, 1);
+   }
+   
+   // Inserisci la domanda trascinata nella nuova posizione
+   updatedDomande.splice(index, 0, droppedDomanda);
+   
+   onUpdateDomande(updatedDomande); // Aggiorna lo stato delle domande
+   
+   setDraggingIndex(null); // Resettare l'indice della domanda trascinata dopo il rilascio
+   setDraggedDomanda(null); // Resetta la domanda trascinata
+ };
+
+  return (
+    <div className="domande-container">
+      <div className="lista-domande">
+        {domande.map((domanda, index) => (
+          <div
+            key={index}
+            onDragStart={(event) => handleDragStart(event, domanda, index)} // Gestisci l'inizio del trascinamento sulla domanda
+            onDragOver={handleDragOver}
+            onDragEnter={() => handleDragEnter(index)} // Gestisci l'entrata del trascinamento sulla domanda
+            onDragLeave={handleDragLeave} // Gestisci l'uscita del trascinamento dall'area della domanda
+            onDrop={(event) => handleDrop(event, index)}
+            className={`domanda-item ${currentDomanda === domanda ? "domanda-selected" : ""} ${draggingIndex === index ? "dragging" : ""}`}
+            >
+           <Popconfirm
+             visible={confirmVisible[index]}
+             title="Sei sicuro di voler eliminare?"
+             onConfirm={() => handleConfirm(domanda)}
+             onCancel={handleCancel}
+             okText="Sì"
+             cancelText="No"
+             placement="top"
+           >
+           <img alt='cancel question' src={cancel} onClick={() => { setConfirmVisible((prevState) => {
+               const updatedConfirmVisible = [...prevState];
+               updatedConfirmVisible[index] = true;
+               return updatedConfirmVisible;
+             }); setCurrentDomanda(domanda) }} />
+            </Popconfirm> 
+           {domanda.opzioni ? <img alt='edit question' src={edit} onClick={() => {setSelectedQuestion(domanda); setShowAddEditQuestionModal(true)}} /> : null}
+           <img
+           className='drag-handle'
+           src={move}
+           draggable
+           />
+            <p onClick={() => handleDomandaClick(domanda, index)}><span>{index + 1}.</span>{domanda.domanda}</p>
+          </div>
+        ))}
+      </div>
+      <div className="domanda-attuale">
+        <p><span>{currentDomandaIndex + 1}.</span>{currentDomanda.domanda}</p>
+        {currentDomanda.opzioni && 
+        <ul className="opzioni">
+          {Object.entries(currentDomanda.opzioni).map(([lettera, risposta], index) => (
+            <li className={currentDomanda.rispostaCorretta && risposta.trim() === currentDomanda.rispostaCorretta.risposta ? "risposta risposta-corretta" : "risposta"} key={index}><span>{lettera.substring(0, 1)}</span> {risposta}</li>
+          ))}
+        </ul>}
+      </div>
+    </div>
+  );
+};
 
 export default AddEditExam

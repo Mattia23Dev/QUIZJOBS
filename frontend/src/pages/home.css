@@ -34,7 +34,8 @@
 .hero-section button:first-of-type,
 .service-section button:first-of-type,
 .service-section2 button:first-of-type,
-.service-section3 button:first-of-type{
+.service-section3 button:first-of-type,
+.service-section-contact button{
     background-color: var(--secondary);
     border-radius: 30px;
     border: none;
@@ -82,6 +83,9 @@
     align-items: center;
     width: 60%;
     gap: 1rem;
+}
+.service-section > .faq-help-contatti{
+    width: 100%;
 }
 .service-section >div > div {
     width: 30%;
@@ -236,6 +240,55 @@
     z-index: 10;
 }
 
+
+
+.faq-help-contatti{
+    width: 100%;
+}
+.faq-help-contatti .ant-collapse{
+    background-color: transparent;
+    border: none;
+    text-align: left;
+}
+.faq-help-contatti .ant-collapse-item{
+    color: var(--primary);
+    border: none;
+    width: 100%;
+}
+.faq-help-contatti .ant-collapse-item-active{
+    background-color: var(--primary) !important;
+    color: white;
+}
+.faq-help-contatti .ant-collapse-item-active span{
+    color: white !important
+}
+.service-section-contact{
+    text-align: center;
+    width: 30%;
+    margin: 0 auto;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+}
+.service-section-contact >p:first-of-type{
+    color: var(--secondary);
+}
+.service-section-contact > h2 {
+    font-size: 30px;
+    color: var(--primary);
+}
+.service-section-contact > p:last-of-type{
+    color: var(--primary);
+    margin: 20px 0 5px 0;
+    font-size: 18px;
+}
+.service-section-contact input,
+.service-section-contact textarea{
+    margin: 5px 0 20px 0;
+    width: 90%;
+}
+.service-section-contact textarea{
+    min-height: 200px;
+}
 @media screen and (max-width: 650px){
     .home-out hr {
         width: 90%;
@@ -394,6 +447,16 @@
         cursor: pointer;
         z-index: 10;
     }
+
+    .faq-help-contatti .ant-collapse-item-active p {
+        font-size: 14px !important;
+    }
+    .faq-help-contatti .ant-collapse-item p {
+        font-size: 14px !important;
+    }
+    .service-section-contact{
+        width: 90%;
+    }
 }
 
 @media screen and (min-width: 651px) and (max-width:950px){
@@ -492,5 +555,14 @@
         padding: 8px 25px;
         cursor: pointer;
         z-index: 10;
+    }
+    .faq-help-contatti .ant-collapse-item-active p {
+        width: 100%;
+    }
+    .faq-help-contatti .ant-collapse-item p {
+        font-size: 14px !important;
+    }
+    .service-section-contact{
+        width: 60%;
     }
 }

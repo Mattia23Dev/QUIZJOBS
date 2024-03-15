@@ -7,6 +7,7 @@
     gap: 15px;
     margin-top: 50px;
     position: relative;
+    width: 100%;
 }
 .domande-container-save > a {
   color: var(--primary);
@@ -173,34 +174,62 @@
     margin: 0 auto;
     margin-top: 0.5rem;
   }
-  .create-exam-top > hr {
+  .add-our-question{
+    position: absolute;
+    left: 2rem;
+    top: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--secondary);
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: white;
+    cursor: pointer;
+  }
+  .create-exam-top2{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 0.5rem;
+  }
+  .create-exam-top > hr,
+  .create-exam-top2 > hr {
     width: 80px;
     color: var(--primary);
     height: 0.8px;
     background-color: var(--primary);
     margin-top: 12px;
   }
-  .create-exam-top > div {
+  .create-exam-top > div,
+  .create-exam-top2 > div {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
   }
-  .create-exam-top > div > span {
+  .create-exam-top > div > span,
+  .create-exam-top2 > div > span {
     display: inline-block;
     width: 17px;
     height: 17px;
     border-radius: 50%;
     background-color: gray;
   }
-  .create-exam-top > div > p {
+  .create-exam-top > div > p,
+  .create-exam-top2 > div > p {
     color: #b4b4b4;
   }
-  .create-exam-top > div.active > span {
+  .create-exam-top > div.active > span,
+  .create-exam-top2 > div.active > span {
     background-color: var(--secondary);
   }
-  .create-exam-top > div.active > p {
+  .create-exam-top > div.active > p,
+  .create-exam-top2 > div.active > p {
     color: var(--secondary);
   }
   .copy-link{
@@ -287,6 +316,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    width: 100%;
   }
   .create-exam-form{
     margin-top: 2rem !important;
@@ -305,7 +335,15 @@
     justify-content: flex-start;
     gap: 10px;
   }
-
+ .ant-styiling > div{
+    height: 40px !important;
+    padding: 4px 20px !important;
+    border: 1.5px solid #DDDDDD;
+    width: 100%;
+    border-radius: 5px;
+    outline: none;
+    transition: 0.2s all;
+}
   .candidati-add-exam{
     text-align: center;
   }
@@ -485,8 +523,31 @@
     gap: 1rem;
   }
 
-
-
+  .moduli{
+    text-align: center;
+  }
+  .moduli-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  .moduli-container > div {
+    width: 30%;
+    min-height: 200px;
+    border-radius: 10px;
+    border: 1px solid var(--primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+.moduli-container h4 {
+  font-weight: 600;
+  font-size: 17px;
+  color: var(--primary);
+}
 
 
   @media screen and (max-width: 1400px) {
@@ -498,7 +559,8 @@
       left: 3rem;
       top: -2rem;
     }
-    .create-exam-top > div > p {
+    .create-exam-top > div > p,
+    .create-exam-top2 > div > p {
       font-size: 13px;
       margin-top: 3px;
     }

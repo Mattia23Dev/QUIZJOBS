@@ -81,7 +81,7 @@ function ProtectedRoute({children, setLoginPopup, handleStartTour, tour, openTou
     },
     {
       title: "Test",
-      paths: ["/admin/exams", "/admin/exams/add", "/admin/exams/edit/:id", "/admin/exams/info/:id"],
+      paths: ["/admin/exams", "/admin/exams/add/ai", "/admin/exams/add/mix", "/admin/exams/add/manual", "/admin/exams/edit/:id", "/admin/exams/info/:id"],
       icon: <i className='ri-file-list-line'></i>,
       onClick: () => navigate("/admin/exams"),
     },
@@ -212,7 +212,7 @@ function ProtectedRoute({children, setLoginPopup, handleStartTour, tour, openTou
             {menu.map((item,index)=>{
               return(
                 collapsed ? 
-                <Popover style={{borderRadius: '5px', padding: '5px 20px'}} placement="right" title={''} content={item.title}>
+                <Popover style={{borderRadius: '5px', padding: '5px 20px', backgroundColor: '#233142'}} placement="right" title={''} content={item.title}>
                 <div className={`menu-item ${getIsActiveOrNot(item.paths)&&"active-menu-item"} ${getClassTour(item.title)}`} key={index} onClick={item.onClick}>
                     {item.icon}
                     <span className={!collapsed ? '' : 'hide-menu-title'}>{item.title}</span>
@@ -247,7 +247,10 @@ function ProtectedRoute({children, setLoginPopup, handleStartTour, tour, openTou
                 <u>Come funziona?</u>
               </div>
               <div onClick={() => navigate('/admin/profile')} style={{cursor: 'pointer', ontSize: '14px'}} className='flex justify-center items-center gap-1'>
-                <i className="ri-user-line"></i>
+              {user?.profileImage
+                 ? (
+                <img src={user?.profileImage} className='profile-header' alt="Profile" />
+                ) : (<i className="ri-user-line"></i>)}
                 {user?.name}
               </div>
             </div>

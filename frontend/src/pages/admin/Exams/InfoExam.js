@@ -2,7 +2,7 @@ import React,{useState,useEffect} from 'react';
 import PageTitle from '../../../components/PageTitle';
 import { Modal, message, Table, Popconfirm } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
-import { addExam, addTrackLink, deleteQuestionFromExam, deleteTrackLink, editExam, getExamById } from '../../../apicalls/exams';
+import { addExam, addTrackLink, deleteQuestionFromExam, deleteTrackLink, editExam, getExamById, modificaExam } from '../../../apicalls/exams';
 import { useDispatch } from 'react-redux';
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
 import AddEditQuestion from './AddEditQuestion';
@@ -351,14 +351,17 @@ const handleCopyLink = () => {
 const handleUpdateDomande = (updatedDomande) => {
    setQuestions(updatedDomande);
  };
- const formattedSelectedQuestion = selectedQuestion && {
+ const formattedSelectedQuestion = selectedQuestion && (examData?.tag === "manual" ? {
+  domanda: selectedQuestion.question,
+  opzioni: selectedQuestion.options,
+} : {
   domanda: selectedQuestion.question,
   rispostaCorretta: {
     risposta: selectedQuestion.correctOption.replace(/^\w+\)\s*/, ''),
     lettera:selectedQuestion.correctOption.match(/^\w+\)\s*/)[0],
   },
   opzioni: selectedQuestion.options,
-};
+})
 
 const deleteTrackLinkF = async (trackLink) => {
   const reqPayload = {
@@ -419,6 +422,47 @@ const addTrackLinkInput = async () => {
  }
 }
 
+const saveButtonQuestion = () => {
+  if (questions === examData?.questions){
+    return false
+  } else {
+    return true
+  }
+}
+const onSaveNewQuestion = async () => {
+  dispatch(ShowLoading())
+  try {
+    const payload = {
+      tag: examData?.tag,
+      questions: questions,
+      examId: examData._id,
+    }
+    const response = await modificaExam(payload)
+    console.log(response)
+    if (response.success){
+      message.success("Domande salvate")
+      dispatch(HideLoading())
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+const aggiungiDomanda = (domanda) => {
+  const nuoveDomande = [...questions, domanda];
+  setQuestions(nuoveDomande);
+};
+
+const modificaDomanda = (domandaModificata) => {
+  const domandeModificate = questions.map(domanda => {
+    if (domanda.question === domandaModificata.question) {
+      return domandaModificata;
+    }
+    return domanda;
+  });
+  setSelectedQuestion(null)
+  setQuestions(domandeModificate);
+};
+
   return (
     examData && <div className='home-content'>
       <div className='copy-preview'>
@@ -460,21 +504,30 @@ const addTrackLinkInput = async () => {
                   setShowAddEditQuestionModal(true)
                   }}>+ Aggiungi domanda</button>
                </div>
-               {examData?.questions && questions && 
+               {examData?.questions.length > 0 && questions && 
                <div className='domande-container-save'>
                      <a onClick={() => setActiveTab(1)}><img alt='left arrow' src={leftArrow} /> Torna ai candidati</a>
-                     <DomandeComponent
-                     domande={questions && questions} 
-                     onUpdateDomande={handleUpdateDomande}
-                     setSelectedQuestion={setSelectedQuestion}
-                     setShowAddEditQuestionModal={setShowAddEditQuestionModal} />
+                     {examData?.tag === "manual" ? 
+                    <DomandeMixComponent 
+                    domande={questions && questions} 
+                    onUpdateDomande={handleUpdateDomande}
+                    setSelectedQuestion={setSelectedQuestion}
+                    setShowAddEditQuestionModal={setShowAddEditQuestionModal} />
+                    :
+                    <DomandeComponent 
+                    domande={questions && questions} 
+                    onUpdateDomande={handleUpdateDomande}
+                    setSelectedQuestion={setSelectedQuestion}
+                    setShowAddEditQuestionModal={setShowAddEditQuestionModal} />}
+                    {saveButtonQuestion() && <button onClick={onSaveNewQuestion}><img alt='arrow right' src={rightArrow} />Modifica Test</button>}
                </div>}
          </div> :
          null
          }
-        {showAddEditQuestionModal&&<AddEditQuestion   setShowAddEditQuestionModal={setShowAddEditQuestionModal}
+        {showAddEditQuestionModal&&<AddEditQuestion creato={true}  editQuestionInExam={modificaDomanda} addQuestionToExam={aggiungiDomanda}   setShowAddEditQuestionModal={setShowAddEditQuestionModal}
          showAddEditQuestionModal={showAddEditQuestionModal}
          examId = {id}
+         tag={examData?.tag}
          refreshData = {getExamDataById}
          selectedQuestion={formattedSelectedQuestion}
          setSelectedQuestion={setSelectedQuestion}
@@ -526,6 +579,16 @@ const addTrackLinkInput = async () => {
                      <h4>{examData?.skills.map(skill => skill.charAt(0).toUpperCase() + skill.slice(1)).join(', ')}</h4>
                   </div>
                </div>
+               <div className='dettagli-test-modal'>  
+                  <div>
+                     <h4>Descrizione</h4>
+                     <h4>{examData?.description ? examData.description : ""}</h4>
+                  </div>
+                  <div>
+                     <h4>Tipologia Test</h4>
+                     <h4>{examData?.tag === "manual" ? "Manuale" : examData?.tag === "ai" ? "SkillTest Ai" : ""}</h4>
+                  </div>
+               </div>
             </div>   
          </Modal>}
          {showTrackLink &&
@@ -558,5 +621,122 @@ const addTrackLinkInput = async () => {
     </div>
   )
 }
+
+const DomandeMixComponent = ({ domande, onUpdateDomande, setSelectedQuestion, setShowAddEditQuestionModal }) => {
+  const [currentDomanda, setCurrentDomanda] = useState(domande[0]);
+  const [currentDomandaIndex, setCurrentDomandaIndex] = useState(0); // Inizializza l'indice della domanda corrente a 0
+  const [confirmVisible, setConfirmVisible] = useState(Array(domande.length).fill(false));
+  const [draggedDomanda, setDraggedDomanda] = useState(null);
+
+  const handleConfirm = () => {
+    const filteredDomande = domande.filter(domanda => domanda !== currentDomanda);
+    onUpdateDomande(filteredDomande);
+    setCurrentDomanda(domande[0]);
+    const updatedConfirmVisible = [...confirmVisible];
+    const index = domande.indexOf(currentDomanda);
+    updatedConfirmVisible[index] = false;
+    setConfirmVisible(updatedConfirmVisible); 
+  };
+
+  const handleCancel = () => {
+   setConfirmVisible(Array(domande.length).fill(false));
+  };
+
+  const handleDomandaClick = (domanda, index) => {
+    setCurrentDomanda(domanda);
+    setCurrentDomandaIndex(index)
+  };
+
+  const [draggingIndex, setDraggingIndex] = useState(null); // Stato per tener traccia dell'indice della domanda che viene trascinata
+
+  const handleDragStart = (event, domanda, index) => {
+    event.dataTransfer.setData('domanda', JSON.stringify(domanda));
+    setDraggingIndex(index); // Imposta l'indice della domanda che viene trascinata
+    setDraggedDomanda(domanda);
+  };
+  
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+  
+  const handleDragEnter = (index) => {
+    setDraggingIndex(index); // Imposta l'indice della domanda su cui passa sopra
+  };
+  
+  const handleDragLeave = () => {
+    setDraggingIndex(null); // Resettare l'indice della domanda quando si lascia l'area di trascinamento
+  };
+  
+  const handleDrop = (event, index) => {
+   if (!draggedDomanda) return; // Se non c'è nessuna domanda trascinata, esci
+   
+   const droppedDomanda = JSON.parse(event.dataTransfer.getData('domanda'));
+   const updatedDomande = [...domande]; // Crea una copia dell'array delle domande
+   
+   // Rimuovi la domanda trascinata dalla sua posizione originale
+   const draggedIndex = updatedDomande.indexOf(draggedDomanda);
+   if (draggedIndex !== -1) {
+     updatedDomande.splice(draggedIndex, 1);
+   }
+   
+   // Inserisci la domanda trascinata nella nuova posizione
+   updatedDomande.splice(index, 0, droppedDomanda);
+   
+   onUpdateDomande(updatedDomande); // Aggiorna lo stato delle domande
+   
+   setDraggingIndex(null); // Resettare l'indice della domanda trascinata dopo il rilascio
+   setDraggedDomanda(null); // Resetta la domanda trascinata
+ };
+
+  return (
+    <div className="domande-container">
+      <div className="lista-domande">
+        {domande.map((domanda, index) => (
+          <div
+            key={index}
+            onDragStart={(event) => handleDragStart(event, domanda, index)} // Gestisci l'inizio del trascinamento sulla domanda
+            onDragOver={handleDragOver}
+            onDragEnter={() => handleDragEnter(index)} // Gestisci l'entrata del trascinamento sulla domanda
+            onDragLeave={handleDragLeave} // Gestisci l'uscita del trascinamento dall'area della domanda
+            onDrop={(event) => handleDrop(event, index)}
+            className={`domanda-item ${currentDomanda === domanda ? "domanda-selected" : ""} ${draggingIndex === index ? "dragging" : ""}`}
+            >
+           <Popconfirm
+             visible={confirmVisible[index]}
+             title="Sei sicuro di voler eliminare?"
+             onConfirm={() => handleConfirm(domanda)}
+             onCancel={handleCancel}
+             okText="Sì"
+             cancelText="No"
+             placement="top"
+           >
+           <img alt='cancel question' src={cancel} onClick={() => { setConfirmVisible((prevState) => {
+               const updatedConfirmVisible = [...prevState];
+               updatedConfirmVisible[index] = true;
+               return updatedConfirmVisible;
+             }); setCurrentDomanda(domanda) }} />
+            </Popconfirm> 
+           {domanda.options ? <img alt='edit question' src={edit} onClick={() => {setSelectedQuestion(domanda); setShowAddEditQuestionModal(true)}} /> : null}
+           <img
+           className='drag-handle'
+           src={move}
+           draggable
+           />
+            <p onClick={() => handleDomandaClick(domanda, index)}><span>{index + 1}.</span>{domanda.question}</p>
+          </div>
+        ))}
+      </div>
+      <div className="domanda-attuale">
+        <p><span>{currentDomandaIndex + 1}.</span>{currentDomanda.question}</p>
+        {currentDomanda.options && 
+        <ul className="opzioni">
+          {Object.entries(currentDomanda.options).map(([lettera, risposta], index) => (
+            <li className="risposta" key={index}><span>{lettera.substring(0, 1)}</span> {risposta}</li>
+          ))}
+        </ul>}
+      </div>
+    </div>
+  );
+};
 
 export default InfoExam

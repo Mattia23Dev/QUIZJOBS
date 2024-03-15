@@ -28,7 +28,8 @@ textarea{
 .ant-select-selector {
     border: 1px solid #DDD;
     border-radius: 5px !important;
-    height: 40px;
+    min-height: 40px;
+
   }
 .primary-contained-btn{
     background-color: var(--primary);

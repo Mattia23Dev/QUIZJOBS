@@ -1,4 +1,4 @@
-import { Card, Row, Col, Statistic, message, Timeline, Tag, Drawer, Button, Space, Select } from 'antd';
+import { Card, Row, Col, Statistic, message, Timeline, Tag, Drawer, List, Typography, Button, Space, Select, Affix } from 'antd';
 import React,{useState,useEffect} from 'react'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
@@ -6,26 +6,43 @@ import { useNavigate } from 'react-router-dom'
 import { getAllExams, getExamByUser } from '../../../apicalls/exams'
 import PageTitle from '../../../components/PageTitle'
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice'
+import { SolutionOutlined, UserOutlined, CalendarOutlined } from '@ant-design/icons';
 import Tour from 'reactour'
 import './testPage.css';
 const {Option} = Select;
 
-const SalesDashboard = () => {
+const SalesDashboard = ({exams}) => {
     return (
-      <div>
-        <Card title="Statistiche delle vendite">
-          <Row gutter={16}>
-            <Col span={8}>
-              <Statistic title="Vendite totali" value={1000} />
-            </Col>
-            <Col span={8}>
-              <Statistic title="Vendite settimanali" value={300} />
-            </Col>
-            <Col span={8}>
-              <Statistic title="Vendite mensili" value={700} />
-            </Col>
-          </Row>
-        </Card>
+      <div className='overview-top'>
+        <Row gutter={[16, 16]}>
+          <Col span={8}>
+            <Card>
+              <Statistic
+                title="Test creati"
+                value={exams?.length}
+                prefix={<><SolutionOutlined style={{ fontSize: '24px' }} /><span style={{ margin: '0 8px' }} /></>}
+              />
+            </Card>
+          </Col>
+          <Col span={8}>
+            <Card>
+              <Statistic
+                title="Candidati"
+                value={300}
+                prefix={<><UserOutlined style={{ fontSize: '24px' }} /><span style={{ margin: '0 8px' }} /></>}
+              />
+            </Card>
+          </Col>
+          <Col span={8}>
+            <Card>
+              <Statistic
+                title="Appuntamenti"
+                value={0}
+                prefix={<><CalendarOutlined style={{ fontSize: '24px' }} /><span style={{ margin: '0 8px' }} /></>}
+              />
+            </Card>
+          </Col>
+        </Row>
       </div>
     );
   }
@@ -61,11 +78,11 @@ const SalesDashboard = () => {
   const ActivityDashboard = () => {
     return (
       <div>
-        <Card title="Attività recenti">
+        <Card title="Prossimi appuntamenti">
           <Timeline>
-            <Timeline.Item color="green">Creazione del nuovo documento</Timeline.Item>
-            <Timeline.Item color="red">Eliminazione dell'utente</Timeline.Item>
-            <Timeline.Item color="blue">Modifica del profilo</Timeline.Item>
+            <Timeline.Item color="green">Appuntamento 1 - 12:00</Timeline.Item>
+            <Timeline.Item color="red">Appuntamento 2 - 15:00</Timeline.Item>
+            <Timeline.Item color="blue">Appuntamento 3 - 18:00</Timeline.Item>
           </Timeline>
         </Card>
       </div>
@@ -106,28 +123,6 @@ function HomePage({tour, setOpenTour, openTour}) {
   const [filterTest, setFilterTest] = useState('Tutti')
   const navigate = useNavigate()
   const user = useSelector(state=>state.users.user)
-  const getExams = async() => {
-    try{
-       dispatch(ShowLoading())
-       const response = await getAllExams()
-       dispatch(HideLoading())
-       if(response.success){
-        message.success(response.message)
-        console.log(response.data)
-        setExams(response.data)
-       }
-       else{
-        message.error(response.message)
-       }
-    }
-    catch(error){
-       dispatch(HideLoading())
-       message.error(error.message)      
-    }
-  }
-  useEffect(()=>{
-    getExams()
-  },[])
 
   const onCloseDrawer = () => {
     setOpenDrawer(false)
@@ -151,6 +146,7 @@ function HomePage({tour, setOpenTour, openTour}) {
       const response = await getExamByUser(user._id)
       if(response.success){
        setFilterTestOption(response.data)
+       setExams(response.data)
       }
       else{
        message.error(response.message)
@@ -164,6 +160,17 @@ function HomePage({tour, setOpenTour, openTour}) {
   useEffect(() => {
     getExamsData()
   }, [])
+  const data = [
+    { name: 'Esame 1', candidates: 50, percentage: 80 },
+    { name: 'Esame 2', candidates: 70, percentage: 75 },
+    { name: 'Esame 3', candidates: 45, percentage: 85 },
+    { name: 'Esame 1', candidates: 50, percentage: 80 },
+    { name: 'Esame 2', candidates: 70, percentage: 75 },
+    { name: 'Esame 3', candidates: 45, percentage: 85 },
+    { name: 'Esame 1', candidates: 50, percentage: 80 },
+    { name: 'Esame 2', candidates: 70, percentage: 75 },
+    { name: 'Esame 3', candidates: 45, percentage: 85 },
+  ];
   return (
     user && <div className='home-content'>
       <div className='test-header'>
@@ -181,18 +188,38 @@ function HomePage({tour, setOpenTour, openTour}) {
         </div>
         <button onClick={() => setOpenDrawer(true)}>Vedi dati</button>
       </div> 
-      <div>
-        <div className='elemento1'>
-          <SalesDashboard />
+      <div className='dashboard-container'>
+        <div>
+          <div className='elemento1'>
+            <SalesDashboard exams={exams} />
+          </div>
+          <div className='elemento2'>
+            <UserStatsDashboard />
+          </div>
+          <StatisticsDashboard />
+          <TagDashboard />
         </div>
-        <div className='elemento2'>
-          <UserStatsDashboard />
-        </div>
-        <div className='elemento3'>
-         <ActivityDashboard /> 
-        </div>
-        <StatisticsDashboard />
-        <TagDashboard />
+        <Affix className='right-dash-affix' offsetTop={180}>
+          <div className='right-dash'>
+            <div className='elemento3'>
+              <ActivityDashboard /> 
+            </div>
+            <List
+            className='list-dash'
+            itemLayout="horizontal"
+            dataSource={data}
+            renderItem={item => (
+              <List.Item>
+                <Typography.Text strong>{item.name}</Typography.Text>
+                <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
+                  <Typography.Text>{item.candidates} candidati</Typography.Text>
+                  <Typography.Text style={{ marginLeft: 8 }}>{item.percentage}%</Typography.Text>
+                </div>
+              </List.Item>
+              )}
+            />
+          </div>
+        </Affix>
       </div>
       <Drawer
             title="Drawer with extra actions"

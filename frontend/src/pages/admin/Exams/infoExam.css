@@ -83,14 +83,6 @@
 }
 
 /*INFO CANDIDATO*/
-.modal-header{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.modal-header > img {
-    width: 27%;
-}
 .modal-candidate-top{
     display: flex;
     justify-content: center;

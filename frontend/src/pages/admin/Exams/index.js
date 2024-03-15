@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import { useNavigate } from 'react-router-dom'
 import PageTitle from '../../../components/PageTitle'
-import {Table,message, Row, Col, Popconfirm, Switch, Select} from 'antd'
+import {Table,message, Row, Modal, Popconfirm, Switch, Select} from 'antd'
 import { MdMore } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux'
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice'
@@ -9,19 +9,26 @@ import { getAllExams, deleteExam, getExamByUser, changeStatusExam } from '../../
 import './index.css'
 import moment from 'moment';
 import candidateNumber from '../../../imgs/candidate.png'
+import skilltest from '../../../imgs/skilltest.png'
+import manual from '../../../imgs/manual.png'
+import mix from '../../../imgs/mix.png'
+import skt from '../../../imgs/skt.png'
 import Tour from 'reactour'
+import logo from '../../../imgs/logo.png'
 const { Option } = Select;
 
 function ExamsPage({openTour, setOpenTour, tour}) {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [exams,setExams] = useState([])
+  const [createTest, setCreateTest] = useState()
   const [confirmVisibleMap, setConfirmVisibleMap] = useState({});
   const [attivo, setAttivo] = useState('tutti'); // Valori possibili: 'tutti', 'attivo', 'non attivo'
   const [difficolta, setDifficolta] = useState('tutti'); // Valori possibili: 'tutti', 'facile', 'medio', 'difficile'
   const [numCandidati, setNumCandidati] = useState('tutti');
   const user = useSelector(state=>state.users.user)
   const storedQuestions = JSON.parse(localStorage.getItem('questions'));
+  const storedConfig = JSON.parse(localStorage.getItem('config'));
   const [confirmVisible, setConfirmVisible] = useState(Array(exams).fill(false));
 
   /*
@@ -48,11 +55,22 @@ function ExamsPage({openTour, setOpenTour, tour}) {
     },
   ];
  const continueExam = () => {
-  navigate('/admin/exams/add',{
-    state: {
-      storedQuestions: storedQuestions,
+  if (storedConfig && storedQuestions){
+    if (storedConfig.tag === "manual"){
+      navigate('/admin/exams/add/manual',{
+        state: {
+          storedQuestions: storedQuestions,
+        }
+      })
     }
-  })
+  } else if (storedConfig.tag === "ai"){
+    navigate('/admin/exams/add/ai',{
+      state: {
+        storedQuestions: storedQuestions,
+      }
+    })    
+  }
+
  }
   const getExamsData = async() => {
     try{
@@ -210,7 +228,7 @@ function ExamsPage({openTour, setOpenTour, tour}) {
         <i style={{marginRight: '3px'}} className='ri-pencil-line'></i>
         Continue Exam
         </button>}
-        <button className='primary-outlined-btn flex items-center cursor-pointer elemento1' onClick={()=>navigate('/admin/exams/add')}>
+        <button className='primary-outlined-btn flex items-center cursor-pointer elemento1' onClick={()=>setCreateTest(true)}>
           <i className='ri-add-line' style={{marginRight: '7px'}}></i>
           Crea Test
         </button>
@@ -280,6 +298,40 @@ function ExamsPage({openTour, setOpenTour, tour}) {
         steps={steps}
         rounded={5}
       />
+      <Modal
+          title={
+            <div className="modal-header">
+                <img style={{width: '17%'}} src={logo} alt="logo skilltest" />
+            </div>
+            }
+      open={createTest}
+      width={'70%'}
+      footer={false} 
+      onCancel={()=>{
+      setCreateTest(false)
+      }}>
+      <div className='choose-test'>
+        <div onClick={()=>navigate('/admin/exams/add/ai')}>
+          <img alt='test skilltest' src={skilltest} />
+          <h2>SkillTest AI</h2>
+          <p>Test focalizzato per verificare le competenze del candidato generato dall'AI di SkillTest. Le 
+            nostre domande sono generate con cura e attenzione per qualificare al meglio il candidato
+          </p>
+        </div>
+        <div onClick={()=>navigate('/admin/exams/add/mix')}>
+          <div><img alt='test misto' src={skt} /><span>Consigliato</span></div>
+          <img alt='test misto' src={mix} />
+          <h2>Test Misto</h2>
+          <p>Testa le competenze del candidato, tramite la nostra AI, con la possibilità di aggiungere
+            moduli secondari di tua scelta, focalizzandoti per esempio sulle soft skills o sul carattere del candidato.</p>
+        </div>
+        <div onClick={()=>navigate('/admin/exams/add/manual')}>
+          <img alt='test manual' src={manual} />
+          <h2>Test Manuale</h2>
+          <p>Aggiungi un test manuale o seleziona i moduli creati da noi per un test qualsiasi non focalizzato su competenze tecniche, non ci saranno risposte esatti o punteggi.</p>
+        </div>
+      </div>
+      </Modal>
     </div>
   )
 }

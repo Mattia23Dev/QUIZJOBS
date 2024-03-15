@@ -11,6 +11,8 @@ import homegiù3 from '../imgs/homegiù3.png'
 import footer1 from '../imgs/footer1.png'
 import './home.css';
 import Footer from '../components/footer/Footer'
+import { OverPack } from 'rc-scroll-anim';
+import QueueAnim from 'rc-queue-anim';
 
 function Home() {
 
@@ -24,35 +26,35 @@ function Home() {
           <h1>SkillTest® <b>funziona. <br /> i CV no.</b></h1>
           <p>I nostri test di selezione ti consentono di trovare i <b>candidati migliori</b> e di prendere decisioni veloci, facili e imparziali.</p>
           <div>
-            <button>Provalo gratis</button>
-            <button>Contattaci</button>
+            <button onClick={() => navigate('/register')}>Provalo gratis</button>
+            <button onClick={() => navigate('/contact')}>Contattaci</button>
           </div>
         </div>
         <div>
           <img alt='skilltest ai numero 1' src={hero} />
         </div>
       </div>
-      <div className='service-section'>
+      <div id='product' className='service-section'>
         <h2>Testa le competenze per <br /> <b>il successo lavorativo</b></h2>
         <p>Prevedi le performance lavorative reali dei potenziali candidati <br /> 
         grazie a una libreria <b>400+ test scientificamente provati.</b></p>
         <div>
-         <div>
+         <div key="a">
            <img alt="test scientifici" src={home2} />
            <p>Generati ed integrati con <b>intelligenza artificiale</b></p>
           </div>
-          <div>
+          <div key="b">
            <img className='img-home-piccola' alt="test scientifici" src={home1} />
            <p><b>400+ test</b> scientificamente provati</p>
           </div> 
-          <div>
+          <div key="c">
            <img alt="test scientifici" src={home3} />
            <p><b>Supporto efficace</b> nella selezione del candidato</p>
           </div>
         </div>
         <div>
-            <button>Provalo gratis</button>
-            <button>Contattaci</button>
+            <button onClick={() => navigate('/register')}>Provalo gratis</button>
+            <button onClick={() => navigate('/contact')}>Contattaci</button>
         </div>
       </div>
       <div className='service-section2'>
@@ -63,8 +65,8 @@ function Home() {
           <p>Basta <b>perdere tempo</b> nella selezione dei CV e nei colloqui preliminari. <br /><br />
           <b>SkillTest®</b> valuta e classifica automaticamente i tuoi candidati.</p>
           <div>
-            <button>Provalo gratis</button>
-            <button>Contattaci</button>
+            <button onClick={() => navigate('/register')}>Provalo gratis</button>
+            <button onClick={() => navigate('/contact')}>Contattaci</button>
           </div>
         </div>
       </div>
@@ -77,8 +79,8 @@ function Home() {
            Con SkillTest®, <b>darai a tutti i candidati le stesse opportunità di mettersi in mostra.</b> <br /><br />
           Risultato? Assumerai i migliori talenti indipendentemente dai loro percorsi di vita.</p>
           <div>
-            <button>Provalo gratis</button>
-            <button>Contattaci</button>
+            <button onClick={() => navigate('/register')}>Provalo gratis</button>
+            <button onClick={() => navigate('/contact')}>Contattaci</button>
           </div>
         </div>
         <img alt='selezione ottimizzata' src={homegiù2} />
@@ -93,13 +95,25 @@ function Home() {
           Ciò significa che il team delle risorse umane potrà prendere decisioni importanti facendo affidamento 
           su dati di <b>buona qualità</b> e non solo sull'istinto</p>
           <div>
-            <button>Provalo gratis</button>
-            <button>Contattaci</button>
+            <button onClick={() => navigate('/register')}>Provalo gratis</button>
+            <button onClick={() => navigate('/contact')}>Contattaci</button>
           </div>
         </div>
       </div>
       <hr />
       <div className='come-funziona'>
+        <h2>Come funziona SkillTest?</h2>
+        <div>
+          <iframe
+              src="https://www.youtube.com/embed/dQw4w9WgXcQ"  // Sostituisci questo URL con l'URL del video YouTube desiderato
+              title="Video di YouTube"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+        </div>
+      </div>
+      <div className='prezzi' id='price'>
         <h2>Come funziona SkillTest?</h2>
         <div>
           <iframe
@@ -119,8 +133,8 @@ function Home() {
         <p><b>Con SkillTest puoi evitare tutti questi rischi e godere ogni anno di <br />
         un enorme ritorno sull'investimento.</b></p>
         <div>
-          <button>Provalo gratis</button>
-          <button>Contattaci</button>
+          <button onClick={() => navigate('/register')}>Provalo gratis</button>
+          <button onClick={() => navigate('/contact')}>Contattaci</button>
         </div>
       </div>
       <Footer />

@@ -14,6 +14,12 @@ const examSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String,
+    },
+    tag: {
+        type: String,
+    },
     jobPosition: {
         type: String,
         required: true
