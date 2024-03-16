@@ -129,7 +129,7 @@ function InfoCandidate(props) {
               </div>
           </div>
           <hr />
-          <a className='allegati' href='#'><img src={allegati} alt='documento link'/>Document Links</a>
+          <a className='allegati' href={`https://quizjobs-production.up.railway.app/uploads/${selectedCandidate.cv}`} target="__blank"><img src={allegati} alt='documento link'/>Document Links</a>
           <a className='add-allegato' href='#'><span>+</span> Aggiungi allegato</a>
        
             <div className="flex justify-center">

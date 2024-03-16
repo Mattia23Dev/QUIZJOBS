@@ -10,6 +10,26 @@ export const addReport = async(payload) => {
     }
 }
 
+export const reportAi = async(payload) => {
+    try{
+        const response = await axiosInstance.post('/api/reports/reportAi',payload)
+        return response.data
+    }
+    catch(error){
+        return error.response.data
+    }
+}
+
+export const reportAiManual = async(payload) => {
+    try{
+        const response = await axiosInstance.post('/api/reports/reportAiManual',payload)
+        return response.data
+    }
+    catch(error){
+        return error.response.data
+    }
+}
+
 export const getAllAttempts = async(payload) => {
     try{
         const response = await axiosInstance.post('/api/reports/getAllAttempts',payload)

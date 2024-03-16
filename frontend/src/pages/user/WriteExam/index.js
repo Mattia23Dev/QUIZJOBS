@@ -5,7 +5,7 @@ import { getExamById, saveTestProgress } from '../../../apicalls/exams'
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice'
 import { message } from 'antd'
 import Instructions from './Instructions'
-import { addReport } from '../../../apicalls/reports'
+import { addReport, reportAi, reportAiManual } from '../../../apicalls/reports'
 import { useSelector } from 'react-redux'
 import { useCookies } from 'react-cookie';
 import logo from '../../../imgs/logo.png'
@@ -15,6 +15,7 @@ import alert from '../../../imgs/alert.png'
 import thanks from '../../../imgs/thanks.png'
 import v from '../../../imgs/v.png'
 import cbig from '../../../imgs/cbig.png'
+import openai from 'openai';
 import './writeExamUser.css';
 
 function WriteExam() {
@@ -93,8 +94,60 @@ const calculateResult = async() => {
 
       dispatch(HideLoading());
       setView("thanks");
+
+      const responseAi = await reportAi({
+        exam: examData._id,
+        questions: questions,
+        answers: selectedOptions,
+        user: user._id,
+        email: user.email,
+      })
       if(response.success) {
-          //setView("result");
+          console.log(response);
+      } else {
+          message.error(response.message);
+      }
+  } catch(error) {
+      dispatch(HideLoading());
+      message.error(error.message);
+  }
+};
+
+const calculateResultManual = async() => {
+  try {
+      let correctAnswersCount = questions.length;
+      const totalQuestions = questions.length;
+
+      const tempResult = {
+          correctAnswersCount,
+          totalQuestions,
+          percentage: 100,
+          verdict : 'Pass',
+          allAnswers: selectedOptions,
+          allSeconds: seconds,
+      };
+
+      setResult(tempResult);
+      dispatch(ShowLoading());
+
+      const response = await addReport({
+          exam: examData._id,
+          result: tempResult,
+          user: user._id,
+          email: user.email,
+      });
+
+      dispatch(HideLoading());
+      setView("thanks");
+      const responseAi = await reportAiManual({
+        exam: examData._id,
+        questions: questions,
+        answers: selectedOptions,
+        user: user._id,
+        email: user.email,
+      })
+
+      if(response.success) {
           console.log(response);
       } else {
           message.error(response.message);
@@ -109,8 +162,8 @@ useEffect(() => {
   if (user && user.tests && user.tests.length > 0) {
     const currentTest = user.tests[0];
     if (currentTest.progress && currentTest.totalQuestions) {
-      setSelectedQuestionIndex(currentTest.progress.questionIndex);
-      const remainingTime = 30;
+      setSelectedQuestionIndex(currentTest.progress.questionIndex+1);
+      const remainingTime = examData.tag === "manual" ? 180 : 30;
       setSecondsLeft(remainingTime);
       const answers = currentTest.arrayAnswers?.answers;
       if (answers) {
@@ -118,17 +171,19 @@ useEffect(() => {
       }
     } else {
       setSelectedQuestionIndex(0); 
-      setSecondsLeft(30);
+      setSecondsLeft(examData.tag === "manual" ? 180 : 30);
     }
   }
 }, [user]);
 
 const handleNextButtonClick = async () => {
   let correctAnswersCount = 0;
+  let correctQuestions = [];
   for (let i = 0; i <= selectedQuestionIndex; i++) {
     const question = questions[i];
     if (question.correctOption.includes(selectedOptions[i])) {
       correctAnswersCount++;
+      correctQuestions.push(question);
     }
   }
 
@@ -141,6 +196,7 @@ const handleNextButtonClick = async () => {
         answers: selectedOptions,
         questions: questions.slice(0, selectedQuestionIndex + 1).map(question => question.question),
         seconds: seconds,
+        correctQuestions: correctQuestions,
       },
       correctAnswer: correctAnswersCount,
       totalQuestions: selectedQuestionIndex + 1,
@@ -150,10 +206,31 @@ const handleNextButtonClick = async () => {
   startTimer();
 };
 
+const handleNextButtonClickManual = async () => {
+
+  const response = await saveTestProgress({
+      email: user.email,
+      testId: examData._id,
+      questionIndex: selectedQuestionIndex,
+      selectedOption: selectedOptions[selectedQuestionIndex],
+      arrayAnswers: {
+        answers: selectedOptions,
+        questions: questions.slice(0, selectedQuestionIndex + 1).map(question => question.question),
+        seconds: seconds,
+        correctQuestions: [],
+      },
+      correctAnswer: questions.length,
+      totalQuestions: selectedQuestionIndex + 1,
+  })
+  console.log(response);
+  setSelectedQuestionIndex(selectedQuestionIndex + 1);
+  startTimer();
+};
+
 const startTimer = () => {
   clearInterval(intervalId);
-  let remainingTime = 30;
-  setSecondsLeft(remainingTime); 
+  let remainingTime = examData.tag === "manual" ? 180 : 30;
+  setSecondsLeft(remainingTime);
 
   const intervalIdSt = setInterval(() => {
     if (remainingTime > 0) {
@@ -161,13 +238,17 @@ const startTimer = () => {
       setSecondsLeft(remainingTime); 
       setSeconds(prevSeconds => ({
         ...prevSeconds,
-        [selectedQuestionIndex]: 30 - remainingTime
+        [selectedQuestionIndex]: examData.tag === "manual" ? 180 - remainingTime : 30 - remainingTime
       }));
     } else {
       clearInterval(intervalIdSt);
 
       if (selectedQuestionIndex < questions.length - 1) {
-        handleNextButtonClick();
+        if (examData.tag === "manual"){
+          handleNextButtonClickManual()
+        } else {
+          handleNextButtonClick()
+        }
       } else {
         setTimeUp(true);
       }
@@ -183,7 +264,11 @@ useEffect(() => {
       setSelectedQuestionIndex(prevIndex => prevIndex + 1);
       startTimer(); 
     } else {
-      calculateResult();
+      if (examData.tag === "manual"){
+        calculateResultManual();
+      } else {
+        calculateResult();
+      };
     }
   }
 }, [timeUp]);
@@ -209,7 +294,74 @@ useEffect(()=>{
     setView={setView}
     startTimer={startTimer}
     />}
-    {(view==="questions"&&questions?.length > 0)&&<div className='flex flex-col gap-2 mt-2'>
+    {(view==="questions"&&questions?.length > 0) ? examData?.tag === "manual" ?
+     <div className='flex flex-col gap-2 mt-2'>
+     <div className='question-exam-container'>
+     <div className='timer'>
+       <img alt='time user' src={time} />
+       <span className='text-2xl user-select-none'>{secondsLeft >= 60 ? secondsLeft >= 120 ? secondsLeft >= 180 ? '03' : '02' : '01' : '00'}:{secondsLeft <10 ? '0' : null}{secondsLeft >= 180 ? secondsLeft - 180 : secondsLeft >= 120 ? secondsLeft - 120 : secondsLeft >= 60 ? secondsLeft - 60 : secondsLeft}:00</span>
+      </div>
+      <div style={{width: '60%'}} className='flex justify-center mt-2'>
+      <h1 style={{width:'65%'}} className='text-xl user-select-none'>
+        {selectedQuestionIndex+1} : {questions[selectedQuestionIndex].question}
+      </h1>
+      </div>
+      {questions[selectedQuestionIndex].options ?
+      <div className='flex flex-col gap-2 align-left'>
+       {Object.entries(questions[selectedQuestionIndex].options).map(([lettera, risposta], index) => (
+           <div
+             className={`flex gap-2 items-center ${selectedOptions[selectedQuestionIndex] === risposta ? "selected-option" : "option" }`}
+             key={index}
+             onClick={() => {
+               setSelectedOptions({...selectedOptions, [selectedQuestionIndex]: risposta});
+               console.log(selectedOptions);
+             }}
+           >
+             <h4 className='text-m user-select-none'>
+               <span>{lettera.substring(0, 1)}</span>{risposta}
+             </h4>
+           </div>
+         ))}
+      </div> : 
+      <div style={{width: '50%'}} className='flex flex-col gap-2 align-left'>
+        <textarea 
+        className='textarea-writexam'
+        value={selectedOptions[selectedQuestionIndex] || ''}
+        onChange={(e) => setSelectedOptions({...selectedOptions, [selectedQuestionIndex]: e.target.value})}
+        />
+      </div>}
+      <div className='alert-exam'>
+         <img src={alert} alt='alert' />
+         <p>Si prega notare che, in caso di uscita dal test, questo verrà interrotto. <br />
+           Tuttavia, avrai la possibiltà di riprendere esattamente dove ti eri fermato una volta che riaccedi nel sistema.
+         </p>
+      </div>
+      <div className='button-exam-container flex justify-between'>
+       {selectedQuestionIndex<questions.length-1&&
+       <div style={{display: 'flex', flexDirection: 'column', textAlign: 'center', gap: '20px'}}>
+         <button className='primary-contained-btn'
+       onClick={()=> handleNextButtonClickManual()}
+       style={{display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center'}}>
+        <img src={arrowRight} alt='arrow right' />Domanda successiva
+       </button>
+       <p><b>Non è possibile</b> tornare all <br /> <u style={{color: '#F95959'}}>domanda precedente</u></p>
+       </div>
+       }
+       {selectedQuestionIndex===questions.length-1&&<button className='primary-contained-btn'
+       style={{display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center'}}
+       onClick={()=>{
+         clearInterval(intervalId)
+         setTimeUp(true)
+       }}
+       >
+        <img src={arrowRight} alt='arrow right' />
+        Invia candidatura
+       </button>}
+      </div>
+     </div>
+     </div>
+    :
+    <div className='flex flex-col gap-2 mt-2'>
     <div className='question-exam-container'>
     <div className='timer'>
       <img alt='time user' src={time} />
@@ -265,53 +417,7 @@ useEffect(()=>{
       </button>}
      </div>
     </div>
-    </div>}
-    {view==="result"&&<div className='flex justify-center mt-2 gap-2'>
-      <div className='flex flex-col gap-2 result'>
-      <h1 className='text-2xl'>
-        Result
-      </h1>
-      <div className='marks'>
-        <h1 className='text-md'>
-           Total Marks : {100}
-        </h1>
-        <h1 className='text-md'>
-           Passing Marks : {70}
-        </h1>
-        <h1 className='text-md'>
-            Obtained Marks : {result.correctAnswers.length}
-        </h1>
-        <h1 className='text-md'>
-            Wrong Answers : {result.wrongAnswers.length}
-        </h1>
-        <h1 className='text-md'>
-            Verdict : {result.verdict}
-        </h1>
-        <div className='flex gap-2 mt-2'>
-          <button className='primary-outlined-btn'
-          onClick={()=>{
-            setView("instructions")
-            setSelectedQuestionIndex(0);
-            setSelectedOptions({});
-            setTimeUp(false);
-            setSecondsLeft(10000)
-          }}
-          >
-          Retake Exam
-          </button>
-          <button className='primary-contained-btn' onClick={()=>{
-            setView("review");
-          }}>
-            Review Answers
-          </button>
-        </div>
-      </div>
-      </div>
-      <div className="lottie-animation">
-      {result.verdict==="Pass" && <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_uu0x8lqv.json"  background="transparent"  speed="1" loop autoplay></lottie-player>}
-      {result.verdict==="Fail"&&<lottie-player src="https://assets4.lottiefiles.com/packages/lf20_qp1spzqv.json"  background="transparent" speed="1" loop autoplay></lottie-player>}
-      </div>
-    </div>}
+    </div> : null}
     {view==="thanks"&&<div className='thanks-exam-container flex flex-col gap-2'> 
        <img alt='skilltest' src={thanks} className='back-img' />
        <img src={v} alt='ok' />
@@ -322,7 +428,7 @@ useEffect(()=>{
        <button style={{zIndex: 10}} className='primary-contained-btn' onClick={() => navigate('/login')}>Registrati gratuitamente</button>
     </div>}
     </div>
-    : 
+    :
     <div className='thanks-exam-container flex flex-col gap-2'> 
        <img alt='skilltest' src={thanks} className='back-img' />
        <img src={cbig} alt='ok' />

@@ -318,7 +318,10 @@ function ExamsPage({openTour, setOpenTour, tour}) {
             nostre domande sono generate con cura e attenzione per qualificare al meglio il candidato
           </p>
         </div>
-        <div onClick={()=>navigate('/admin/exams/add/mix')}>
+        <div onClick={()=>{
+          //navigate('/admin/exams/add/mix')
+          window.alert("Stiamo lavorando per aggiungerlo, scusate il disagio! Intanto potete creare le altre due tipologie di Test ")
+          }}>
           <div><img alt='test misto' src={skt} /><span>Consigliato</span></div>
           <img alt='test misto' src={mix} />
           <h2>Test Misto</h2>

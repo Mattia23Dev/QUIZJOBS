@@ -11,6 +11,112 @@ export const domandeAperteCarattere = [
     "Parla di un momento in cui hai dovuto adattarti a un cambiamento improvviso e come hai gestito la transizione."
 ];
 
+export const domandeAperteScreening = [
+    "Descrivi brevemente la tua esperienza lavorativa. Quali sono state le tue principali responsabilità e risultati ottenuti?",
+    "Quali competenze specifiche possiedi che ritieni essere particolarmente rilevanti per questo ruolo?",
+    "Puoi fornire un esempio di un progetto digitale che hai gestito o contribuito a portare a termine con successo?",
+    "Come ti mantieni aggiornato sulle nuove tecnologie e tendenze nel campo digitale?",
+    "Quali sono i tuoi principali obiettivi di carriera nel campo digitale e come pensi che questo ruolo possa contribuire al loro raggiungimento?",
+    "Come affronti le sfide nella risoluzione di problemi tecnici durante il lavoro su progetti digitali?",
+    "Descrivi un momento in cui hai dovuto collaborare efficacemente con un team multidisciplinare per raggiungere un obiettivo comune nel campo digitale.",
+    "Qual è il tuo approccio alla gestione del tempo e delle scadenze in un ambiente lavorativo digitale?",
+    "Hai esperienza nell'utilizzo di specifici strumenti o piattaforme nel campo digitale? Quali sono e in che contesto li hai utilizzati?",
+    "Qual è la tua motivazione per lavorare in questo settore e per questa azienda specifica nel campo digitale?",
+    "Hai esperienza nel campo digitale?",
+    "Possiedi competenze nell'utilizzo di strumenti informatici?",
+    "Sei familiare con l'uso di software per la produttività, come fogli di calcolo e software di elaborazione testi?",
+    "Hai esperienza nella gestione di progetti digitali?",
+    "Hai familiarità con i principali linguaggi di programmazione utilizzati nel campo digitale?",
+    "Hai competenze nella risoluzione di problemi tecnici?",
+    "Sei in grado di lavorare efficacemente in team?",
+    "Hai una buona comprensione delle tecnologie e delle tendenze attuali nel campo digitale?",
+    "Sei abile nel gestire il tempo e rispettare le scadenze?",
+    "Hai una buona comprensione delle best practice nel campo digitale?"
+];
+
+export const domandeChiuseScreening = [
+    {
+        domanda: "Quanto esperienza hai nel campo digitale?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto sei competente nell'utilizzo di strumenti informatici?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto sei familiare con l'uso di software per la produttività?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto esperienza hai nella gestione di progetti digitali?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto sei familiare con i principali linguaggi di programmazione utilizzati nel campo digitale?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto sei competente nella risoluzione di problemi tecnici?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto sei abile nel lavorare in team?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto conosci le tecnologie e le tendenze attuali nel campo digitale?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto sei bravo nel gestire il tempo e rispettare le scadenze?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto conosci le best practice nel campo digitale?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto sei familiare con i concetti di base della programmazione?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto sei a tuo agio nell'uso di strumenti di sviluppo software come IDE (Integrated Development Environment)?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto sei competente nell'analisi dei dati e nell'interpretazione dei risultati?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto sei abile nella risoluzione di problemi complessi?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto sei familiare con i principali strumenti di progettazione e sviluppo web?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto sei competente nella scrittura di codice pulito e ben strutturato?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto sei abile nella gestione di ambienti di sviluppo e produzione?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto sei a tuo agio con i concetti di architettura software e design pattern?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto sei esperto nell'utilizzo di sistemi di controllo versione come Git?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    },
+    {
+        domanda: "Quanto sei abile nella comunicazione tecnica con colleghi non tecnici?",
+        opzioni: ["Poca", "Media", "Molta", "Esperto"]
+    }
+];
+
 export const domandeChiuseCarattere = [
     {
         domanda: "Quali di queste qualità ritieni di possedere maggiormente?",

@@ -45,7 +45,16 @@ const DragAndDrop = ({openTour, setOpenTour, tour, showAddCandidateModal, setAdd
       const citiesArray = [...citiesSet];
       setCityOption(citiesArray)
     };
-
+    const searchCandidates = (candidates, searchTerm) => {
+      return candidates.filter(candidate => {
+        return candidate.name.toLowerCase().includes(searchTerm.toLowerCase());
+      });
+    };
+    const handleSearchChange = (e) => {
+      setSearchValue(e.target.value);
+      const filteredCandidates = searchCandidates(initialData, e.target.value);
+      setListItems(filteredCandidates);
+    };
     const getExamsData = async() => {
       try{
         const response = await getExamByUser(user._id)
@@ -115,7 +124,7 @@ const DragAndDrop = ({openTour, setOpenTour, tour, showAddCandidateModal, setAdd
         <div className='filter-crm'>
           <div>
             <FaSearch />
-            <input type='text' placeholder='Cerca candidato' value={searchValue} onChange={(e) => setSearchValue(e.target.value)} />
+            <input type='text' placeholder='Cerca candidato' value={searchValue} onChange={handleSearchChange} />
           </div>
           <div className='elemento1'>
             <div>
@@ -158,6 +167,7 @@ const DragAndDrop = ({openTour, setOpenTour, tour, showAddCandidateModal, setAdd
                   >
                     <p>{container}</p>
                     <button className='elemento3' onClick={() => {setShowAddCandidateModal(true); setAddStatus(container)}}>+</button>
+                    <div className='drag-scroll'>
                     {listItems.length > 0 && listItems
                     .filter(item => {
                       if (filterCity === "tutti" && filterTest === "tutti" && filterScore === "tutti") {
@@ -197,6 +207,7 @@ const DragAndDrop = ({openTour, setOpenTour, tour, showAddCandidateModal, setAdd
                       return shouldInclude;
                     })
                     .map((item) => container === item.status && <CardItem setSelectedCandidate={setSelectedCandidate} selectedCandidate={selectedCandidate} setShowInfoCandidateModal={setShowInfoCandidateModal} data={item} key={item.id} handleDragging={handleDragging} />)}
+                    </div>
                   </div>
                 ))
             }

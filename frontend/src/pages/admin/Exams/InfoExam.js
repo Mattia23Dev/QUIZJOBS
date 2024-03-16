@@ -295,7 +295,7 @@ const handleCopyLink = () => {
       key: "tracciamento",
       render: (text, record) => {
         return(
-        <span className="custom-column-style">{record?.trackLink && record?.trackLink !== null ? record.trackLink : 'Nessuno'}</span>
+        <span className="custom-column-style">{record?.trackLink && record?.trackLink !== null && record?.trackLink !== "null" ? record.trackLink : 'Nessuno'}</span>
       )},
     },
     {
@@ -319,7 +319,7 @@ const handleCopyLink = () => {
       dataIndex: "cv",
       key: "cv",
       render: (text, record) => (
-        <a style={{textAlign: 'center', fontSize: '18px'}} href={`http://localhost:8000/uploads/${record.candidate.cv}`} target="__blank" download className="custom-download-link">
+        <a style={{textAlign: 'center', fontSize: '18px'}} href={`https://quizjobs-production.up.railway.app/uploads/${record.candidate.cv}`} target="__blank" download className="custom-download-link">
           <i className="ri-download-line" />
         </a>
       ),
@@ -534,6 +534,7 @@ const modificaDomanda = (domandaModificata) => {
         />}
         {showInfoCandidateModal&&<InfoCandidate 
         jobPosition={examData.jobPosition}
+        tag={examData.tag}
         setShowInfoCandidateModal={setShowInfoCandidateModal}
         examQuestion={questions}
         showInfoCandidateModal={showInfoCandidateModal}

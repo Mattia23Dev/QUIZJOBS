@@ -77,7 +77,7 @@ function ProtectedRoute({children, setLoginPopup, handleStartTour, tour, openTou
       title: "Home",
       paths: ["/admin/home"],
       icon: <i className="ri-home-line"></i>,
-      onClick: () => navigate("/admin/home"),
+      onClick: () => window.alert("Stiamo lavorando per aggiungerlo, scusate il disagio!") //() => navigate("/admin/home"),
     },
     {
       title: "Test",
@@ -91,12 +91,6 @@ function ProtectedRoute({children, setLoginPopup, handleStartTour, tour, openTou
       icon: <i className="ri-bar-chart-line"></i>,
       onClick: ()=>navigate("/admin/crm"),
     },
-    /*{
-      title: "Reports",
-      paths: ["/admin/reports"],
-      icon: <i className="ri-bar-chart-line"></i>,
-      onClick: ()=>navigate("/admin/reports")
-    },*/
     {
       title: "Calendar",
       paths: ["/admin/calendar"],
@@ -107,7 +101,7 @@ function ProtectedRoute({children, setLoginPopup, handleStartTour, tour, openTou
       title: "Team",
       paths: ["/admin/team"],
       icon: <i className='ri-team-line'></i>, // Icona del team
-      onClick: () => navigate("/admin/team"),
+      onClick: () => window.alert("Stiamo lavorando per aggiungerlo, scusate il disagio!") //() => navigate("/admin/team"),
     },
     /*{
       title: "Automations",

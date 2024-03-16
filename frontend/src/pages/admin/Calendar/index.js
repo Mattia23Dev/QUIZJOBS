@@ -84,16 +84,13 @@ const CalendarComponent = ({tour, openTour, setOpenTour}) => {
     );
     return (
       <Popover placement="top" title={rightDate} content={content}>
-        {eventsForDate.length > 0 && eventsForDate?.map((event, index) => {
-          const formattedTime = moment(event.date).format('HH:mm');
-          const formatDate = moment(event.date).format("DD-MM-YYYY");
-          return(
+        {eventsForDate.length > 0 && 
         <ul style={{padding: '20px 0'}}>
-            <li className='li-calendar' key={index}>
+            <li className='li-calendar'>
               {eventsForDate.length > 1 ? eventsForDate.length + ' eventi' : '1 evento'}
             </li>
         </ul>
-        )})}
+        }
       </Popover>
     );
   };
@@ -235,7 +232,7 @@ const CalendarComponent = ({tour, openTour, setOpenTour}) => {
                   <p>Posizione</p>
                   <p>{drawerEvent?.candidate.jobPosition}</p>
               </div>
-              <a className='allegati' href={`http://localhost:5000/uploads/${drawerEvent?.candidate.cv}`}><img src={allegati} alt='documento link'/>Scarica CV</a>
+              <a className='allegati' href={`https://quizjobs-production.up.railway.app/uploads/${drawerEvent?.candidate.cv}`}><img src={allegati} alt='documento link'/>Scarica CV</a>
           </div>
         </Drawer>
         <Tour

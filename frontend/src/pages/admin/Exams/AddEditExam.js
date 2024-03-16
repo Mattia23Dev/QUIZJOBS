@@ -1,5 +1,9 @@
 import React,{useState,useEffect} from 'react';
 import PageTitle from '../../../components/PageTitle';
+import { domandeAperteCarattere, domandeAperteCreativita, domandeAperteEtica, domandeAperteRelazioni, domandeAperteDecisionMaking, domandeAperteLeadership, domandeAperteProblem, 
+  domandeChiuseCarattere, domandeChiuseCreativita, domandeChiuseDecisionMaking, domandeChiuseEtica, domandeChiuseLeadership, domandeChiuseProblem, domandeChiuseRelazioni, 
+  domandeChiuseScreening,
+  domandeAperteScreening} from '../../../components/Moduli';
 import { Form, Row, Col, message, Segmented, DatePicker, Select, Popconfirm, Modal } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { addExam, addTrackLink, deleteQuestionFromExam, deleteTrackLink, editExam, getExamById } from '../../../apicalls/exams';
@@ -549,10 +553,60 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
         setPassaOltre(2);
       }
 
+      const handleAddModuleQuestion = (domanda, type) => {
+        if (type === "aperta"){
+          const domandaAdd = {
+            domanda: domanda,
+          }
+          const nuoveDomande = [...questions, domandaAdd];
+          setQuestions(nuoveDomande);
+          handleSetInStorageQuestion(nuoveDomande)
+        }else {
+          const domandaAdd = {
+            domanda: domanda.domanda,
+            opzioni: {
+              'A)': domanda.opzioni[0],
+              'B)': domanda.opzioni[1],
+              'C)': domanda.opzioni[2],
+              'D)': domanda.opzioni[3],
+            }
+          }
+          const nuoveDomande = [...questions, domandaAdd];
+          setQuestions(nuoveDomande);
+          handleSetInStorageQuestion(nuoveDomande)
+        }
+      }
+      const handleDeleteModuleQuestion = (domanda, type) => {
+        if (type === "aperta"){
+          const newQuestions = questions.filter(item => item.domanda !== domanda);
+          setQuestions(newQuestions);
+        }else {
+          const newQuestions = questions.filter(item => item.domanda !== domanda.domanda);
+          setQuestions(newQuestions);
+        }
+      }
+      const checkIfAdded = (domanda, type) => {
+        if (type === "aperta"){
+          const esiste = questions.filter((d) => d.domanda === domanda);
+          if (esiste.length > 0){
+            return true
+          } else {
+            return false
+          }
+        } else {
+          const esiste = questions.filter((d) => d.domanda === domanda.domanda);
+          if (esiste.length > 0){
+            return true
+          } else {
+            return false
+          }
+        }
+      }
+
   return (
       <div className='home-content'>
         {tag === "manual" &&
-        <div onClick={() => setAddOurModule(true)} className='add-our-question'>
+        <div onClick={passaOltre === 2 ? () => setAddOurModule(true) : () => window.alert('Inserisci prima le info del test')} className='add-our-question'>
           <span>+</span> Aggiungi i nostri moduli
         </div>}
         <div className='copy-preview'>
@@ -755,6 +809,7 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
                     } 
          open={addOurModule}
          width={'70%'}
+         style={{top: '10px'}}
          footer={false} onCancel={()=>{
          setAddOurModule(false)
          }}>
@@ -768,23 +823,187 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
                 />
             </div>
             {categoryType === "Attitudinali e Soft skills" ? (
-            <div style={{display: 'flex', justifyContent: 'center', margin: '0px 0 20px 0'}}>
+            <div style={{display: 'flex', justifyContent: 'center', margin: '0px 0 20px 0', flexDirection: 'column', alignItems: 'center'}}>
               <Segmented
+              className='segmented'
                   options={['Caratteriali', 'Problem solving', 'Creatività', 'Decision Making', 'Etica', 'Leadership', 'Relazioni']}
                   onChange={(value) => {
                     console.log(value);
                     setDomandaType(value)
                   }}
                 />
-                {domandaType === "Caratteriali" ? 
-                <div>
-
-                </div> : null}
+                <div className='domande-moduli-nostri'>
+                  <div>
+                    <h4>Domande chiuse</h4>
+                    {domandaType === "Caratteriali" ?
+                    <div className='domande-cont'>
+                      {domandeChiuseCarattere.map((d) => (
+                        <div>
+                          <p>{d.domanda}</p>{checkIfAdded(d, 'chiusa') ? <span onClick={() => handleDeleteModuleQuestion(d, "chiusa")}>-</span> : <span onClick={() => handleAddModuleQuestion(d, "chiusa")}>+</span>}
+                          <div className='option-domande-cont'>
+                            {d.opzioni.map((o) => (
+                              <p>{o}</p>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div> : domandaType === "Problem solving" ?
+                    <div className='domande-cont'>
+                      {domandeChiuseProblem.map((d) => (
+                        <div>
+                          <p>{d.domanda}</p>{checkIfAdded(d, 'chiusa') ? <span onClick={() => handleDeleteModuleQuestion(d, "chiusa")}>-</span> : <span onClick={() => handleAddModuleQuestion(d, "chiusa")}>+</span>}
+                          <div className='option-domande-cont'>
+                            {d.opzioni.map((o) => (
+                              <p>{o}</p>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div> : domandaType === "Creatività" ? 
+                     <div className='domande-cont'>
+                     {domandeChiuseCreativita.map((d) => (
+                       <div>
+                         <p>{d.domanda}</p>{checkIfAdded(d, 'chiusa') ? <span onClick={() => handleDeleteModuleQuestion(d, "chiusa")}>-</span> : <span onClick={() => handleAddModuleQuestion(d, "chiusa")}>+</span>}
+                         <div className='option-domande-cont'>
+                           {d.opzioni.map((o) => (
+                             <p>{o}</p>
+                           ))}
+                         </div>
+                       </div>
+                     ))}
+                   </div> : domandaType === "Decision Making" ? 
+                    <div className='domande-cont'>
+                     {domandeChiuseDecisionMaking.map((d) => (
+                       <div>
+                         <p>{d.domanda}</p>{checkIfAdded(d, 'chiusa') ? <span onClick={() => handleDeleteModuleQuestion(d, "chiusa")}>-</span> : <span onClick={() => handleAddModuleQuestion(d, "chiusa")}>+</span>}
+                         <div className='option-domande-cont'>
+                           {d.opzioni.map((o) => (
+                             <p>{o}</p>
+                           ))}
+                         </div>
+                       </div>
+                     ))}
+                   </div> : domandaType === "Etica" ? 
+                    <div className='domande-cont'>
+                    {domandeChiuseEtica.map((d) => (
+                      <div>
+                        <p>{d.domanda}</p>{checkIfAdded(d, 'chiusa') ? <span onClick={() => handleDeleteModuleQuestion(d, "chiusa")}>-</span> : <span onClick={() => handleAddModuleQuestion(d, "chiusa")}>+</span>}
+                        <div className='option-domande-cont'>
+                          {d.opzioni.map((o) => (
+                            <p>{o}</p>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div> : domandaType === "Leadership" ? 
+                  <div className='domande-cont'>
+                    {domandeChiuseLeadership.map((d) => (
+                      <div>
+                        <p>{d.domanda}</p>{checkIfAdded(d, 'chiusa') ? <span onClick={() => handleDeleteModuleQuestion(d, "chiusa")}>-</span> : <span onClick={() => handleAddModuleQuestion(d, "chiusa")}>+</span>}
+                        <div className='option-domande-cont'>
+                          {d.opzioni.map((o) => (
+                            <p>{o}</p>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div> : domandaType === "Relazioni" ? 
+                  <div className='domande-cont'>
+                      {domandeChiuseRelazioni.map((d) => (
+                        <div>
+                          <p>{d.domanda}</p>{checkIfAdded(d, 'chiusa') ? <span onClick={() => handleDeleteModuleQuestion(d, "chiusa")}>-</span> : <span onClick={() => handleAddModuleQuestion(d, "chiusa")}>+</span>}
+                          <div className='option-domande-cont'>
+                            {d.opzioni.map((o) => (
+                              <p>{o}</p>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div> : null}
+                  </div>
+                  <div>
+                    <h4>Domande aperte</h4>
+                    {domandaType === "Caratteriali" ?
+                    <div className='domande-cont'>
+                      {domandeAperteCarattere.map((d) => (
+                        <div>
+                          <p>{d}</p>{checkIfAdded(d, 'aperta') ? <span onClick={() => handleDeleteModuleQuestion(d, "aperta")}>-</span> : <span onClick={() => handleAddModuleQuestion(d, "aperta")}>+</span>}
+                        </div>
+                      ))}
+                    </div> : domandaType === "Problem solving" ?
+                    <div className='domande-cont'>
+                      {domandeAperteProblem.map((d) => (
+                        <div>
+                          <p>{d}</p>{checkIfAdded(d, 'aperta') ? <span onClick={() => handleDeleteModuleQuestion(d, "aperta")}>-</span> : <span onClick={() => handleAddModuleQuestion(d, "aperta")}>+</span>}
+                        </div>
+                      ))}
+                    </div> : domandaType === "Creatività" ? 
+                    <div className='domande-cont'>
+                      {domandeAperteCreativita.map((d) => (
+                        <div>
+                          <p>{d}</p>{checkIfAdded(d, 'aperta') ? <span onClick={() => handleDeleteModuleQuestion(d, "aperta")}>-</span> : <span onClick={() => handleAddModuleQuestion(d, "aperta")}>+</span>}
+                        </div>
+                      ))}
+                    </div> : domandaType === "Decision Making" ? 
+                    <div className='domande-cont'>
+                      {domandeAperteDecisionMaking.map((d) => (
+                        <div>
+                          <p>{d}</p>{checkIfAdded(d, 'aperta') ? <span onClick={() => handleDeleteModuleQuestion(d, "aperta")}>-</span> : <span onClick={() => handleAddModuleQuestion(d, "aperta")}>+</span>}
+                        </div>
+                      ))}
+                    </div> : domandaType === "Etica" ? 
+                    <div className='domande-cont'>
+                      {domandeAperteEtica.map((d) => (
+                        <div>
+                          <p>{d}</p>{checkIfAdded(d, 'aperta') ? <span onClick={() => handleDeleteModuleQuestion(d, "aperta")}>-</span> : <span onClick={() => handleAddModuleQuestion(d, "aperta")}>+</span>}
+                        </div>
+                      ))}
+                    </div> : domandaType === "Leadership" ? 
+                    <div className='domande-cont'>
+                      {domandeAperteLeadership.map((d) => (
+                        <div>
+                          <p>{d}</p>{checkIfAdded(d, 'aperta') ? <span onClick={() => handleDeleteModuleQuestion(d, "aperta")}>-</span> : <span onClick={() => handleAddModuleQuestion(d, "aperta")}>+</span>}
+                        </div>
+                      ))}
+                    </div> : domandaType === "Relazioni" ? 
+                    <div className='domande-cont'>
+                    {domandeAperteRelazioni.map((d) => (
+                      <div>
+                        <p>{d}</p>{checkIfAdded(d, 'aperta') ? <span onClick={() => handleDeleteModuleQuestion(d, "aperta")}>-</span> : <span onClick={() => handleAddModuleQuestion(d, "aperta")}>+</span>}
+                      </div>
+                    ))}
+                  </div> : null}
+                  </div>
+                </div>
             </div>
             ) : (
             <div style={{display: 'flex', justifyContent: 'center', margin: '0px 0 20px 0'}}>
-                <div>
-                  
+                <div className='domande-moduli-nostri'>
+                  <div>
+                    <h4>Domande chiuse</h4>
+                    <div className='domande-cont'>
+                      {domandeChiuseScreening.map((d) => (
+                        <div>
+                          <p>{d.domanda}</p>{checkIfAdded(d, 'chiusa') ? <span onClick={() => handleDeleteModuleQuestion(d, "chiusa")}>-</span> : <span onClick={() => handleAddModuleQuestion(d, "chiusa")}>+</span>}
+                          <div className='option-domande-cont'>
+                            {d.opzioni.map((o) => (
+                              <p>{o}</p>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <h4>Domande aperte</h4>
+                    <div className='domande-cont'>
+                      {domandeAperteScreening.map((d) => (
+                        <div>
+                          <p>{d}</p>{checkIfAdded(d, 'aperta') ? <span onClick={() => handleDeleteModuleQuestion(d, "aperta")}>-</span> : <span onClick={() => handleAddModuleQuestion(d, "aperta")}>+</span>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
             </div>
             )} 

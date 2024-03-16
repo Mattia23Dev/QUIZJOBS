@@ -53,6 +53,7 @@ const candidateSchema = new mongoose.Schema({
             type: String,
             default: "Da contattare"
         },
+        summary: String,
         progress: {
             questionIndex: {
               type: Number
@@ -79,7 +80,8 @@ const candidateSchema = new mongoose.Schema({
             },
             seconds: {
                 type: mongoose.Schema.Types.Mixed,
-            }
+            },
+            correctQuestions: [String],
         },
         report: {
             type: mongoose.Schema.Types.ObjectId,

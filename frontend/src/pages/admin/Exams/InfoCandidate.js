@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Modal, message, Progress } from 'antd'
+import { Modal, message, Progress, Collapse } from 'antd'
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice'
 import { useDispatch } from 'react-redux'
 import { getCandidateInfo } from '../../../apicalls/users'
@@ -8,9 +8,10 @@ import logo from '../../../imgs/logo.png'
 import corretta from '../../../imgs/corretta.png'
 import sbagliata from '../../../imgs/cancel.png'
 import time from '../../../imgs/time.png'
+const { Panel } = Collapse;
 
 function InfoCandidate(props) {
-  const {showInfoCandidateModal,setShowInfoCandidateModal,examId,refreshData, selectedCandidate, setSelectedCandidate, jobPosition, examQuestion} = props
+  const {showInfoCandidateModal,setShowInfoCandidateModal,tag,examId,refreshData, selectedCandidate, setSelectedCandidate, jobPosition, examQuestion} = props
   const dispatch = useDispatch()
   const [candidate, setCandidate] = useState()
   const [activeTab, setActiveTab] = useState(1)
@@ -35,7 +36,12 @@ function InfoCandidate(props) {
     getCandidateById();
   }, [])
 
-  console.log(examQuestion)
+  console.log(candidate)
+  const [openIndex, setOpenIndex] = useState(null);
+  const [expanded, setExpanded] = useState(false);
+  const MAX_CHARS = 100;
+  const fullText = candidate?.tests[0].summary || "Nessuna analisi disponibile";
+  const displayedText = expanded ? fullText : fullText.substring(0, MAX_CHARS) + (fullText.length > MAX_CHARS ? '...' : '');
 
   return (
     <Modal
@@ -45,6 +51,7 @@ function InfoCandidate(props) {
       </div>
       }
       style={{ top: '1rem' }}
+      width={'40%'}
     open={showInfoCandidateModal}
     footer={false}
     onCancel={()=>{
@@ -69,16 +76,38 @@ function InfoCandidate(props) {
           }
           {activeTab === 1 ? 
           <><div className='modal-candidate-middle'>
+            {tag === "manual" ? 
+            <div className='modal-punteggio-summary'>
+              <p>Analisi AI</p>
+              <p>{displayedText}
+              {fullText.length > MAX_CHARS && (
+                  <span onClick={() => setExpanded(!expanded)}>
+                    {expanded ? 'Leggi meno' : 'Leggi di più'}
+                  </span>
+                )}
+              </p>
+            </div>:
             <div className='modal-punteggio'>
               <p>Punteggio</p>
               <p><font color='#34C15B'>{candidate?.tests[0].correctAnswers}</font>/{candidate?.tests[0].totalQuestions}</p>
-            </div>
+            </div>}
             <div className='modal-bar'>
               <p>Risposte corrette</p>
               <Progress 
               percent={candidate?.tests[0].report.result.percentage.toFixed(2)} 
               strokeColor={candidate?.tests[0].report.result.percentage > 60 ? "#34C15B" : "#F95959"} />
             </div>
+            {tag !== "manual" && 
+            <div className='modal-punteggio-summary'>
+              <p>Analisi AI</p>
+              <p>{displayedText}
+              {fullText.length > MAX_CHARS && (
+                  <span onClick={() => setExpanded(!expanded)}>
+                    {expanded ? 'Leggi meno' : 'Leggi di più'}
+                  </span>
+                )}
+              </p>
+            </div>}
             <hr />
           </div>
           <div className='modal-candidate-data'>
@@ -108,14 +137,37 @@ function InfoCandidate(props) {
               </div>
           </div>
           <hr />
-          <a className='allegati' href='#'><img src={allegati} alt='documento link'/>Document Links</a>
-          <a className='add-allegato' href='#'><span>+</span> Aggiungi allegato</a>
+          <a className='allegati' href={`https://quizjobs-production.up.railway.app/uploads/${selectedCandidate.cv}`} target="__blank"><img src={allegati} alt='documento link'/>Document Links</a>
+          <a className='add-allegato' style={{cursor: 'not-allowed'}}><span>+</span> Aggiungi allegato</a>
        
             <div className="flex justify-center">
                 <button className="primary-contained-btn" onClick={onFinish}>
                 Invia email
                 </button>
-            </div></> :
+            </div></> : activeTab === 2 ?
+            tag === "manual" ? 
+            <div className='modal-candidate-domande'>
+              {candidate?.tests[0].arrayAnswers.questions.map((question, index) => {
+                 const answer = candidate?.tests[0].arrayAnswers.answers[index];
+                 console.log(answer)
+                 const seconds = candidate?.tests[0].arrayAnswers.seconds[index];
+                 const correctAnswer = examQuestion.find(q => q.question === question)?.correctOption;
+
+                 return (
+                  <div className='modal-manual-question'>
+                    <div onClick={() => setOpenIndex(openIndex === index ? null : index)} className='modal-candidate-question-m' key={index}>
+                      <div style={{ marginBottom: '5px' }}><span>{index + 1}.</span><p>{question}</p></div>
+                      <div style={{ textAlign: 'right' }}><img alt='secondi domanda' src={time} /><span>00:{seconds ? seconds < 10 ? '0'+seconds : seconds : '13'}</span></div>
+                    </div>
+                    {openIndex === index && (
+                          <div className='answer-manual'>
+                            <p>{answer}</p>
+                          </div>
+                        )}
+                  </div>
+                  )
+              })}
+            </div> : 
             <div className='modal-candidate-domande'>
               {candidate?.tests[0].arrayAnswers.questions.map((question, index) => {
                  const answer = candidate?.tests[0].arrayAnswers.answers[index];
@@ -133,6 +185,10 @@ function InfoCandidate(props) {
                   </div>
                   )
               })}
+            </div>
+             : 
+            <div>
+              
             </div>}
         </div>
     </Modal>

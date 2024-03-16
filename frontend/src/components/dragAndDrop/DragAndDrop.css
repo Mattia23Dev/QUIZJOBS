@@ -28,6 +28,33 @@
 .layout-cards p {
     color: var(--primary);
 }
+.drag-scroll{
+    overflow-y: auto;
+    max-height: 400px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding: 10px 5px;
+    gap: 10px;
+}
+.drag-scroll::-webkit-scrollbar {
+    width: 6px;
+    border-radius: 10px;
+    background-color: #f1f1f127;
+  }
+  
+  .drag-scroll::-webkit-scrollbar-track {
+    border-radius: 10px;
+    border: none;
+  }
+  
+  .drag-scroll::-webkit-scrollbar-thumb {
+    background-color: var(--primary); 
+    border-radius: 10px; 
+    cursor: pointer;
+  }
 .layout-cards > button:first-of-type{
     width: 100%;
     border: 1px dashed var(--primary);

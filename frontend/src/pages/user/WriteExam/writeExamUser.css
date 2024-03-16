@@ -160,3 +160,7 @@
   font-weight: 600;
   width: 30%;
 }
+.textarea-writexam{
+  width: 100%;
+  min-height: 200px;
+}
