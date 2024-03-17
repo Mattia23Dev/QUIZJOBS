@@ -72,6 +72,9 @@ function AddCandidate(props) {
       console.error(error);
     }
   };
+  const isMobile = () => {
+    return window.innerWidth <= 768;
+  };
   return (
     <Modal
     title={
@@ -79,14 +82,14 @@ function AddCandidate(props) {
           <img src={logo} alt="logo skilltest" />
       </div>
       }
-      width={'45%'}
+      width={isMobile() ? '95%' : '45%'}
       style={{ top: '1rem' }}
     open={showAddCandidateModal}
     footer={false}
     onCancel={()=>{
       setShowAddCandidateModal(false)
       }}>
-      <div className='flex flex-col items-center gap-5 p-3'>
+      <div className='flex flex-col items-center gap-5'>
           <form className="form-candidato" onSubmit={handleSubmit} style={{width: '100%'}}>
             <div className="form-group">
               <label htmlFor="nome">Nome:</label>

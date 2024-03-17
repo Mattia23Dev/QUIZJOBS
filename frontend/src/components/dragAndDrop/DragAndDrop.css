@@ -165,3 +165,52 @@
         width: 150px;
     }
 }
+
+@media screen and (max-width: 700px){
+    .filter-crm{
+        gap: 0.3rem;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+    .filter-crm > div {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+    .filter-crm > div > div {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        flex-direction: column;
+    }
+    .filter-crm > div:last-of-type{
+        gap: 0.6rem;
+        width: 100%;
+        margin-top: 1rem;
+    }
+    .filter-crm > div:last-of-type select{
+        padding: 0px 10px;
+    }
+    .filter-crm > div:last-of-type .ant-select{
+        min-width: 100px;
+        margin: 5px 0 0 5px;
+        font-size: 12px;
+    }
+    .layout-cards > button:first-of-type{
+        border: 1.3px dashed var(--primary);
+    }
+    .grid{
+        overflow-x: auto;
+    }
+    .drag-scroll{
+        overflow-y: auto;
+        max-height: 60vh;
+    }
+    .layout-cards p {
+        width: fit-content;
+    }
+    .layout-cards{
+        min-width: 60%;
+    }
+}

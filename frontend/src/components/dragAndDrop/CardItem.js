@@ -26,6 +26,18 @@ const CardItem = ({ data, handleDragging, setSelectedCandidate, setShowInfoCandi
     setSelectedCandidate(data);
     setShowInfoCandidateModal(true)
   }
+  const handleTouchStart = (e) => {
+    const dataString = JSON.stringify(data);
+    e.dataTransfer.setData('text', dataString);
+    handleDragging(true);
+};
+const handleTouchEnd = () => {
+  if (data) {
+      handleDragging(false);
+  } else {
+      console.error('Invalid data:', data);
+  }
+};
 
   return (
     <div
@@ -33,6 +45,8 @@ const CardItem = ({ data, handleDragging, setSelectedCandidate, setShowInfoCandi
       draggable
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       <p>{data?.name + ' ' + data?.surname} <img alt='guarda candidato skilltest' onClick={() => infoCandidate(data)} src={eye} /></p>
       <p><span>Posizione</span><span>{data?.jobPosition}</span></p>

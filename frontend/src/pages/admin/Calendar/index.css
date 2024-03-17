@@ -161,3 +161,49 @@
 .indietro img {
     width: 25px;
 }
+
+@media screen and (max-width: 700px) {
+    .ant-affix{
+        z-index: 1 !important;
+    }
+    .calendar-container{
+        flex-direction: column;
+    }
+    .calendar-container > div:first-of-type{
+        width: 100%;
+    }
+    .calendar-container > div:last-of-type{
+        width: 100%;
+    }
+    .calendar-container > div:first-of-type ul > li{
+        width: 100%;
+    }
+    .li-calendar{
+        width: 100%;
+    }
+    .top-calendar{
+        gap: 0.4rem;
+        flex-direction: column;
+        position: relative;
+    }
+    .calendario{
+        display: none;
+    }
+    .li-calendar{
+        width: 90% !important;
+        font-size: 10px !important;
+        padding: 2px !important;
+        text-align: center;
+    }
+    .ant-picker-calendar-date-content{
+        overflow-y: hidden !important;
+    }
+    .indietro{
+        top: -90px;
+    }
+    .top-calendar > button{
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+}

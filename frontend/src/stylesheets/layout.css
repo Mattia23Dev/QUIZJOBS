@@ -1,7 +1,9 @@
 .layout{
   height: 100vh;
 }
-
+.how-work-mobile{
+  display: none;
+}
 .sidebar{
   background-color: #121430;
   padding: 10px 14px 10px 6px;
@@ -266,9 +268,10 @@
 }
 @media screen and (max-width: 650px) {
   .sidebar{
-    background-color: #fff;
+    background-color: var(--primary);
     padding: 10px 14px 10px 6px;
-    color: #5D7285;
+    padding-top: 30px;
+    color: #c9e6ff;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -277,7 +280,8 @@
     box-shadow: 20px 0px 10px 2px rgba(128, 128, 128, 0.23);
     transition: 0.3s all;
     position: fixed;
-    width: 100%;
+    width: 45%;
+    transform: translateX(0%);
     z-index: 10;
     left: 0;
     top: 0;
@@ -285,11 +289,19 @@
     bottom: 0;
   }
   .sidebar-close{
-    transition: 0.3s all;
+    transition: 0.2s all;
+    transform: translateX(-100%);
+    padding-top: 30px;
+    position: fixed;
+    width: 45%;
+    z-index: 10;
+  }
+  .sidebar .cursor-pointer{
     display: none;
   }
   .cursor-pointer-mobile{
     display: block;
+    color: rgb(211, 229, 255);
   }
   .auth-img{
     display: none;
@@ -316,4 +328,53 @@
     right: 0px;
     width: 170px;
   }
+  .how-work-mobile{
+    display: block;
+    background-color: var(--secondary);
+    border-radius: 50%;
+    min-height: 30px;
+    min-width: 30px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+  }
+  .how-work{
+    display: none;
+  }
+  .profile-header-mobile{
+    display: none;
+  }
+  .header{
+    padding: 3px 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--primary);
+    box-shadow: 15px 5px 10px 2px rgba(4, 29, 91, 0.216);
+  }
+  .header > div:first-of-type > div:last-of-type{
+    border: 1px solid white !important;
+  }
+  .header input{
+    color: white !important;
+  }
+  .header > div:first-of-type{
+    gap: 1rem;
+  }
+  .header > div:last-of-type{
+    padding-top: 10px;
+  }
+  .home-content{
+    min-height: 93vh;
+    overflow-y: hidden;
+  }
+  .page-title{
+    text-align: center;
+    font-weight: 600;
+  }
+  .modal-header > img {
+    width: 50% !important;
+}
 }

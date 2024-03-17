@@ -602,17 +602,20 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
           }
         }
       }
+      const isMobile = () => {
+        return window.innerWidth <= 768;
+      };
 
   return (
       <div className='home-content'>
         {tag === "manual" &&
-        <div onClick={passaOltre === 2 ? () => setAddOurModule(true) : () => window.alert('Inserisci prima le info del test')} className='add-our-question'>
-          <span>+</span> Aggiungi i nostri moduli
+        <div onClick={passaOltre >= 2 ? () => setAddOurModule(true) : () => window.alert('Inserisci prima le info del test')} className='add-our-question'>
+          <span>+</span> {!isMobile() && 'Aggiungi moduli'}
         </div>}
         <div className='copy-preview'>
           {trackLinkArray && trackLinkArray.length > 0 && <button onClick={() => setShowTrackLink(true)} className='copy-link-active'><img src={track} alt='track link skilltest' />Track link</button>}
           {!examData && !id ? <button onClick={copyLink ? handleCopyLink : null} className={!copyLink ? 'copy-link' : 'copy-link-active'}><img src={!copyLink ? copia : copiablu} alt='copia link skilltest' />Copia link</button> : <button onClick={() => handleCopyLink()} className='copy-link-active'><img src={copiablu} alt='copia link skilltest' />Copia link</button>}
-          {tag!=="manual" &&<a onClick={preview ? handlePreviewClick : null} className={preview ? 'preview': 'preview-disabled'}><img src={eye} alt='Anteprima skilltest' />Anteprima</a>}
+          {!isMobile() && tag!=="manual" && <a onClick={preview ? handlePreviewClick : null} className={preview ? 'preview': 'preview-disabled'}><img src={eye} alt='Anteprima skilltest' />Anteprima</a>}
         </div>
           <div className={tag === "mix" ? 'create-exam-top2' : 'create-exam-top'}>
             <div onClick={() => setActiveTab(1)} className={activeTab === 1 ? 'active' : 'elemento1'}>
@@ -749,7 +752,7 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
                     onUpdateDomande={handleUpdateDomande}
                     setSelectedQuestion={setSelectedQuestion}
                     setShowAddEditQuestionModal={setShowAddEditQuestionModal} />}
-                    <button onClick={onFinish}><img alt='arrow right' src={rightArrow} />Salva e Genera Test</button>
+                    {isMobile() ? <button onClick={onFinish}><img alt='arrow right' src={rightArrow} />Salva Test</button> : <button onClick={onFinish}><img alt='arrow right' src={rightArrow} />Salva e Genera Test</button>}
               </div>}
           </div> : activeTab === 4 ?
             <div className={activeTab === 4 ? 'moduli elemento3' : 'moduli'}>
@@ -788,7 +791,7 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
         <Modal
         title={"Track Link"} 
          open={showTrackLink}
-         width={'40%'}
+         width={isMobile() ? '95%' : '40%'}
          footer={false} onCancel={()=>{
          setShowTrackLink(false)
          }}>
@@ -808,7 +811,7 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
                     </div>
                     } 
          open={addOurModule}
-         width={'70%'}
+         width={isMobile() ? '95%' : '70%'}
          style={{top: '10px'}}
          footer={false} onCancel={()=>{
          setAddOurModule(false)

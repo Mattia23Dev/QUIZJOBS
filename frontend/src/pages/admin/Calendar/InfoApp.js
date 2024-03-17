@@ -162,6 +162,9 @@ const InfoApp = ({eventVisible, handleModalCancel, setSelectedEvent, id, handleE
         console.error(error)
       }
     }
+    const isMobile = () => {
+      return window.innerWidth <= 768;
+    };
   return (
     <Modal
     title={
@@ -169,7 +172,7 @@ const InfoApp = ({eventVisible, handleModalCancel, setSelectedEvent, id, handleE
         <img src={logo} alt="logo skilltest" />
       </div>
       }
-      style={{top: '2rem'}}
+      style={isMobile() ? null : {top: '2rem'}}
     footer={false}
     visible={eventVisible}
     onCancel={handleModalCancel}

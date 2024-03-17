@@ -396,7 +396,9 @@ const handleCopyTrackLink = (name) => {
       message.error('Si è verificato un errore durante la copia del link');
     });
 };
-
+const isMobile = () => {
+  return window.innerWidth <= 768;
+};
 const addTrackLinkInput = async () => {
   if (trackLink === ""){
     window.alert("Inserire link track");
@@ -484,7 +486,7 @@ const modificaDomanda = (domandaModificata) => {
             <hr />
             <div onClick={() => setShowDettagliTest(true)} className={activeTab === 3 ? 'active' : ''}>
               <span></span>
-              <p>Dettagli test</p>
+              <p>Dettagli</p>
             </div>
       </div>
         {(examData || !id) &&
@@ -596,7 +598,7 @@ const modificaDomanda = (domandaModificata) => {
           <Modal
           title={"Track Link"} 
           open={showTrackLink}
-          width={'40%'}
+          width={isMobile() ? '95%' : '40%'}
           footer={false} onCancel={()=>{
           setShowTrackLink(false)
           }}>

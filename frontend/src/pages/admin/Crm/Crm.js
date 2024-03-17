@@ -44,9 +44,12 @@ function Crm({openTour, setOpenTour, tour}) {
   useEffect(()=>{
    getData(filters)
   },[])
+  const isMobile = () => {
+    return window.innerWidth <= 768;
+  };
   return (
     <div className='home-content'>
-      <PageTitle title="Reports"/>
+      {!isMobile && <PageTitle title="Reports" />}
       <DragAndDrop
       setSelectedCandidate={setSelectedCandidate}
       selectedCandidate={selectedCandidate} 

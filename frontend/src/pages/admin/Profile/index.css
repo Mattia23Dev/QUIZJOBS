@@ -80,3 +80,21 @@
     height: 25px;
     cursor: pointer;
   }
+
+  @media screen and (max-width: 700px){
+    .profile{
+      flex-direction: column;
+    }
+    .profile > div:first-of-type {
+      width: 100%;
+      min-height: 40vh;
+    }
+    .profile > div:last-of-type{
+        width: 100%;
+        min-height: none;
+    }
+    .profile > div:last-of-type  button{
+      top: 20px;
+      width: 100px;
+    }
+}

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import { getUserInfo } from '../apicalls/users'
 import {message, Popover} from 'antd'
 import { useDispatch } from 'react-redux'
@@ -11,12 +11,15 @@ import logob from '../imgs/logobianco.png'
 import { FaSearch } from 'react-icons/fa'
 import Tour from 'reactour'
 
-function ProtectedRoute({children, setLoginPopup, handleStartTour, tour, openTour, setOpenTour}) {
+function ProtectedRoute({children, setLoginPopup, setTour, handleStartTour, tour, openTour, setOpenTour}) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const user = useSelector(state=>state.users.user)
   const [menu, setMenu] = useState([]);
-  const [collapsed, setCollapsed] = useState(false);
+  const isMobile = () => {
+    return window.innerWidth <= 768;
+  };
+  const [collapsed, setCollapsed] = useState(isMobile() ? true : false);
   const userMenu = [
     {
       title: "Home",
@@ -72,36 +75,67 @@ function ProtectedRoute({children, setLoginPopup, handleStartTour, tour, openTou
       selector: '.elemento6', // Selettore CSS dell'elemento
     },
   ];
+
+  useEffect(() => {
+    if (tour === "total" && isMobile()){
+      setCollapsed(false)
+    }
+  }, [tour])
   const adminMenu = [
     {
       title: "Home",
       paths: ["/admin/home"],
       icon: <i className="ri-home-line"></i>,
-      onClick: () => window.alert("Stiamo lavorando per aggiungerlo, scusate il disagio!") //() => navigate("/admin/home"),
+      onClick: () => {
+        if (isMobile()) {
+          setCollapsed(true);
+        }
+        window.alert("Stiamo lavorando per aggiungerlo, scusate il disagio!")
+      } //() => navigate("/admin/home"),
     },
     {
       title: "Test",
       paths: ["/admin/exams", "/admin/exams/add/ai", "/admin/exams/add/mix", "/admin/exams/add/manual", "/admin/exams/edit/:id", "/admin/exams/info/:id"],
       icon: <i className='ri-file-list-line'></i>,
-      onClick: () => navigate("/admin/exams"),
+      onClick: () => {
+        if (isMobile()) {
+          setCollapsed(true);
+        }
+        navigate("/admin/exams")
+      },
     },
     {
       title: "CRM",
       paths: ["/admin/crm"],
       icon: <i className="ri-bar-chart-line"></i>,
-      onClick: ()=>navigate("/admin/crm"),
+      onClick: ()=>{
+        if (isMobile()) {
+          setCollapsed(true);
+        }
+        navigate("/admin/crm")
+      },
     },
     {
       title: "Calendar",
       paths: ["/admin/calendar"],
       icon: <i className='ri-calendar-line'></i>, // Icona del calendario
-      onClick: () => navigate("/admin/calendar"),
+      onClick: () => {
+        if (isMobile()) {
+          setCollapsed(true);
+        }
+        navigate("/admin/calendar")
+      },
     },
     {
       title: "Team",
       paths: ["/admin/team"],
       icon: <i className='ri-team-line'></i>, // Icona del team
-      onClick: () => window.alert("Stiamo lavorando per aggiungerlo, scusate il disagio!") //() => navigate("/admin/team"),
+      onClick: () => {
+        if (isMobile()) {
+          setCollapsed(true);
+        }
+        window.alert("Stiamo lavorando per aggiungerlo, scusate il disagio!")
+      } //() => navigate("/admin/team"),
     },
     /*{
       title: "Automations",
@@ -113,13 +147,23 @@ function ProtectedRoute({children, setLoginPopup, handleStartTour, tour, openTou
       title: "Profilo",
       paths: ["/admin/profile"],
       icon: <i className='ri-user-line'></i>,
-      onClick: ()=>navigate("/admin/profile"),
+      onClick: ()=>{
+        if (isMobile()) {
+          setCollapsed(true);
+        }
+        navigate("/admin/profile")
+      },
     },
     {
       title: "Assistenza",
       paths: ["/admin/help"],
       icon: <i className="ri-headphone-line"></i>,
-      onClick: ()=>navigate("/admin/help")
+      onClick: ()=>{
+        if (isMobile()) {
+          setCollapsed(true);
+        }
+        navigate("/admin/help")
+      }
     },
   ]
   const getUserData = async() => {
@@ -192,6 +236,28 @@ function ProtectedRoute({children, setLoginPopup, handleStartTour, tour, openTou
       }      
     }
 }
+const [searchTerm, setSearchTerm] = useState('');
+
+const handleSearch = (event) => {
+  const term = event.target.value;
+  setSearchTerm(term);
+
+  const textToSearch = window.getSelection().toString();
+  if (textToSearch && textToSearch.includes(term)) {
+    const range = window.getSelection().getRangeAt(0);
+    const span = document.createElement('span');
+    span.style.backgroundColor = 'yellow';
+    span.textContent = term;
+    range.surroundContents(span);
+  } else {
+    const spans = document.querySelectorAll('span[style="background-color: yellow"]');
+    spans.forEach(span => {
+      const parent = span.parentNode;
+      parent.replaceChild(span.firstChild, span);
+      parent.normalize();
+    });
+  }
+};
   return (
     user && <div className='layout'>
      <div className='flex h-100'>
@@ -233,14 +299,14 @@ function ProtectedRoute({children, setLoginPopup, handleStartTour, tour, openTou
             </div>
             <div>
             <FaSearch />
-              <input type='text' placeholder='Cerca candidato' />
+              <input type='text' placeholder='Cerca' value={searchTerm} onChange={handleSearch} />
             </div>
           </div>
             <div style={{display: 'flex', gap: '3rem', alignItems: 'center'}}>
               <div style={{cursor: 'pointer', fontSize: '14px'}} onClick={handleStartTour}>
-                <u>Come funziona?</u>
+                <u className='how-work'>Come funziona?</u><p className='how-work-mobile'>?</p>
               </div>
-              <div onClick={() => navigate('/admin/profile')} style={{cursor: 'pointer', ontSize: '14px'}} className='flex justify-center items-center gap-1'>
+              <div onClick={() => navigate('/admin/profile')} style={{cursor: 'pointer', ontSize: '14px'}} className='flex justify-center items-center gap-1 profile-header-mobile'>
               {user?.profileImage
                  ? (
                 <img src={user?.profileImage} className='profile-header' alt="Profile" />
@@ -256,7 +322,7 @@ function ProtectedRoute({children, setLoginPopup, handleStartTour, tour, openTou
      </div>
      <Tour
         isOpen={openTour && tour === "total"}
-        onRequestClose={() => {setOpenTour(false)}}
+        onRequestClose={() => {setOpenTour(false); setTour("")}}
         steps={steps}
         rounded={5}
       />

@@ -190,13 +190,16 @@ function ExamsPage({openTour, setOpenTour, tour}) {
       console.error(error);
     }
    }
+   const isMobile = () => {
+    return window.innerWidth <= 768;
+  };
   return (
     <div className='exams-container'>
       <div className='flex justify-between items-center mt-1'>
-        <PageTitle title="Test"/>
+        {!isMobile() && <PageTitle title="Test"/>}
         <div className='test-filter'>
           <div>
-            <label>Filtra per attività:</label>
+            {isMobile() ? <label>Attività:</label> : <label>Filtra per attività:</label>}
             <Select value={attivo} onChange={(value) => setAttivo(value)}>
               <Option value='tutti'>Tutti</Option>
               <Option value='attivo'>Attivo</Option>
@@ -204,7 +207,7 @@ function ExamsPage({openTour, setOpenTour, tour}) {
             </Select>
           </div>
           <div>
-            <label>filtra per difficoltà:</label>
+          {isMobile() ? <label>Difficoltà:</label> : <label>filtra per difficoltà:</label>}
             <Select value={difficolta} onChange={(value) => setDifficolta(value)}>
               <Option value='tutti'>Tutti</Option>
               <Option value='facile'>Facile</Option>
@@ -213,7 +216,7 @@ function ExamsPage({openTour, setOpenTour, tour}) {
             </Select>
           </div>
           <div>
-            <label>Numero di Candidati:</label>
+            {isMobile() ? <label>Candidati:</label> : <label>Numero di Candidati:</label>}
             <Select value={numCandidati} onChange={(value) => setNumCandidati(value)}>
               <Option value='tutti'>Tutti</Option>
               <Option value='0-50'>0 - 50</Option>
@@ -223,15 +226,17 @@ function ExamsPage({openTour, setOpenTour, tour}) {
             </Select>
           </div>
         </div>
-        {storedQuestions &&
-        <button className='primary-outlined-btn flex items-center cursor-pointer'onClick={continueExam}>
-        <i style={{marginRight: '3px'}} className='ri-pencil-line'></i>
-        Continue Exam
-        </button>}
-        <button className='primary-outlined-btn flex items-center cursor-pointer elemento1' onClick={()=>setCreateTest(true)}>
-          <i className='ri-add-line' style={{marginRight: '7px'}}></i>
-          Crea Test
-        </button>
+        <div>
+          {storedQuestions &&
+          <button className='primary-outlined-btn flex items-center cursor-pointer'onClick={continueExam}>
+          <i style={{marginRight: '3px'}} className='ri-pencil-line'></i>
+          Continue Exam
+          </button>}
+          <button className='primary-outlined-btn flex items-center cursor-pointer elemento1' onClick={()=>setCreateTest(true)}>
+            <i className='ri-add-line' style={{marginRight: '7px'}}></i>
+            Crea Test
+          </button>          
+        </div>
       </div>
       <Row gutter={[16,16]} className="exam-list mt-2">
           {filteredExams&&filteredExams.map((exam,index)=>{
@@ -242,7 +247,10 @@ function ExamsPage({openTour, setOpenTour, tour}) {
                     <h1>
                       {exam.jobPosition}
                     </h1>
-                    <button className='elemento2' onClick={()=>navigate(`/admin/exams/info/${exam._id}`)}>Info candidati</button>
+                    {isMobile() ?
+                    <button className='elemento2' onClick={()=>navigate(`/admin/exams/info/${exam._id}`)}>Candidati</button>
+                     : 
+                    <button className='elemento2' onClick={()=>navigate(`/admin/exams/info/${exam._id}`)}>Info candidati</button>}
                   </div>
                   <div className='divider'></div>
                   <div className='card-exam-middle'>
@@ -305,7 +313,7 @@ function ExamsPage({openTour, setOpenTour, tour}) {
             </div>
             }
       open={createTest}
-      width={'70%'}
+      width={isMobile() ? '95%' : '70%'}
       footer={false} 
       onCancel={()=>{
       setCreateTest(false)

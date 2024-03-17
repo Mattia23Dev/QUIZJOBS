@@ -36,7 +36,7 @@ function App() {
   const [logoutPopup, setLoginPopup] = useState(false);
   const [bigLoading, setBigLoading] = useState(false);
   const [openTour, setOpenTour] = useState(false);
-  const [whichTour, setWhichTour] = useState(false);
+  const [whichTour, setWhichTour] = useState("");
   const handleStartTour = (tour) => {
     setWhichTour(tour)
     setOpenTour(true)
@@ -76,8 +76,8 @@ function App() {
         <Route path="/admin/exams/info/:id" element={<ProtectedRoute handleStartTour={() => handleStartTour('infoexam')} setLoginPopup={setLoginPopup}><InfoExam tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
         <Route path="/user/reports" element={<ProtectedRoute handleStartTour={handleStartTour} setLoginPopup={setLoginPopup}><ReportsPage tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
         <Route path="/admin/crm" element={<ProtectedRoute handleStartTour={() => handleStartTour('crm')} setLoginPopup={setLoginPopup}><Crm tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
-        <Route path="/admin/profile" element={<ProtectedRoute tour={whichTour} openTour={openTour} setOpenTour={setOpenTour} handleStartTour={() => handleStartTour('total')} setLoginPopup={setLoginPopup}><Profile tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
-        <Route path="/admin/help" element={<ProtectedRoute tour={whichTour} openTour={openTour} setOpenTour={setOpenTour} handleStartTour={() => handleStartTour('total')} setLoginPopup={setLoginPopup}><Assistenza tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
+        <Route path="/admin/profile" element={<ProtectedRoute setTour={setWhichTour} tour={whichTour} openTour={openTour} setOpenTour={setOpenTour} handleStartTour={() => handleStartTour('total')} setLoginPopup={setLoginPopup}><Profile tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
+        <Route path="/admin/help" element={<ProtectedRoute setTour={setWhichTour} tour={whichTour} openTour={openTour} setOpenTour={setOpenTour} handleStartTour={() => handleStartTour('total')} setLoginPopup={setLoginPopup}><Assistenza tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
         <Route path="/user/write-exam/:id" element={<ProtectedRoute handleStartTour={handleStartTour} setLoginPopup={setLoginPopup}><WriteExam tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
       </Routes>
     </Router>

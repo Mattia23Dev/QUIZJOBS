@@ -236,6 +236,9 @@ function AddEditQuestion(props) {
     }
     
   }
+  const isMobile = () => {
+    return window.innerWidth <= 768;
+  };
 
   return (
     <Modal title={selectedQuestion? "Modifica la domanda" : "Aggiungi una domanda"} 
@@ -244,7 +247,7 @@ function AddEditQuestion(props) {
       setShowAddEditQuestionModal(false)
       setSelectedQuestion()
       }}
-      width="40%">
+      width={isMobile() ? '100%' : "40%"}>
       {tag === "manual" ? (
         <>
         <div style={{display: 'flex', justifyContent: 'center', margin: '0px 0 20px 0'}}> 
@@ -298,7 +301,7 @@ function AddEditQuestion(props) {
             <input type="text" />
           </Form.Item>
         </div>}
-       <div className='flex gap-2'>
+       <div className='flex flex-mobile gap-2'>
        {selectedQuestion ? (
         editDomanda !== 1 ?
           <div className="div-not-edit">
@@ -346,7 +349,7 @@ function AddEditQuestion(props) {
           <img className='img-set-correct' alt='imposta risposta corretta' src={vg} />
         </div>}
        </div>
-       <div className='flex gap-2'>
+       <div className='flex flex-mobile gap-2'>
        {selectedQuestion ? (
         editDomanda !== 3 ?
           <div className="div-not-edit">
@@ -432,7 +435,7 @@ function AddEditQuestion(props) {
               <input type="text" />
             </Form.Item>
           </div>}
-        <div className='flex gap-2'>
+        <div className='flex flex-mobile gap-2'>
         {selectedQuestion ? (
           editDomanda !== 1 ?
             <div className={selectedQuestion.rispostaCorretta.risposta === selectedQuestion.opzioni['A)'] ? "div-correct-not-edit" : "div-not-edit"}>
@@ -484,7 +487,7 @@ function AddEditQuestion(props) {
             <img className='img-set-correct' alt='imposta risposta corretta' src={v} /> : <img className='img-set-correct' onClick={() => setCorrectOpzAdd('B)')} alt='imposta risposta corretta' src={vg} />}
           </div>}
         </div>
-        <div className='flex gap-2'>
+        <div className='flex flex-mobile gap-2'>
         {selectedQuestion ? (
           editDomanda !== 3 ?
             <div className={selectedQuestion.rispostaCorretta.risposta === selectedQuestion.opzioni['C)'] ? "div-correct-not-edit" : "div-not-edit"}>

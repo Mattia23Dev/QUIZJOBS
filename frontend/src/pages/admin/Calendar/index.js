@@ -21,21 +21,21 @@ const CalendarComponent = ({tour, openTour, setOpenTour}) => {
   const dispatch = useDispatch();
   const user = useSelector(state=>state.users.user);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [activeTab, setActiveTab] = useState(1);
+  const [activeTab, setActiveTab] = useState(2);
   const [eventAppointment, setEventAppointment] = useState(moment());
   const [events, setEvents] = useState([])
 
   const steps = [
     {
-      content: 'Aggiungi eventi',
+      content: 'Filtra i prossimi appuntamenti con i bottoni o il calendario',
       selector: '.elemento1', // Selettore CSS dell'elemento
     },
     {
-      content: 'Salva',
+      content: 'Visualizza gli appuntamenti giornalieri',
       selector: '.elemento2', // Selettore CSS dell'elemento
     },
     {
-      content: 'Altre azioni',
+      content: 'Vedi a primo impatto il numero di appuntamenti mensilmente, clicca sul giorno per aprire il popup',
       selector: '.elemento3', // Selettore CSS dell'elemento
     },
   ];
@@ -86,9 +86,13 @@ const CalendarComponent = ({tour, openTour, setOpenTour}) => {
       <Popover placement="top" title={rightDate} content={content}>
         {eventsForDate.length > 0 && 
         <ul style={{padding: '20px 0'}}>
+            {isMobile() ? 
+            <li className='li-calendar'>
+              {eventsForDate.length > 0 ? eventsForDate.length : ''}
+            </li> :
             <li className='li-calendar'>
               {eventsForDate.length > 1 ? eventsForDate.length + ' eventi' : '1 evento'}
-            </li>
+            </li>}
         </ul>
         }
       </Popover>
@@ -120,9 +124,14 @@ const CalendarComponent = ({tour, openTour, setOpenTour}) => {
     });
     setEvents(updatedEvents)
   }
+  const isMobile = () => {
+    return window.innerWidth <= 768;
+  };
+  const [mobileView, setMobileView] = useState("app")
   return (
     <div className='home-content'>
       <div className='top-calendar'>
+        {isMobile() && <button className='primary-contained-btn' onClick={() => handleDateClick(eventAppointment)}>+ Aggiungi</button>}
         <PageTitle title={"Calendario"} />
         <div className='filter-appointment elemento1'>
               <div>
@@ -139,6 +148,53 @@ const CalendarComponent = ({tour, openTour, setOpenTour}) => {
               <DatePicker className='datepicker' locale={locale} value={eventAppointment} onChange={(date, dateString) => setEventAppointment(moment(dateString))} />
           </div>
         </div>
+        {isMobile() &&             
+        <div className='help-top' style={{marginTop: '1rem'}}>
+              <div onClick={() => setMobileView("app")} className={mobileView === "app" ? 'active' : 'elemento2'}>
+                <span></span>
+                <p>Appuntamenti</p>
+              </div>
+              <hr />
+              <div onClick={() => setMobileView("cal")} className={mobileView === "cal" ? 'active' : 'elemento3'}>
+                <span></span>
+                <p>Calendario</p>
+              </div>
+            </div>}
+          {isMobile() ? 
+          <div className='calendar-container'>
+            {mobileView === "app" ?
+            <div>
+            <Affix offsetTop={160}>
+              <h4>Prossimi appuntamenti</h4>
+              <ul className={mobileView === "app" ? 'elemento2' : ''}>
+                {events && events.length > 0 && events?.filter(event => {
+                    const eventDate = moment(event.date).format('DD-MM-YYYY');
+                    return eventDate === moment(eventAppointment).format("DD-MM-YYYY");
+                }).length > 0 ? events?.filter(event => {
+                    const eventDate = moment(event.date).format('DD-MM-YYYY');
+                    return eventDate === moment(eventAppointment).format("DD-MM-YYYY");
+                }).map((event, index) => {
+                    const formattedDate = moment(event.date).format('DD-MM-YYYY');
+                    const formattedTime = moment(event.date).format('HH:mm');
+                  return(
+                  <li style={{cursor: 'pointer'}} key={index} onClick={() => {setOpenDrawerApp(true); setDrawerEvent(event)}}>
+                    <strong>Data:</strong> {formattedDate}, <strong>Ora:</strong> {formattedTime} <br />
+                    <strong>Candidato:</strong> {event.candidate.name + ' ' + event.candidate.surname}, <br />
+                    <strong>Posizione lavorativa:</strong> {event.jobPosition}
+                  </li>
+                )}): <p style={{margin: '30px 0', fontWeight: '600'}}>Non ci sono appuntamenti oggi</p>}
+              </ul>
+              </Affix>
+            </div> :
+            <div className={mobileView === "cal" ? 'elemento3' : ''}>
+              <Calendar
+              dateCellRender={events && dateCellRender}
+              onSelect={handleDateClick}
+              mode="month"
+              locale={{ locale: 'it' }}
+            />
+            </div>}
+          </div> :
           <div className='calendar-container'>
             <div>
             <Affix offsetTop={160}>
@@ -163,15 +219,15 @@ const CalendarComponent = ({tour, openTour, setOpenTour}) => {
               </ul>
               </Affix>
             </div>
-            <div className='elemento3'>
+            <div className='elemento3 calendario'>
               <Calendar
               dateCellRender={events && dateCellRender}
               onSelect={handleDateClick}
               mode="month"
               locale={{ locale: 'it' }}
-            />            
+            />
             </div>
-          </div>
+          </div>}
 
         {eventVisible &&
         <InfoApp
@@ -189,17 +245,16 @@ const CalendarComponent = ({tour, openTour, setOpenTour}) => {
          />}
         <Drawer
             title="Info appuntamento"
-            width={500}
+            width={isMobile() ? '85%' : 500}
             className='drawer-dash'
             onClose={onCloseDrawer}
             open={openDrawerApp}
             placement='right'
             extra={
             <Space>
-                <Button onClick={onCloseDrawer}>Cancel</Button>
-                <Button type='primary' className='outlined-primary-btn' onClick={onCloseDrawer}>
+                <button className='outlined-primary-btn' onClick={onCloseDrawer}>
                 OK
-                </Button>
+                </button>
             </Space>
             }
         >

@@ -335,6 +335,9 @@
     justify-content: flex-start;
     gap: 10px;
   }
+  .create-exam-body .ant-select-selector{
+    min-height: 40px;
+  }
  .ant-styiling > div{
     height: 40px !important;
     padding: 4px 20px !important;
@@ -667,5 +670,161 @@
   }
   .option-domande-cont p {
     width: 45%;
+  }
+
+
+  @media screen and (max-width: 700px){
+    .copy-preview{
+      left: 0rem;
+      top: 0px;
+      display: flex;
+      flex-direction: row;
+      gap: 0.5rem;
+    }
+    .copy-link{
+      width: auto;
+    }
+    .copy-link-active{
+      width: auto;
+    }
+    .create-exam-top{
+      width: 100%;
+      margin-top: 3rem;
+    }
+    .create-exam-top > hr {
+      width: 50px;
+    }
+    .domande-container {
+      display: flex;
+      flex-direction: column;
+      height: auto;
+      max-height: none;
+      margin-top: 1rem;
+      gap: 3rem;
+      width: 100%;
+    }
+    .lista-domande {
+      width: 100%;
+      overflow-x: auto;
+      display: flex;
+    }
+    .domanda-attuale {
+      width: 100%;
+    }
+    .domanda-attuale > p {
+      width: 100%;
+    }
+    .risposta{
+      width: 100%;
+    }
+    .domanda-item {
+      justify-content: flex-start;
+      position: relative;
+      align-items: center;
+      flex-direction: column;
+      min-width: 70%;
+      padding-top: 30px;
+    }
+    .domanda-item > img:first-of-type{
+      top: 10px;
+      left: 25%;
+      position: absolute;
+    }
+    .domanda-item > img:nth-of-type(2){
+      position: absolute;
+      top: 10px;
+      left: 40%;
+    }
+    .domanda-item > img:last-of-type{
+      position: absolute;
+      top: 10px;
+      left: 65%;
+    }
+    .domande-container-save > a {
+      left: 0rem;
+      top: -2rem;
+    }
+    .flex-mobile > div{
+      width: 100%;
+    }
+    .risposta-edit-edit{
+      justify-content: space-between;
+    }
+    .add-our-question{
+      left: 90%;
+      top: 0px;
+      font-size: 14px;
+      position: absolute;
+      padding: 5px 10px;
+      z-index: 5;
+    }
+    .create-exam-form > div {
+      width: 100%;
+    }
+    .create-exam-form button{
+      width: 50%;
+    }
+    .domande-container-save > button{
+      padding: 6px 15px;
+      margin: 0 auto;
+      border: none;
+      cursor: pointer;
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      right: 0rem;
+      top: -2.2rem;
+      font-size: 14px;
+    }
+    .domande-container-save{
+      margin-top: 70px;
+    }
+    .domande-container-save button > img{
+      width: 20px;
+    }
+    .domande-moduli-nostri{
+      justify-content: flex-start;
+      gap: 1rem;
+      align-items: flex-start;
+      flex-direction: column;
+    }
+    .domande-moduli-nostri > div {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+    .segmented{
+      margin: 0 auto;
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 5px !important;
+    }
+    .domande-moduli-nostri > div > h4 {
+      color: var(--primary);
+      font-size: 18px;
+    }
+    .candidati-add-exam h4 {
+      width: 100%;
+      text-align: left;
+    }
+    .candidati-add-exam h2 {
+      width: 100%;
+    }
+    .candidati-add-exam > div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 1rem;
+      width: 100%;
+      margin: 0 auto;
+      margin-top: 3rem;
+    }
+    .candidati-add-exam > div > p{
+      text-align: left;
+    }
   }
 

@@ -2,6 +2,10 @@
     overflow-y: auto;
     padding: 15px;
 }
+.exams-container > div:first-of-type > div:last-of-type{
+    display: flex;
+    gap: 10px;
+}
 .exam-list{
     justify-content: flex-start;
     gap: 2rem;
@@ -254,7 +258,67 @@
     .easy-diff,
     .middle-diff,
     .hard-diff {
-    width: 15px; /* Larghezza del pallino */
-    height: 15px; /* Altezza del pallino */
+    width: 15px; 
+    height: 15px;
+    }
+}
+
+@media screen and (max-width: 700px){
+    .test-filter{
+        gap: 0.5rem;
+        width: 100%;
+    }
+    .test-filter > div > .ant-select{
+        min-width: 100px;
+        margin-left: 0px;
+        font-size: 12px;
+    }
+    .test-filter label {
+        font-size: 12px;
+        width: fit-content !important;
+    }
+    .test-filter > div {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        flex-direction: column;
+        gap: 6px;
+    }
+    .card-exam{
+        border: 1.3px solid var(--primary);
+        border-radius: 10px;
+        padding: 15px 20px;
+        width: 100%;
+        min-height: 250px;
+        position: relative;
+    }
+    .card-exam-bottom h4 {
+        font-size: 14px;
+    }
+    .card-exam-middle-skills > li {
+        font-size: 14px;
+    }
+    .exam-testimg{
+        width: 230px;
+    }
+    .exam-list{
+        justify-content: flex-start;
+        gap: 0.2rem;
+        flex-direction: column;
+    }
+    .exams-container > div:first-of-type > div:last-of-type{
+        width: 100%;
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+    .exams-container > div:first-of-type > div:last-of-type button{
+        display: inline;
+        width: 50%;
+    }
+    .choose-test{
+        flex-direction: column;
+    }
+    .choose-test > div{
+        width: 100%;
     }
 }

@@ -54,3 +54,27 @@
     width: 33%;
     margin-top: 20px;
   }
+
+  @media screen and (max-width: 700px){
+    .big-loader > img {
+      height: 50%;
+      width: auto;
+    }
+    .big-loader > div:first-of-type{
+      color: var(--primary);
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .big-loader > p{
+      color: var(--primary);
+      font-size: 14px;
+      width: 90%;
+      margin-top: 20px;
+    }
+    .header-big-loader > img {
+      width: 30%;
+    }
+    .big-loader > div:nth-of-type(2){
+      width: 90% !important;
+    }
+  }
