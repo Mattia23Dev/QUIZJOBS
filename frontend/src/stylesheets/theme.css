@@ -59,3 +59,10 @@ body::-webkit-scrollbar-thumb {
     height: 200px;
     background-color: #e3e3e3;
 }
+@media screen and (max-width: 700px){
+    .popup-logout{
+        width: 90%;
+        height: 200px;
+        background-color: #e3e3e3;
+    }
+}

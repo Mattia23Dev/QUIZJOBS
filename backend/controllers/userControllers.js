@@ -11,7 +11,6 @@ const client = new OAuth2Client("830063440629-j40l5f7lb1fck6ap120s272d49rp1ph6.a
 //user registration
 const register = async(req,res) => {
    try{
-     // check if user already exists
      const userExists = await User.findOne({email: req.body.email})
      if(userExists){
         res.status(200).send({
@@ -26,7 +25,8 @@ const register = async(req,res) => {
             name: req.body.name,
             email: req.body.email,
             password: hashedPassword,
-            partitaIva: req.body.partitaIva
+            partitaIva: req.body.partitaIva,
+            companyName: req.body.companyName,
         })
         await newUser.save()
         const token = jwt.sign({

@@ -35,6 +35,9 @@ function InfoCandidate(props) {
     ShowLoading();
     getCandidateById();
   }, [])
+  const isMobile = () => {
+    return window.innerWidth <= 768;
+  };
 
   console.log(candidate)
   const [openIndex, setOpenIndex] = useState(null);
@@ -51,7 +54,7 @@ function InfoCandidate(props) {
       </div>
       }
       style={{ top: '1rem' }}
-      width={'40%'}
+      width={isMobile() ? '100%' : '40%'}
     open={showInfoCandidateModal}
     footer={false}
     onCancel={()=>{

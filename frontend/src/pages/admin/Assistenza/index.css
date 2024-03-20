@@ -78,7 +78,10 @@
     background-color: var(--secondary);
   }
   .help-top > div.active > p {
-    color: var(--secondary);
+    color: var(--secondary) !important;
+  }
+  .ant-collapse-content-box > p > span {
+    color: var(--primary) !important;
   }
 
 

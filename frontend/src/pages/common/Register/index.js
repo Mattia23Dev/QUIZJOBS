@@ -72,7 +72,10 @@ function RegisterPage() {
            <p>Welcome! Please enter your details</p>
            <Form layout="vertical" className='mt-2' onFinish={onFinish}>
            <Form.Item name='name'>
-              <input type="text" placeholder='Company name' required/>
+              <input type="text" placeholder='Nome' required/>
+            </Form.Item>
+            <Form.Item name='companyName'>
+              <input type="text" placeholder='Nome Azienda' required/>
             </Form.Item>
             <Form.Item name='partitaIva'>
               <input type="text" placeholder='Partita IVA' required/>

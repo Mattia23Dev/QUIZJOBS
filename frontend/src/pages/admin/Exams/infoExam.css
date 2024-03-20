@@ -4,6 +4,9 @@
 .info-exam-candidate .ant-table{
   background-color: transparent !important;
 }
+.dettagli-test-modal div h4:last-of-type{
+  min-height: 33px;
+}
 .dettagli-test-modal{
     display: flex;
     justify-content: center;
