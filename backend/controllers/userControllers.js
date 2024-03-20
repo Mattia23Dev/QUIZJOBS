@@ -10,6 +10,7 @@ const client = new OAuth2Client("830063440629-j40l5f7lb1fck6ap120s272d49rp1ph6.a
 
 //user registration
 const register = async(req,res) => {
+  console.log(req.body)
    try{
      const userExists = await User.findOne({email: req.body.email})
      if(userExists){
