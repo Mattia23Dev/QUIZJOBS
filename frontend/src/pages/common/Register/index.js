@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Form, message, Checkbox } from 'antd'
+import { Form, message, Checkbox, Input} from 'antd'
 import { Link, useNavigate } from 'react-router-dom'
 import { googleLogin, registerUser } from '../../../apicalls/users'
 import { useDispatch } from 'react-redux'
@@ -26,6 +26,7 @@ function RegisterPage() {
       gapi.load('client:auth2', start);
     }, []);
     const onFinish = async (values) => {
+      console.log(values)
         try{
           dispatch(ShowLoading())
           const response = await registerUser(values)
@@ -83,12 +84,14 @@ function RegisterPage() {
             <Form.Item name='email'>
               <input type="email" placeholder='Email' required/>
             </Form.Item>
-            <Form.Item name='password' className="password-input">
-              <input type={showPassword ? "text" : "password"} placeholder='Password' required/>
+            <div className="password-input">
+              <Form.Item name='password'>
+                <input type={showPassword ? 'text' :'password'} placeholder='Password' required/>
+              </Form.Item>
               <span className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
-                {showPassword ? <FiEye /> : <FiEyeOff />}
+                    {showPassword ? <FiEye /> : <FiEyeOff />}
               </span>
-            </Form.Item>
+            </div>
             <Form.Item name='terms' valuePropName="checked" className="terms-checkbox">
               <Checkbox required>
                 Terms and conditions

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {Form, message, Checkbox} from 'antd'
+import {Form, message, Checkbox, Input} from 'antd'
 import { Link, useNavigate } from 'react-router-dom'
 import { googleLogin, loginUser } from '../../../apicalls/users'
 import { useDispatch } from 'react-redux'
@@ -26,12 +26,7 @@ function LoginPage() {
     gapi.load('client:auth2', start);
   }, []);
   const onFinish = async(values) => {
-    const { acceptTerms } = values; 
-  
-    if (!acceptTerms) {
-      message.error("Devi accettare i termini e le condizioni per procedere.");
-      return;
-    }
+    console.log(values)
     try{
       dispatch(ShowLoading())
       const response = await loginUser(values)
@@ -84,17 +79,14 @@ function LoginPage() {
         <Form.Item name='email'>
           <input type="email" placeholder='Email' required/>
         </Form.Item>
-        <Form.Item name='password' className="password-input">
-          <input type={showPassword ? "text" : "password"} placeholder='Password' required/>
+        <div className="password-input">
+          <Form.Item name='password'>
+            <input type={showPassword ? 'text' :'password'} placeholder='Password' required/>
+          </Form.Item>
           <span className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
-            {showPassword ? <FiEye /> : <FiEyeOff />}
+                {showPassword ? <FiEye /> : <FiEyeOff />}
           </span>
-        </Form.Item>
-        <Form.Item name='terms' valuePropName="checked" className="terms-checkbox">
-          <Checkbox required>
-            Terms and conditions
-          </Checkbox>
-        </Form.Item>
+        </div>
         <div className='flex flex-col gap-2'>
         <button type="submit" className='primary-contained-btn mt-2 w-100'>Login</button>
         <Link to="/register" style={{color: '#000', fontSize: '13px', textDecoration: 'underline', textAlign: 'center'}}>
