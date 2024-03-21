@@ -157,40 +157,45 @@ const calculateResultManual = async() => {
       message.error(error.message);
   }
 };
-
+console.log(examData)
 useEffect(() => {
   if (user && user.tests && user.tests.length > 0) {
     const currentTest = user.tests[0];
     if (currentTest.progress && currentTest.totalQuestions) {
-      setSelectedQuestionIndex(currentTest.progress.questionIndex+1);
-      const remainingTime = examData.tag === "manual" ? 180 : 30;
-      setSecondsLeft(remainingTime);
-      const answers = currentTest.arrayAnswers?.answers;
-      if (answers) {
-        setSelectedOptions({ ...selectedOptions, ...answers });
+      if (currentTest.arrayAnswers.questions.length >= questions.length-1){
+        setView('thanks')
+      } else {
+        setSelectedQuestionIndex(currentTest.progress.questionIndex+1);
+        const remainingTime = examData.tag === "manual" ? 180 : 30;
+        setSecondsLeft(remainingTime);
+        const answers = currentTest.arrayAnswers?.answers;
+        if (answers) {
+          setSelectedOptions({ ...selectedOptions, ...answers });
+        }        
       }
     } else {
-      setSelectedQuestionIndex(0); 
+      setSelectedQuestionIndex(0);
       setSecondsLeft(examData.tag === "manual" ? 180 : 30);
     }
   }
 }, [user]);
 
-const handleNextButtonClick = async () => {
+const handleNextButtonClick = async (index) => {
   let correctAnswersCount = 0;
   let correctQuestions = [];
   for (let i = 0; i <= selectedQuestionIndex; i++) {
     const question = questions[i];
     if (question.correctOption.includes(selectedOptions[i])) {
       correctAnswersCount++;
-      correctQuestions.push(question);
+      correctQuestions.push(question.question);
     }
   }
-
+  setSelectedQuestionIndex(index);
+  startTimer();
   const response = await saveTestProgress({
       email: user.email,
       testId: examData._id,
-      questionIndex: selectedQuestionIndex,
+      questionIndex: selectedQuestionIndex+1,
       selectedOption: selectedOptions[selectedQuestionIndex],
       arrayAnswers: {
         answers: selectedOptions,
@@ -202,16 +207,15 @@ const handleNextButtonClick = async () => {
       totalQuestions: selectedQuestionIndex + 1,
   })
   console.log(response);
-  setSelectedQuestionIndex(selectedQuestionIndex + 1);
-  startTimer();
 };
 
-const handleNextButtonClickManual = async () => {
-
+const handleNextButtonClickManual = async (index) => {
+  setSelectedQuestionIndex(index);
+  startTimer();
   const response = await saveTestProgress({
       email: user.email,
       testId: examData._id,
-      questionIndex: selectedQuestionIndex,
+      questionIndex: selectedQuestionIndex+1,
       selectedOption: selectedOptions[selectedQuestionIndex],
       arrayAnswers: {
         answers: selectedOptions,
@@ -223,8 +227,6 @@ const handleNextButtonClickManual = async () => {
       totalQuestions: selectedQuestionIndex + 1,
   })
   console.log(response);
-  setSelectedQuestionIndex(selectedQuestionIndex + 1);
-  startTimer();
 };
 
 const startTimer = () => {
@@ -242,12 +244,16 @@ const startTimer = () => {
       }));
     } else {
       clearInterval(intervalIdSt);
-
+      console.log('ok')
       if (selectedQuestionIndex < questions.length - 1) {
+        console.log('okok')
         if (examData.tag === "manual"){
-          handleNextButtonClickManual()
+          setSelectedQuestionIndex(prevIndex => prevIndex + 1);
+          handleNextButtonClickManual(selectedQuestionIndex + 1)
         } else {
-          handleNextButtonClick()
+          console.log('okokok')
+          setSelectedQuestionIndex(prevIndex => prevIndex + 1);
+          handleNextButtonClick(selectedQuestionIndex + 1)
         }
       } else {
         setTimeUp(true);
@@ -340,7 +346,7 @@ useEffect(()=>{
        {selectedQuestionIndex<questions.length-1&&
        <div style={{display: 'flex', flexDirection: 'column', textAlign: 'center', gap: '20px'}}>
          <button className='primary-contained-btn'
-       onClick={()=> handleNextButtonClickManual()}
+       onClick={()=> handleNextButtonClickManual(selectedQuestionIndex + 1)}
        style={{display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center'}}>
         <img src={arrowRight} alt='arrow right' />Domanda successiva
        </button>
@@ -398,7 +404,7 @@ useEffect(()=>{
       {selectedQuestionIndex<questions.length-1&&
       <div style={{display: 'flex', flexDirection: 'column', textAlign: 'center', gap: '20px'}}>
         <button className='primary-contained-btn'
-      onClick={()=> handleNextButtonClick()}
+      onClick={()=> handleNextButtonClick(selectedQuestionIndex + 1)}
       style={{display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center'}}>
        <img src={arrowRight} alt='arrow right' />Domanda successiva
       </button>
@@ -425,7 +431,7 @@ useEffect(()=>{
        <p>Il tuo tempo e il tuo impegno sono molto apprezzati. <br />
        <b>Abbiamo registrato con successo le tue risposte.</b></p>
        <p>Ti informeremo <i>via email</i> riguardo i prossimi e eventuali <br /> aggiornamenti.</p>
-       <button style={{zIndex: 10}} className='primary-contained-btn' onClick={() => navigate('/login')}>Registrati gratuitamente</button>
+       {/*<button style={{zIndex: 10}} className='primary-contained-btn' onClick={() => navigate('/login')}>Registrati gratuitamente</button>*/}
     </div>}
     </div>
     :
@@ -436,7 +442,7 @@ useEffect(()=>{
        <p>L'azienda che ha creato questo test l'ha disattivato momentaneamente. <br />
        <b>Contatta l'azienda o riprova nei prossimi giorni.</b></p>
        <p>Intanto potresti iscriverti per non perderti i prossimi<br /> aggiornamenti.</p>
-       <button style={{zIndex: 10}} className='primary-contained-btn' onClick={() => navigate('/login')}>Registrati gratuitamente</button>
+       {/*<button style={{zIndex: 10}} className='primary-contained-btn' onClick={() => navigate('/login')}>Registrati gratuitamente</button>*/}
     </div>
    )
   )

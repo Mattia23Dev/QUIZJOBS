@@ -73,7 +73,7 @@ function Instructions(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     for (const key in formData) {
-      if (formData[key] === "") {
+      if (key !== "coverLetter" && formData[key] === "") {
         alert("Per favore compila tutti i campi del form.");
         return;
       } else if (formData.terms == false || formData.privacyPolicy == false){

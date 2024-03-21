@@ -485,7 +485,7 @@ const saveTestProgress = async (req, res) => {
     
     testIndex.correctAnswers = correctAnswer;
     testIndex.totalQuestions = totalQuestions;
-    testIndex.arrayAnswers = arrayAnswers; 
+    testIndex.arrayAnswers = arrayAnswers;
 
     await candidate.save();
 

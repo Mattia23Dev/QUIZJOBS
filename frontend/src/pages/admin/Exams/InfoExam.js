@@ -283,10 +283,10 @@ const handleCopyLink = () => {
       dataIndex: "tempo",
       key: "tempo",
       render: (text, record) => {
-        const totalSeconds = Object.values(record.report?.result?.allSeconds).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+        const totalSeconds = record.report ? Object.values(record?.report?.result?.allSeconds).reduce((accumulator, currentValue) => accumulator + currentValue, 0) : 0;
         const formattedTime = formatTime(totalSeconds);
         return(
-        <span className={record.report?.result?.percentage.toFixed(2) > 60 ? "time-column-green" : "time-column-red"}><img alt='tempo medio' src={record.report?.result?.percentage.toFixed(2) > 60 ? timegreen : timered} />{formattedTime && formattedTime}</span>
+        <span className={record?.report?.result?.percentage.toFixed(2) > 60 ? "time-column-green" : "time-column-red"}><img alt='tempo medio' src={record.report?.result?.percentage.toFixed(2) > 60 ? timegreen : timered} />{formattedTime && formattedTime}</span>
       )},
     },
     {

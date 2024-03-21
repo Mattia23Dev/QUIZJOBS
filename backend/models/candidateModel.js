@@ -32,7 +32,6 @@ const candidateSchema = new mongoose.Schema({
     },
     coverLetter: {
         type: String,
-        required: true
     },
     experience: {
         type: String,
