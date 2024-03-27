@@ -6,6 +6,7 @@ const candidateModel = require("../models/candidateModel");
 const fs = require('fs');
 const path = require('path');
 const {OAuth2Client} = require('google-auth-library');
+const { welcomeEmail } = require("./emailControllers");
 const client = new OAuth2Client("830063440629-j40l5f7lb1fck6ap120s272d49rp1ph6.apps.googleusercontent.com");
 
 //user registration
@@ -33,6 +34,7 @@ const register = async(req,res) => {
         const token = jwt.sign({
           userid: newUser._id
       },process.env.JWT_SECRET,{})
+      await welcomeEmail(newUser.name,newUser.email);
         res.status(200).send({
             message: "User registered successfully.",
             success: true,
