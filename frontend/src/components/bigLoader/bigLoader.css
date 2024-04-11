@@ -17,7 +17,7 @@
   box-shadow: 0 0 10px 3px #dcdfe6;
 }
 .header-big-loader > img {
-  width: 10%;
+  width: 4%;
 }
 .big-loader {
     /*ackground-image: url('../../imgs/anim_3.gif') !important;
@@ -72,7 +72,7 @@
       margin-top: 20px;
     }
     .header-big-loader > img {
-      width: 30%;
+      width: 15%;
     }
     .big-loader > div:nth-of-type(2){
       width: 90% !important;

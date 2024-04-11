@@ -62,6 +62,15 @@ const examSchema = new mongoose.Schema({
         },
         trackLink: {
             type: String
+        },
+        skills: {
+            type: String,
+        },
+        education: {
+            type: String,
+        },
+        workExperience: {
+            type: String,
         }
     }],
     examLink: {

@@ -192,7 +192,7 @@ const getExamById = async(req,res) => {
      const exam = await Exam.find({_id: req.params.id})
       .populate({
           path: "candidates.candidate",
-          select: "name surname email phone city cv", // Seleziona i campi desiderati per il candidato
+          select: "name surname email phone city cv cvUrl", // Seleziona i campi desiderati per il candidato
       })
       .populate({
           path: "candidates.report",
@@ -251,7 +251,6 @@ const getCandidateCrm = async (req, res) => {
           if (exam.candidates && exam.candidates.length > 0){
           const formattedCandidates = candidatesForExam.map(candidate => {
             const examCandidate = exam.candidates.find(c => c.candidate._id.toString() === candidate._id.toString());
-            console.log(examCandidate.status)
               return {
                   examId: exam._id,
                   tests: candidate.tests,
@@ -263,7 +262,7 @@ const getCandidateCrm = async (req, res) => {
                   email: candidate.email,
                   phone: candidate.phone,
                   city: candidate.city,
-                  status: examCandidate.status,
+                  status: examCandidate.status || "",
                   cv: candidate.cv,
                   report: examCandidate.report,
               };              
@@ -278,6 +277,7 @@ const getCandidateCrm = async (req, res) => {
           success: true,
       });
   } catch (error) {
+    console.log(error)
       res.status(500).json({
           message: error.message,
           data: error,

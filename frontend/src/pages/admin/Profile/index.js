@@ -19,7 +19,7 @@ function Profile() {
     };
     const handleImageUpload = async (event) => {
         const imageFile = event.target.files[0];
-        await uploadImageToServer(imageFile);
+        await uploadImageToWordPress(imageFile);
       };
     const handleUpdateUser = async () => {
         console.log(userData)
@@ -38,10 +38,36 @@ function Profile() {
             console.error(error)
         }
     }
-    const uploadImageToServer = async (imageFile) => {
+    const uploadImageToWordPress = async (imageFile) => {
+      try {
+        const formData = new FormData();
+        formData.append('file', imageFile);
+    
+        const response = await axios.post(
+          'https://skillstest.it/wp-json/wp/v2/media',
+          //'https://skillstest.it/wp-json/jwt-auth/v1/token?username=user03170545353762&password=MAD7389gva@@@',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'authorization': `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3NraWxsc3Rlc3QuaXQiLCJpYXQiOjE3MTIzMjY1NzIsIm5iZiI6MTcxMjMyNjU3MiwiZXhwIjoxNzEyOTMxMzcyLCJkYXRhIjp7InVzZXIiOnsiaWQiOiIxIn19fQ.Qe6NxaYLpWaS3FIz8pig0atocetVCTLwl7bTSOOZ83k`
+            },
+          }
+        );
+    
+        console.log('Immagine caricata con successo:', response.data.source_url);
+        await uploadImageToServer(imageFile, response.data.source_url);
+        return response.data;
+      } catch (error) {
+        console.error('Errore durante il caricamento dell\'immagine:', error);
+        throw error;
+      }
+    };
+    const uploadImageToServer = async (imageFile, imageUrl) => {
         try {
           const formData = new FormData();
           formData.append('image', imageFile);
+          formData.append('imageUrl', imageUrl);
       
           const response = await axios.post('https://quizjobs-production.up.railway.app/api/upload-image', formData, {
             headers: {
@@ -50,8 +76,6 @@ function Profile() {
             }
           });
       
-          const imageUrl = response.data.imageUrl;
-          console.log(imageUrl)
           setUserData({...userData, profileImage: imageUrl});
           setEditImg(false)
         } catch (error) {

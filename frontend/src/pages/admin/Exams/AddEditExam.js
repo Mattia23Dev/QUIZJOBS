@@ -299,7 +299,9 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
          dangerouslyAllowBrowser: true,
          model: 'gpt-4-turbo-preview',
        });
-       const exampleFormat = `### Domande per Full Stack Developer
+       const exampleFormat = `
+       Crea delle domande in questo formato: 
+       ### Domande per Full Stack Developer
 
       1. In JavaScript, cosa restituisce 'typeof NaN'?
       - A) "number"
@@ -314,19 +316,20 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
       - C) create_post_type()
       - D) new_post_type()
       - **Risposta corretta: B) register_post_type()**
-       
+       E Prendi in considerazione questa ulteriore descrizione che specifica meglio l'obiettivo del test o una descrizione generica: ${config.description}
        `;
-      const prompt = `Immagina di essere un recruiter e devi testare le competenze di un candidato per un'offerta lavorativa per la posizione ${config.jobPosition}. Genera ${config.numOfQuestions} domande a risposta multipla con 4 possibilità e con le rispettive risposte. Ripeti le stesse risposte SOLO SE NECESSARIO inserirle nel contesto della domanda. 
+      const prompt = `Immagina di essere un recruiter e devi testare le competenze di un candidato per un'offerta lavorativa per la posizione ${config.jobPosition}. Genera ${config.numOfQuestions < 25 ? config.numOfQuestions : (config.numOfQuestions / 2)} domande a risposta multipla con 4 possibilità e con le rispettive risposte. Ripeti le stesse risposte SOLO SE NECESSARIO inserirle nel contesto della domanda. 
       Assicurati di non inserire opzioni che non centrano con il contesto della domanda o del ruolo, Assicurati di fare domande non banali e specifiche alle competenze fornite: ${config.skills.join(', ')}, con difficoltà ${config.difficulty}, nella lingua ${config.testLanguage}.
+      Le risposte all'interno della domanda devono essere fatte con una risposta completamente sbagliata, una risposta che possa sembrare corretta e le ultime due risposte simili tra loro, ma una sola corretta.
       Descrizione della difficoltà delle domande, prendi in considerazione il campo sopra con la discrezione sotto:
        - Facile (Junior): Le domande si concentrano su concetti di base e conoscenze fondamentali legate alle competenze junior. Utilizza un linguaggio chiaro e comprensibile.
        - Medio (Middle): Le domande coinvolgono scenari più realistici e situazioni di lavoro quotidiane che richiedono una comprensione più approfondita delle competenze. Coinvolgi terminologia tecnica più avanzata e problemi che richiedono una valutazione critica.
-       - Difficile (Senior): Le domande sono complesse e richiedono un'elevata competenza e esperienza. Coinvolgi scenari pratici e problemi avanzati che richiedono una solida comprensione del dominio e una valutazione strategica.       
+       - Difficile (Senior): Le domande sono complesse e richiedono un'elevata competenza e esperienza. Coinvolgi scenari pratici e problemi avanzati che richiedono una solida comprensione del dominio e una valutazione strategica. è molto importante che il test sia pensato per renderlo più difficile possibile, anche a costo di trovare domande o risposte poco comuni e originali ma che rientrino nel contesto.
       `;
 
       const requestData = {
          max_tokens: 2600, 
-         n: 2,
+         n: config.numOfQuestions < 25 ? 1 : 2,
          model: 'gpt-4-turbo-preview',
          messages: [
             { role: 'system', content: prompt},
@@ -645,6 +648,30 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
           <PageTitle title={"Genera un nuovo test"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
           <button className='button-ligh-blue' onClick={() => navigate('/admin/exams')}>Visualizza test salvati</button>
           <Form layout="vertical" onFinish={tag === "manual" ? nextTab : generateQuestions} initialValues={examData} className="create-exam-form">
+            {tag !== "manual" && <h4>Scegli il numero di domande</h4>}
+            {tag !== "manual" &&<Row className='choose-num' gutter={[10,10]}>
+              <div className={config.numOfQuestions !== 5 ?'numQuestions' : 'active-numQuestions'} onClick={() => setConfig(prevConfig => ({...prevConfig, numOfQuestions: 5}))}>
+                <p>5</p>
+              </div>
+              <div className={config.numOfQuestions !== 10 ?'numQuestions' : 'active-numQuestions'} onClick={() => setConfig(prevConfig => ({...prevConfig, numOfQuestions: 10}))}>
+                <p>10</p>
+              </div>
+              <div className={config.numOfQuestions !== 15 ?'numQuestions' : 'active-numQuestions'} onClick={() => setConfig(prevConfig => ({...prevConfig, numOfQuestions: 15}))}>
+                <p>15</p>
+              </div>
+              <div className={config.numOfQuestions !== 20 ?'numQuestions' : 'active-numQuestions'} onClick={() => setConfig(prevConfig => ({...prevConfig, numOfQuestions: 20}))}>
+                <p>20</p>
+              </div>
+              <div className={config.numOfQuestions !== 30 ?'numQuestions' : 'active-numQuestions'} onClick={() => setConfig(prevConfig => ({...prevConfig, numOfQuestions: 30}))}>
+                <p>30</p>
+              </div>
+              <div className={config.numOfQuestions !== 40 ?'numQuestions' : 'active-numQuestions'} onClick={() => setConfig(prevConfig => ({...prevConfig, numOfQuestions: 40}))}>
+                <p>40</p>
+              </div>
+              <div className={config.numOfQuestions !== 50 ?'numQuestions' : 'active-numQuestions'} onClick={() => setConfig(prevConfig => ({...prevConfig, numOfQuestions: 50}))}>
+                <p>50</p>
+              </div>
+            </Row>}
             <Row gutter={[10,10]}>
                   <Col flex="auto">
                     <Form.Item label="Settore" name="general-sector">

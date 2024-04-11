@@ -8,7 +8,7 @@ import Instructions from './Instructions'
 import { addReport, reportAi, reportAiManual } from '../../../apicalls/reports'
 import { useSelector } from 'react-redux'
 import { useCookies } from 'react-cookie';
-import logo from '../../../imgs/logo.png'
+import logo from '../../../imgs/logonew.png'
 import time from '../../../imgs/time.png'
 import arrowRight from '../../../imgs/arrowright.png'
 import alert from '../../../imgs/alert.png'
@@ -290,7 +290,7 @@ useEffect(()=>{
    examData && (
     examData.active === true ?
     <div className='exam-user-container'>
-        <div className='header-big-loader' style={{padding: '15px', position: 'sticky', top: '0', zIndex: 20, backgroundColor: '#fff'}}>
+        <div className='header-big-loader' style={{padding: '10px', position: 'sticky', top: '0', zIndex: 20, backgroundColor: '#fff'}}>
             <img src={logo} alt='logo skilltest' />
         </div>
     {view!=="thanks" &&<h1 className='text-center user-select-none mt-2'>Test per l'offerta <b>{jobPositionSlug && jobPositionSlug.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</b></h1>}

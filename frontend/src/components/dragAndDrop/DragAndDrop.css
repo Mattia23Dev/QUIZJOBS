@@ -4,6 +4,7 @@
     border: 1px solid gray;
     border-radius: 5px;
     padding: 10px;
+    position: relative;
 }
 .card-container > p:first-of-type {
     display: flex;
@@ -15,6 +16,9 @@
 .card-container > p:first-of-type > img {
     width: 20px;
     cursor: pointer;
+}
+.card-internal{
+    padding-bottom: 20px;
 }
 .layout-cards{
     display: flex;
@@ -38,6 +42,13 @@
     width: 100%;
     padding: 10px 5px;
     gap: 10px;
+}
+.email-crm{
+    font-size: 11px !important;
+    margin-top: -10px;
+}
+.email-crm:last-of-type{
+    margin-top: -30px;
 }
 .drag-scroll::-webkit-scrollbar {
     width: 6px;
@@ -133,6 +144,9 @@
 .filter-crm > div:last-of-type label{
     font-size: 12px;
     width: fit-content;
+}
+.search-internal{
+    width: 300px !important;
 }
 .filter-crm > div:last-of-type select{
     border: none;

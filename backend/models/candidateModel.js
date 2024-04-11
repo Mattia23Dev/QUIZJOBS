@@ -13,6 +13,9 @@ const candidateSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    cvUrl: {
+        type: String,
+    },
     email: {
         type: String,
         required: true,

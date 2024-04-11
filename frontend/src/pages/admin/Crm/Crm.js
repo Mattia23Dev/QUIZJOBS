@@ -58,6 +58,7 @@ function Crm({openTour, setOpenTour, tour}) {
       showAddCandidateModal={showAddCandidateModal}
       setInitialData={setInitialData}
       tour={tour}
+      internal={false}
       setOpenTour={setOpenTour}
       openTour={openTour}
       setAddStatus={setAddStatus}

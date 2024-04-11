@@ -117,8 +117,8 @@ const InfoApp = ({eventVisible, handleModalCancel, setSelectedEvent, id, handleE
           setFilterCandidate(candidateOptions)
         } else {
           const filteredCandidates = candidateOptions.filter(candidate =>
-            candidate.name.toLowerCase().includes(value.toLowerCase())
-          );
+            candidate.name.toLowerCase().includes(value.toLowerCase()) || candidate.surname.toLowerCase().includes(value.toLowerCase())
+        );
           setFilterCandidate(filteredCandidates)      
         }
       };

@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { addCandidate } from '../../../apicalls/exams';
 import { useCookies } from 'react-cookie';
 import arrowRight from '../../../imgs/arrowright.png'
+import pdfToText from 'react-pdftotext'
+import axios from 'axios';
+import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
 
 const FAQList = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -51,6 +54,7 @@ function Instructions(props) {
     coverLetter: "",
     degree: "",
     testId: examData._id,
+    pdfText: "",
     terms: false,
     privacyPolicy: false,
     trackLink: trackLink ? trackLink : null,
@@ -67,10 +71,16 @@ function Instructions(props) {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
-    console.log(file);
+    pdfToText(file)
+      .then(text => {
+        console.log(text)
+        setFormData({...formData, pdfText: text})
+      })
+      .catch(error => console.error(error))
   };
-
+  console.log(formData.pdfText)
   const handleSubmit = async (e) => {
+    ShowLoading()
     e.preventDefault();
     for (const key in formData) {
       if (key !== "coverLetter" && formData[key] === "") {
@@ -96,15 +106,44 @@ function Instructions(props) {
       formDataToSend.append(key, formData[key]);
     }
 
-    formDataToSend.append('cv', selectedFile);  
+    formDataToSend.append('cv', selectedFile);
     try {
-     const response = await addCandidate(formDataToSend); 
+     const url = await uploadFileToWordPress(selectedFile)
+     formDataToSend.append('url', url);
+     const response = await addCandidate(formDataToSend);
      console.log(response);
      setUser(response.candidate);
      startTimer();
      setView("questions")
+     setIsLoading(false)
+     HideLoading()
     } catch (error) {
       console.error(error);
+      HideLoading()
+    }
+  };
+
+  const uploadFileToWordPress = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+  
+      const response = await axios.post(
+        'https://skillstest.it/wp-json/wp/v2/media',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3NraWxsc3Rlc3QuaXQiLCJpYXQiOjE3MTIzMjY1NzIsIm5iZiI6MTcxMjMyNjU3MiwiZXhwIjoxNzEyOTMxMzcyLCJkYXRhIjp7InVzZXIiOnsiaWQiOiIxIn19fQ.Qe6NxaYLpWaS3FIz8pig0atocetVCTLwl7bTSOOZ83k`
+          },
+        }
+      );
+  
+      console.log('File caricato con successo:', response.data.source_url);
+      return response.data.source_url;
+    } catch (error) {
+      console.error('Errore durante il caricamento del file:', error);
+      throw error;
     }
   };
 
@@ -174,7 +213,7 @@ function Instructions(props) {
               id="cv"
               name="cv"
               onChange={handleFileChange}
-              accept=".pdf,.doc,.docx"
+              accept=".pdf"
               required
             />
           </div>

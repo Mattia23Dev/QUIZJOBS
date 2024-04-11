@@ -21,14 +21,13 @@ const reportOpenaiManual = async (req,res) => {
           `;
           const exampleFormat = JSON.stringify({ questions, answers });
           const requestData = {
-             max_tokens: 3500, 
+             max_tokens: 1000, 
              n: 1,
              model: 'gpt-4-turbo-preview',
              messages: [
                 { role: 'system', content: prompt},
                 { role: 'user', content: exampleFormat },
              ],
-             stop: ['Domanda'],
              temperature: 0.7,
              top_p: 1,
              frequency_penalty: 0,
@@ -69,14 +68,13 @@ const reportOpenai = async (req,res) => {
           `;
           const exampleFormat = JSON.stringify({ questions, answers });
           const requestData = {
-             max_tokens: 3500, 
+             max_tokens: 1000, 
              n: 1,
              model: 'gpt-4-turbo-preview',
              messages: [
                 { role: 'system', content: prompt},
                 { role: 'user', content: exampleFormat },
              ],
-             stop: ['Domanda'],
              temperature: 0.7,
              top_p: 1,
              frequency_penalty: 0,

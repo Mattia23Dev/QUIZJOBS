@@ -7,8 +7,14 @@ const fs = require('fs');
 const path = require('path');
 const {OAuth2Client} = require('google-auth-library');
 const { welcomeEmail } = require("./emailControllers");
+const openai = require('openai');
+const apiKey = process.env.OPENAI_API;
 const client = new OAuth2Client("830063440629-j40l5f7lb1fck6ap120s272d49rp1ph6.apps.googleusercontent.com");
-
+const clientAi = new openai.OpenAI({
+  apiKey: apiKey,
+  dangerouslyAllowBrowser: true,
+  model: 'gpt-4-turbo-preview',
+});
 //user registration
 const register = async(req,res) => {
   console.log(req.body)
@@ -201,13 +207,61 @@ const getCandidateInfo = async (req, res) => {
     }
   };
 
- const addCandidate = async(req, res) => {
+  const extractPdfAi = async (text) => {
     try {
-        const { name, surname, email, phone, city, coverLetter, degree, testId, testName, trackLink } = req.body;
+          const prompt = `
+          Estrai informazioni importanti dal testo fornito seguendo questa scaletta:
+          1. Lista delle 10 skills (abilità), hard skills o soft skills, o cose che ha svolto ma solo come competenza in lista:
+          2. Educazione o istruzione, inserendo luogo di formazione, possibili voti (se forniti) e titoli di studio:
+          3. Esperienze lavorative precedenti (solo esperienza, azienda in cui ha lavorato, anni da e quando, ruolo lavorativo);
+        `;
+          const exampleFormat = JSON.stringify(text);
+          const requestData = {
+             max_tokens: 1400, 
+             n: 1,
+             model: 'gpt-4-turbo-preview',
+             messages: [
+              { role: 'system', content: prompt},
+              { role: 'user', content: text },
+            ],
+             temperature: 0.7,
+             top_p: 1,
+             frequency_penalty: 0,
+             presence_penalty: 0,
+             format: 'json'
+           };
+           const responseAI = await clientAi.chat.completions.create(requestData);
+           const responses = responseAI.choices[0].message.content;
+           const skillsRegex = /1\..+?((?=\n2\. )|(?=\n3\. )|$)/s;
+           const educationRegex = /2\..+?((?=\n1\. )|(?=\n3\. )|$)/s;
+           const workExperienceRegex = /3\..+?((?=\n1\. )|(?=\n2\. )|$)/s;
+       
+           const skillsMatch = responses.match(skillsRegex);
+           const educationMatch = responses.match(educationRegex);
+           const workExperienceMatch = responses.match(workExperienceRegex);
+       
+           const skills = skillsMatch ? skillsMatch[0] : '';
+           const education = educationMatch ? educationMatch[0] : '';
+           const workExperience = workExperienceMatch ? workExperienceMatch[0] : '';
+           console.log('Skills:', skills);
+           console.log('Education:', education);
+           console.log('Work Experience:', workExperience);
+
+           return { skills, education, workExperience };
+
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+const addCandidate = async(req, res) => {
+    try {
+        const { name, surname, email, phone, city, coverLetter, degree, testId, testName, trackLink, url, pdfText } = req.body;
         console.log(req.body);
         const cv = req.file.path; 
 
         const candidate = await candidateModel.findOne({ email });
+        const {skills, education, workExperience} = await extractPdfAi(pdfText);
 
         if (!candidate) {
             const newCandidate = new candidateModel({
@@ -219,6 +273,7 @@ const getCandidateInfo = async (req, res) => {
                 cv,
                 coverLetter,
                 degree,
+                cvUrl : url,
                 tests: [{ testId, testName }],
                 trackLead: "test",
             });
@@ -230,7 +285,17 @@ const getCandidateInfo = async (req, res) => {
               { cv: cvFileName },
               { new: true }
             );
-            await examModel.findByIdAndUpdate(testId, { $push: { candidates: { candidate: newCandidate._id, trackLink: trackLink } } });
+            await examModel.findByIdAndUpdate(testId, {
+              $push: {
+                candidates: {
+                  candidate: newCandidate._id,
+                  trackLink: trackLink,
+                  skills: skills,
+                  education: education,
+                  workExperience: workExperience
+                }
+              }
+            });
             const uploadFolderPath = path.resolve(__dirname, '..', 'uploads');
             const destinationPath = path.join(uploadFolderPath, cvFileName);
             fs.renameSync(cv, destinationPath);
@@ -242,7 +307,17 @@ const getCandidateInfo = async (req, res) => {
                     { email },
                     { $push: { tests: { testId, testName } } }
                 );
-                await examModel.findByIdAndUpdate(testId, { $push: { candidates: { candidate: candidate._id, trackLink: trackLink } } });
+                await examModel.findByIdAndUpdate(testId, {
+                  $push: {
+                    candidates: {
+                      candidate: candidate._id,
+                      trackLink: trackLink,
+                      skills: skills,
+                      education: education,
+                      workExperience: workExperience
+                    }
+                  }
+                });
             }
             const updatedCandidate = await candidateModel.findOneAndUpdate(
                 { email },

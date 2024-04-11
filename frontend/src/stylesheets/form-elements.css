@@ -13,6 +13,14 @@ input, select{
 .ant-segmented-item-selected{
     background-color: var(--secondary) !important;
 }
+.ant-checkbox:hover .ant-checkbox-inner{
+    border-color: var(--secondary) !important;
+}
+.ant-checkbox-checked .ant-checkbox-inner{
+    border-color: var(--secondary) !important;
+    background-color: var(--secondary) !important;
+    color: var(--secondary) !important;
+}
 textarea{
     padding: 10px 20px;
     border: 1.5px solid #DDDDDD;
@@ -20,6 +28,12 @@ textarea{
     border-radius: 5px;
     outline: none;
     transition: 0.2s all;
+}
+.ant-table-row-selected{
+    background-color: rgba(255, 99, 71, 0.292) !important;
+}
+.ant-checkbox-indeterminate .ant-checkbox-inner::after{
+    background-color: var(--primary) !important;
 }
 .datepicker{
     width: 100%;

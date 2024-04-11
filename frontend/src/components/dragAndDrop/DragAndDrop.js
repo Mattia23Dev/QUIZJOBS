@@ -9,7 +9,7 @@ import Tour from 'reactour'
 const { Option } = Select;
 const typesHero = ['Da contattare', 'Primo colloquio', 'Secondo colloquio', 'Offerta', 'Offerta accettata'];
 
-const DragAndDrop = ({openTour, setOpenTour, tour, showAddCandidateModal, setAddStatus, setShowAddCandidateModal, initialData, setInitialData, selectedCandidate, setShowInfoCandidateModal, setSelectedCandidate}) => {
+const DragAndDrop = ({openTour, setOpenTour, tour, showAddCandidateModal, internal, setAddStatus, setShowAddCandidateModal, initialData, setInitialData, selectedCandidate, setShowInfoCandidateModal, setSelectedCandidate, openInfoIntCandidate, originalData, examIdInt, setChangeStatus}) => {
     const [isDragging, setIsDragging] = useState(false);
     const [listItems, setListItems] = useState(initialData);
     const user = useSelector(state=>state.users.user)
@@ -46,14 +46,27 @@ const DragAndDrop = ({openTour, setOpenTour, tour, showAddCandidateModal, setAdd
       setCityOption(citiesArray)
     };
     const searchCandidates = (candidates, searchTerm) => {
-      return candidates.filter(candidate => {
-        return candidate.name.toLowerCase().includes(searchTerm.toLowerCase());
-      });
+      if (internal){
+        return candidates.filter(candidate => {
+          const nomeCompleto = candidate.candidate.name + ' ' + candidate.candidate.surname;
+          return candidate.candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+          candidate.candidate.surname.toLowerCase().includes(searchTerm.toLowerCase()) || 
+          nomeCompleto.toLocaleLowerCase().includes(searchTerm.toLowerCase()) ||
+          candidate.candidate.city?.toLocaleLowerCase().includes(searchTerm.toLowerCase());
+        });
+      } else {
+        return candidates.filter(candidate => {
+          return candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) || candidate.surname.toLowerCase().includes(searchTerm.toLowerCase());
+        });
+      }
     };
     const handleSearchChange = (e) => {
       setSearchValue(e.target.value);
-      const filteredCandidates = searchCandidates(initialData, e.target.value);
+      const filteredCandidates = internal ? searchCandidates(originalData, e.target.value) : searchCandidates(initialData, e.target.value);
       setListItems(filteredCandidates);
+      if (internal){
+       setInitialData(filteredCandidates); 
+      }
     };
     const getExamsData = async() => {
       try{
@@ -76,7 +89,7 @@ const DragAndDrop = ({openTour, setOpenTour, tour, showAddCandidateModal, setAdd
         extractCities(initialData)
         getExamsData()
       }, [initialData]);
-
+      console.log(initialData)
     const handleDragging = dragging => setIsDragging(dragging);
     const handleDrop = async (e) => {
         e.preventDefault();
@@ -89,26 +102,46 @@ const DragAndDrop = ({openTour, setOpenTour, tour, showAddCandidateModal, setAdd
 
         try {
 
-          const response = await changeCandidateStatus({ userId: draggedItem.candidateId, examId: examId, newStatus: status });
+          const response = !internal ? 
+                await changeCandidateStatus({ userId: draggedItem.candidateId, examId: examId, newStatus: status }) :
+                await changeCandidateStatus({ userId: draggedItem.candidate._id, examId: examIdInt, newStatus: status });
             console.log(response)
 
             if (response.success) {
-            setInitialData(prevData =>
-              prevData.map(item => {
-                if (item.candidateId === draggedItem.candidateId) {
-                  return { ...item, status: response.data.newStatus }; // Aggiorna solo lo status
-                }
-                return item;
-              })
-            );
-            setListItems(prevData =>
-              prevData.map(item => {
-                if (item.candidateId === draggedItem.candidateId) {
-                  return { ...item, status: response.data.newStatus }; // Aggiorna solo lo status
-                }
-                return item;
-              })
-            );
+              if (!internal){
+                setInitialData(prevData =>
+                  prevData.map(item => {
+                    if (item.candidateId === draggedItem.candidateId) {
+                      return { ...item, status: response.data.newStatus }; // Aggiorna solo lo status
+                    }
+                    return item;
+                  })
+                );
+                setListItems(prevData =>
+                  prevData.map(item => {
+                    if (item.candidateId === draggedItem.candidateId) {
+                      return { ...item, status: response.data.newStatus }; // Aggiorna solo lo status
+                    }
+                    return item;
+                  })
+                );
+              } else {
+                const newData = initialData?.map(item => {
+                  if (item.candidate._id === draggedItem.candidate._id) {
+                    return { ...item, status: response.data.newStatus };
+                  }
+                  return item;
+                });
+                setChangeStatus(newData);
+                setListItems(prevData =>
+                  prevData.map(item => {
+                    if (item.candidate._id === draggedItem.candidate._id) {
+                      return { ...item, status: response.data.newStatus }; // Aggiorna solo lo status
+                    }
+                    return item;
+                  })
+                );
+              }
           }
         } catch (error) {
           console.error('Errore durante il cambiamento dello stato del candidato:', error);
@@ -122,11 +155,11 @@ const DragAndDrop = ({openTour, setOpenTour, tour, showAddCandidateModal, setAdd
     return (
       <div>
         <div className='filter-crm'>
-          <div>
+          <div className={internal && 'search-internal'}>
             <FaSearch />
-            <input type='text' placeholder='Cerca candidato' value={searchValue} onChange={handleSearchChange} />
+            <input type='text' placeholder='Cerca candidato o città' value={searchValue} onChange={handleSearchChange} />
           </div>
-          <div className='elemento1'>
+          {!internal && <div className='elemento1'>
             <div>
               <label>filtra per test:</label>
               <Select value={filterTest} onChange={(value) => setFilterTest(value)}>
@@ -154,7 +187,7 @@ const DragAndDrop = ({openTour, setOpenTour, tour, showAddCandidateModal, setAdd
                 ))}
               </Select>
             </div>
-          </div>
+          </div>}
         </div>
         <div className="grid elemento2">
             {
@@ -176,12 +209,28 @@ const DragAndDrop = ({openTour, setOpenTour, tour, showAddCandidateModal, setAdd
 
                       let shouldInclude = true;
 
-                      if (filterCity !== "tutti" && item.city.trim().toLowerCase() !== filterCity) {
-                        shouldInclude = false;
+                      if (filterCity !== "tutti") {
+                        if (!internal){
+                          if (item.city.trim().toLowerCase() !== filterCity){
+                            shouldInclude = false;
+                          }
+                        } else {
+                          if (item.candidate.city.trim().toLowerCase() !== filterCity){
+                            shouldInclude = false;
+                          }
+                        }
                       }
 
-                      if (filterTest !== "tutti" && !item.tests.some(test => test.testId === filterTest)) {
-                        shouldInclude = false;
+                      if (filterTest !== "tutti") {
+                        if (!internal){
+                          if (!item.tests.some(test => test.testId === filterTest)){
+                            shouldInclude = false;
+                          }
+                        } else {
+                          if (!item.tests.some(test => test.testId === filterTest)){
+                            shouldInclude = false;
+                          }
+                        }
                       }
 
                       if (filterScore !== "tutti") {
@@ -190,7 +239,7 @@ const DragAndDrop = ({openTour, setOpenTour, tour, showAddCandidateModal, setAdd
                           return (correctAnswers / totalQuestions) * 100;
                         };
                         
-                        const testScore = calculateScore(item.tests.find(test => test.testId === item.examId));
+                        const testScore = !internal ? calculateScore(item.tests.find(test => test.testId === item.examId)) : item.report?.result?.percentage?.toFixed(2);
                         console.log(testScore)
                         if (filterScore === "low" && testScore > 40) {
                           shouldInclude = false;
@@ -206,7 +255,7 @@ const DragAndDrop = ({openTour, setOpenTour, tour, showAddCandidateModal, setAdd
 
                       return shouldInclude;
                     })
-                    .map((item) => container === item.status && <CardItem setSelectedCandidate={setSelectedCandidate} selectedCandidate={selectedCandidate} setShowInfoCandidateModal={setShowInfoCandidateModal} data={item} key={item.id} handleDragging={handleDragging} />)}
+                    .map((item) => container === item.status && <CardItem internal={internal} setSelectedCandidate={setSelectedCandidate} selectedCandidate={selectedCandidate} setShowInfoCandidateModal={setShowInfoCandidateModal} openInfoIntCandidate={openInfoIntCandidate} data={item} key={item.id} handleDragging={handleDragging} />)}
                     </div>
                   </div>
                 ))

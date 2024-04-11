@@ -1,12 +1,16 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect, useRef} from 'react';
 import PageTitle from '../../../components/PageTitle';
-import { Modal, message, Table, Popconfirm } from 'antd';
+import { Modal, message, Table, Segmented, Popconfirm, Popover, Select, Slider, Input, Button, Space } from 'antd';
+import Highlighter from 'react-highlight-words';
+import { UnorderedListOutlined, AppstoreOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { addExam, addTrackLink, deleteQuestionFromExam, deleteTrackLink, editExam, getExamById, modificaExam } from '../../../apicalls/exams';
 import { useDispatch } from 'react-redux';
+import { SearchOutlined } from '@ant-design/icons';
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
 import AddEditQuestion from './AddEditQuestion';
 import copia from '../../../imgs/copia.png';
+import filter from '../../../imgs/filter.png';
 import copiablu from '../../../imgs/copiablu.png';
 import eye from '../../../imgs/eye.png';
 import leftArrow from '../../../imgs/leftarrow.png'
@@ -22,6 +26,8 @@ import InfoCandidate from './InfoCandidate';
 import moment from 'moment';
 import './infoExam.css'
 import Tour from 'reactour';
+import DragAndDrop from '../../../components/dragAndDrop/DragAndDrop';
+const {Option} = Select
 
 const DomandeComponent = ({ domande, onUpdateDomande, setSelectedQuestion, setShowAddEditQuestionModal }) => {
    const [currentDomanda, setCurrentDomanda] = useState(domande[0]);
@@ -145,12 +151,17 @@ function InfoExam({openTour, setOpenTour, tour}) {
   const [examData,setExamData] = useState();
   const [showAddEditQuestionModal, setShowAddEditQuestionModal] = useState(false)
   const [selectedQuestion, setSelectedQuestion] = useState();
+  const [candidates, setCandidates] = useState([])
   const [activeTab, setActiveTab] = useState(1);
   const [showDettagliTest, setShowDettagliTest] = useState(false);
   const [showInfoCandidateModal, setShowInfoCandidateModal] = useState();
   const [selectedCandidate, setSelectedCandidate] = useState();
   const [showTrackLink, setShowTrackLink] = useState(false);
   const [trackLink, setTrackLink] = useState("");
+  const [visual, setVisual] = useState("list");
+  const [pdfExtract, setPdfExtract] = useState({});
+  const [scoreRange, setScoreRange] = useState([0, 100]);
+  const [trackingFilter, setTrackingFilter] = useState('Tutti');
   const [questions, setQuestions] = useState();
   const [config, setConfig] = useState({
    numOfQuestions: 30,
@@ -160,7 +171,182 @@ function InfoExam({openTour, setOpenTour, tour}) {
    testLanguage: examData?.testLanguage || "",
    skills: [examData?.skills] || ["",],
 });
-
+console.log(examData)
+const [open, setOpen] = useState(false);
+  const hide = () => {
+    setOpen(false);
+  };
+  const handleOpenChange = (newOpen) => {
+    setOpen(newOpen);
+  };
+  const handleSliderChange = (value) => {
+    console.log('Slider Value:', value);
+    setScoreRange(value)
+    filterCandidates(value, trackingFilter);
+  };
+  const handleSelectChange = (value) => {
+    console.log('Select Value:', value);
+    setTrackingFilter(value)
+    filterCandidates(scoreRange, value);
+  };
+  const filterCandidates = (scoreRange, trackingFilter) => {
+    const filtered = examData?.candidates?.filter(candidate => {
+      const scoreInRange = candidate.report?.result?.percentage >= scoreRange[0] && candidate.report?.result?.percentage <= scoreRange[1];
+      const trackingMatches = trackingFilter === 'Tutti' ? true : (
+        trackingFilter === 'Nessuno' ? candidate.trackLink == "null" : candidate.trackLink === trackingFilter
+      );
+      return scoreInRange && trackingMatches;
+    });
+    setCandidates(filtered);
+  };
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
+  const searchInput = useRef(null);
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    console.log(selectedKeys)
+    console.log(dataIndex)
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+  const handleReset = (clearFilters, close) => {
+    clearFilters();
+    setSearchText('');
+    close()
+  };
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div
+        style={{
+          padding: 12,
+          display: 'flex',
+          justifyContent: 'flex-start',
+          alignItems: 'center'
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Cerca il nome`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            display: 'block',
+            gap: '10px'
+          }}
+        />
+          <button
+            className='btn-search-name'
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          >
+            <SearchOutlined />
+          </button>
+          <button
+            className='btn-search-name'
+            onClick={() => handleReset(clearFilters, close)}
+          >
+            x
+          </button>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1677ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) => 
+    {
+      const nomeCompleto = record.candidate.name + ' ' + record.candidate.surname;
+      if (record.candidate.name) return record.candidate.name.toString().toLowerCase().includes(value.toLowerCase()) || record.candidate.surname.toString().toLowerCase().includes(value.toLowerCase()) || nomeCompleto.toString().toLowerCase().includes(value.toLowerCase())},
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text, record) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: '#ffc069',
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={record.candidate.name + ' ' + record.candidate.surname ? record.candidate.name.toString() + ' ' + record.candidate.surname.toString() : ''}
+        />
+      ) : (
+        record.candidate.name + ' ' + record.candidate.surname
+      ),
+  });
+  const getColumnSearchPropsCity = (dataIndex) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div
+        style={{
+          padding: 12,
+          display: 'flex',
+          justifyContent: 'flex-start',
+          alignItems: 'center'
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Cerca la città`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            display: 'block',
+            gap: '10px'
+          }}
+        />
+          <button
+            className='btn-search-name'
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          >
+            <SearchOutlined />
+          </button>
+          <button
+            className='btn-search-name'
+            onClick={() => handleReset(clearFilters, close)}
+          >
+            x
+          </button>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1677ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) => 
+    {
+      if (record.candidate.city) return record.candidate.city.toString().toLowerCase().includes(value.toLowerCase())},
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text, record) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: '#ffc069',
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={record.candidate.city ? record.candidate.city : ''}
+        />
+      ) : (
+        record.candidate.city
+      ),
+  });
 const steps = [
   {
     content: 'Crea dei link con un nome di tracciamento che decidi tu',
@@ -204,6 +390,7 @@ const handleCopyLink = () => {
             message.success(response.message)
             console.log(response.data);
             setExamData(response.data[0])
+            setCandidates(response.data[0].candidates)
             setQuestions(response.data[0].questions)
             setConf(response.data[0])
          }
@@ -274,9 +461,7 @@ const handleCopyLink = () => {
       title: "Nome",
       dataIndex: "name",
       key: "name",
-      render: (text, record) => (
-        <span className="custom-column-style">{record.candidate.name} {record.candidate.surname}</span>
-      ),
+      ...getColumnSearchProps('name'),
     },
     {
       title: "Tempo",
@@ -288,6 +473,10 @@ const handleCopyLink = () => {
         return(
         <span className={record?.report?.result?.percentage.toFixed(2) > 60 ? "time-column-green" : "time-column-red"}><img alt='tempo medio' src={record.report?.result?.percentage.toFixed(2) > 60 ? timegreen : timered} />{formattedTime && formattedTime}</span>
       )},
+      sorter: {
+        compare: (a, b) => Object.values(a?.report?.result?.allSeconds).reduce((accumulator, currentValue) => accumulator + currentValue, 0) - Object.values(b?.report?.result?.allSeconds).reduce((accumulator, currentValue) => accumulator + currentValue, 0),
+        multiple: 2,
+      },
     },
     {
       title: "Tracciamento",
@@ -310,16 +499,14 @@ const handleCopyLink = () => {
       title: "Città",
       dataIndex: "city",
       key: "city",
-      render: (text, record) => (
-        <span className="custom-column-style">{record.candidate.city}</span>
-      ),
+      ...getColumnSearchPropsCity('city'),
     },
     {
       title: "CV",
       dataIndex: "cv",
       key: "cv",
       render: (text, record) => (
-        <a style={{textAlign: 'center', fontSize: '18px'}} href={`https://quizjobs-production.up.railway.app/uploads/${record.candidate.cv}`} target="__blank" download className="custom-download-link">
+        <a style={{textAlign: 'center', fontSize: '18px'}} href={record.candidate.cvUrl ? record.candidate.cvUrl : `https://quizjobs-production.up.railway.app/uploads/${record.candidate.cv}`} target="__blank" download className="custom-download-link">
           <i className="ri-download-line" />
         </a>
       ),
@@ -332,8 +519,13 @@ const handleCopyLink = () => {
         <div className="flex justify-center align-center gap-2 custom-action-column">
           <span style={{fontSize: '14px'}} className="cursor-pointer" onClick={() => {
             setSelectedCandidate(record.candidate);
+            setPdfExtract({
+              skills: record.skills,
+              workExperience: record.workExperience,
+              education: record.education,
+            })
             setShowInfoCandidateModal(true);
-          }}><u>Info</u></span>
+          }}><b><u>Info</u></b></span>
           {/*<i className="ri-delete-bin-line cursor-pointer" onClick={() => deleteCandidateById(record.candidate._id)}></i>*/}
         </div>
       ),
@@ -345,6 +537,10 @@ const handleCopyLink = () => {
       render: (text, record) => (
         <span className={record.report?.result?.percentage.toFixed(2) > 60 ? "punteggio-column-green":"punteggio-column-red"}>{record.report?.result?.percentage.toFixed(2)}%</span>
       ),
+      sorter: {
+        compare: (a, b) => a?.report?.result?.percentage.toFixed(2) - b?.report?.result?.percentage.toFixed(2),
+        multiple: 2,
+      },
     },
   ];  
 
@@ -464,6 +660,15 @@ const modificaDomanda = (domandaModificata) => {
   setSelectedQuestion(null)
   setQuestions(domandeModificate);
 };
+const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+const onSelectChange = (newSelectedRowKeys) => {
+  console.log('selectedRowKeys changed: ', newSelectedRowKeys);
+  setSelectedRowKeys(newSelectedRowKeys);
+};
+const rowSelection = {
+  selectedRowKeys,
+  onChange: onSelectChange,
+};
 
   return (
     examData && <div className='home-content'>
@@ -472,6 +677,50 @@ const modificaDomanda = (domandaModificata) => {
           {examData?.trackLink && examData?.trackLink.length > 0 ? 
           <button onClick={() => setShowTrackLink(true)} className='copy-link-active elemento1'><img src={track} alt='track link skilltest' />Track link</button> :
           <button onClick={() => setShowTrackLink(true)} className='copy-link-active elemento1'><img src={track} alt='track link skilltest' />Track link</button>}
+      </div>
+      <div className='choose-visualize'>
+        <Segmented
+           options={[
+            { label: <UnorderedListOutlined style={{ fontSize: '18px'}} />, value: 'list' },
+            { label: <AppstoreOutlined style={{ fontSize: '18px'}} />, value: 'grid' }
+          ]}
+           onChange={(value) => {
+              console.log(value);
+              setVisual(value)
+            }}
+          />
+          <Popover
+            content={
+              <div className='filter-container'>
+                  <div>
+                    <label>Filtra per punteggio</label>
+                    <Slider range defaultValue={[0, 100]} onChange={handleSliderChange} /> 
+                  </div>
+                  <div>
+                    <label>Filtra per tracciamento</label>
+                    <Select defaultValue='Tutti' style={{ width: 120, marginLeft: '20px' }} onChange={handleSelectChange}>
+                        <Option value="Tutti">
+                          Tutti
+                        </Option>
+                        <Option value="Nessuno">
+                          Nessuno
+                        </Option>
+                      {examData?.trackLink?.length > 0 && examData?.trackLink?.map((option, index) => (
+                        <Option key={index} value={option}>
+                          {option}
+                        </Option>
+                      ))}
+                    </Select>                    
+                  </div>
+              </div>
+            }
+            trigger="click"
+            placement="right"
+            open={open}
+            onOpenChange={handleOpenChange}
+          >
+            <button className='primary-outlined-btn'>Filtra <img alt='filter skilltest' src={filter} /></button>
+        </Popover>
       </div>
       <div className='create-exam-top'>
             <div onClick={() => setActiveTab(1)} className={activeTab === 1 ? 'active' : 'elemento2'}>
@@ -493,10 +742,45 @@ const modificaDomanda = (domandaModificata) => {
         activeTab === 1 ?
          <div className={activeTab === 1 ? 'info-exam-candidate elemento2' : 'info-exam-candidate'}>
             <PageTitle title={"Candidati"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
-            <Table columns={candidateColumns} dataSource={examData?.candidates} rowKey={(record) => record._id} className="mt-1">
+            {visual === "list" ? 
+            <Table
+            rowSelection={rowSelection}
+            columns={candidateColumns} dataSource={candidates} rowKey={(record) => record._id} className="mt-1">
 
-            </Table>
-         </div>   
+            </Table> : 
+            <DragAndDrop
+            setSelectedCandidate={setSelectedCandidate}
+            selectedCandidate={selectedCandidate} 
+            setShowInfoCandidateModal={setShowInfoCandidateModal}
+            setShowAddCandidateModal={null}
+            showAddCandidateModal={null}
+            originalData={examData?.candidates}
+            examIdInt={examData?._id}
+            setChangeStatus={(data) => {
+              setExamData((exam) => ({ ...exam, candidates: data }))
+              setCandidates(data)
+              console.log(data)
+            }}
+            setInitialData={(data) => {
+              setCandidates(data)
+            }}
+            tour={tour}
+            openInfoIntCandidate={(data) =>{
+              setShowInfoCandidateModal(true)
+              setSelectedCandidate(data.candidate);
+              setPdfExtract({
+                skills: data.skills,
+                workExperience: data.workExperience,
+                education: data.education,
+              })
+            }}
+            setOpenTour={setOpenTour}
+            openTour={openTour}
+            setAddStatus={null}
+            internal={true}
+            jobPosition={examData?.jobPosition}
+            initialData={candidates} />}
+         </div>
          : activeTab === 2 ?
          <div className={activeTab === 2 ? 'create-exam-body elemento3' : 'create-exam-body'}>
                <PageTitle title={"Domande"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
@@ -534,7 +818,8 @@ const modificaDomanda = (domandaModificata) => {
          selectedQuestion={formattedSelectedQuestion}
          setSelectedQuestion={setSelectedQuestion}
         />}
-        {showInfoCandidateModal&&<InfoCandidate 
+        {showInfoCandidateModal&&<InfoCandidate
+        pdfExtract={pdfExtract}
         jobPosition={examData.jobPosition}
         tag={examData.tag}
         setShowInfoCandidateModal={setShowInfoCandidateModal}
