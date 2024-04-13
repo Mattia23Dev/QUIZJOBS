@@ -71,6 +71,13 @@ const examSchema = new mongoose.Schema({
         },
         workExperience: {
             type: String,
+        },
+        preferito: {
+            type: Boolean,
+            default: false,
+        },
+        note: {
+            type: String,
         }
     }],
     examLink: {

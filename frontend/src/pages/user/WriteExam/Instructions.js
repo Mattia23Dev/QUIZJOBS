@@ -115,7 +115,6 @@ function Instructions(props) {
      setUser(response.candidate);
      startTimer();
      setView("questions")
-     setIsLoading(false)
      HideLoading()
     } catch (error) {
       console.error(error);

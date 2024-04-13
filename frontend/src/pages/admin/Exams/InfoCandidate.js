@@ -56,10 +56,11 @@ const EducationChart = ({ educ }) => {
 };
 
 function InfoCandidate(props) {
-  const {showInfoCandidateModal,setShowInfoCandidateModal,pdfExtract,tag,examId,refreshData, selectedCandidate, setSelectedCandidate, jobPosition, examQuestion} = props
+  const {showInfoCandidateModal,updateNotes,setShowInfoCandidateModal,pdfExtract,notes,tag,examId,refreshData, selectedCandidate, setSelectedCandidate, jobPosition, examQuestion} = props
   const dispatch = useDispatch()
   const [candidate, setCandidate] = useState()
   const [activeTab, setActiveTab] = useState(1)
+  const [note, setNote] = useState(notes ? notes : '');
   const onFinish = () => {
     setShowInfoCandidateModal(false)
     setSelectedCandidate()
@@ -84,7 +85,6 @@ function InfoCandidate(props) {
     return window.innerWidth <= 768;
   };
 
-  console.log(pdfExtract)
   const arraySkills = (skills) => {
     const cleanedSkillsString = skills.replace(/^\d+\.\s.*?:\s*/, '');
     const skillsArray = cleanedSkillsString.split('\n').filter(skill => skill.trim() !== '');
@@ -96,6 +96,11 @@ function InfoCandidate(props) {
   const fullText = candidate?.tests[0].summary || "Nessuna analisi disponibile";
   const displayedText = expanded ? fullText : fullText.substring(0, MAX_CHARS) + (fullText.length > MAX_CHARS ? '...' : '');
 
+  const handleNoteChange = (event) => {
+    setNote(event.target.value);
+  };
+  console.log(note)
+  console.log(notes)
   return (
     <Modal
     title={
@@ -194,6 +199,17 @@ function InfoCandidate(props) {
                   <p>Posizione</p>
                   <p>{jobPosition}</p>
               </div>
+          </div>
+          <div className='note'>
+                <label>Inserisci note</label>
+                  <textarea
+                    value={note}
+                    onChange={handleNoteChange}
+                    placeholder="Scrivi delle note qui..."
+                    rows="4"
+                    cols="50"
+                  />
+                  {notes !== note && <span onClick={() => updateNotes(selectedCandidate, note)}>Salva</span>}
           </div>
           <hr />
           <a className='allegati' href={selectedCandidate.cvUrl ? selectedCandidate.cvUrl : `https://quizjobs-production.up.railway.app/uploads/${selectedCandidate.cv}`} target="__blank"><img src={allegati} alt='documento link'/>Document Links</a>

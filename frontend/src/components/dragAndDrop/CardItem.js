@@ -6,9 +6,10 @@ import timeem from '../../imgs/timeem.png'
 import allegati from '../../imgs/allegati.png'
 import timered from '../../imgs/timered.png'
 import timegreen from '../../imgs/timegreen.png'
+import { FaHeart } from 'react-icons/fa';
 import moment from 'moment';
 
-const CardItem = ({ data, internal, handleDragging, jobPosition, setSelectedCandidate, setShowInfoCandidateModal, selectedCandidate,openInfoIntCandidate }) => {
+const CardItem = ({ data, internal, handleDragging, jobPosition, setPreferito, setSelectedCandidate, setShowInfoCandidateModal, selectedCandidate,openInfoIntCandidate }) => {
   const handleDragStart = (e) => {
     const dataString = JSON.stringify(data);
     e.dataTransfer.setData('text', dataString);
@@ -73,10 +74,13 @@ const formattedTime = formatTime(totalSeconds);
         <p><img alt='allegati' src={allegati} /> 1</p>
         <p><img alt='numero test skilltest' src={test} /> {data?.tests?.length}</p>
         <p><img alt='tempo di creazione' src={timeem} /> {daysSinceCreation} Days</p>
-      </div> : 
-        <a style={{textAlign: 'center', fontSize: '18px'}} href={data.candidate.cvUrl ? data.candidate.cvUrl : `https://quizjobs-production.up.railway.app/uploads/${data?.candidate?.cv}`} target="__blank" download className="custom-download-link">
+      </div> :
+      <div className="custom-download-link">
+        <span onClick={data.preferito ? () => setPreferito(data, "no") : () => setPreferito(data, "si")} style={{display: 'flex', alignItems: 'center', cursor:'pointer'}}><FaHeart color={data.preferito ? "#F95959" : 'grey'} size={15} /></span>
+        <a style={{textAlign: 'center', fontSize: '18px'}} href={data.candidate.cvUrl ? data.candidate.cvUrl : `https://quizjobs-production.up.railway.app/uploads/${data?.candidate?.cv}`} target="__blank" download>
           <i className="ri-download-line" />
-        </a>}
+        </a>
+      </div>}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 const router = require("express").Router()
-const {addExam, getAllExams, getExamById, editExam, deleteExam, addQuestionToExam, deleteQuestionFromExam, editQuestionInExam, saveTestProgress, getCandidateCrm, getAllExamsByUser, addTrackLink, deleteTrackLink, changeStatus, ModificaExam} = require("../controllers/examControllers")
+const {addExam, getAllExams, getExamById, editExam, deleteExam, addQuestionToExam, deleteQuestionFromExam, editQuestionInExam, saveTestProgress, getCandidateCrm, getAllExamsByUser, addTrackLink, deleteTrackLink, changeStatus, ModificaExam, updateCandidatePreference, updateCandidateNotes} = require("../controllers/examControllers")
 const authMiddleware = require("../middlewares/authMiddleware")
 
 router.post('/addExam',authMiddleware,addExam)
@@ -17,5 +17,7 @@ router.post('/addTrackLink',authMiddleware,addTrackLink)
 router.post('/deleteTrackLink',authMiddleware,deleteTrackLink)
 router.post('/changeStatusExam',authMiddleware,changeStatus)
 router.post('/modificaExam',authMiddleware,ModificaExam)
+router.post('/updateCandidatePref',authMiddleware,updateCandidatePreference)
+router.post('/updateCandidateNotes',authMiddleware,updateCandidateNotes)
 
 module.exports = router;

@@ -329,6 +329,61 @@ const editExam = async(req,res) => {
   }
 }
 
+async function updateCandidateNotes(req, res) {
+  const { idEsame, idCandidato, note } = req.body;
+
+  if (!idEsame || !idCandidato || !note) {
+    return res.status(400).send('Manca uno o più parametri richiesti.');
+  }
+
+  try {
+    const exam = await Exam.findById(idEsame);
+
+    if (!exam) {
+      return res.status(404).send('Esame non trovato.');
+    }
+    const candidate = exam.candidates.find(c => c.candidate.toString() === idCandidato);
+
+    if (!candidate) {
+      return res.status(404).send('Candidato non trovato.');
+    }
+    candidate.note = note;
+    await exam.save();
+
+    res.status(200).send({message: 'Preferenza del candidato aggiornata con successo.', success: true, data: candidate});
+  } catch (error) {
+    console.error('Errore nell\'aggiornamento del candidato:', error);
+    res.status(500).send('Errore interno del server.');
+  }
+}
+async function updateCandidatePreference(req, res) {
+  const { idEsame, idCandidato, preferito } = req.body;
+
+  if (!idEsame || !idCandidato || !preferito) {
+    return res.status(400).send('Manca uno o più parametri richiesti.');
+  }
+
+  try {
+    const exam = await Exam.findById(idEsame);
+
+    if (!exam) {
+      return res.status(404).send('Esame non trovato.');
+    }
+    const candidate = exam.candidates.find(c => c.candidate.toString() === idCandidato);
+
+    if (!candidate) {
+      return res.status(404).send('Candidato non trovato.');
+    }
+    candidate.preferito = preferito === 'si' ? true : false;
+    await exam.save();
+
+    res.status(200).send({message: 'Preferenza del candidato aggiornata con successo.', success: true, data: candidate});
+  } catch (error) {
+    console.error('Errore nell\'aggiornamento del candidato:', error);
+    res.status(500).send('Errore interno del server.');
+  }
+}
+
 const deleteExam = async(req,res) => {
   try{
      const user = await User.findOne({_id: req.body.userid})
@@ -591,6 +646,6 @@ const changeStatus = async (req, res) => {
   }
 }
 
-module.exports = {addExam, getAllExams, getAllExamsByUser, getExamById, 
+module.exports = {addExam, getAllExams, getAllExamsByUser, getExamById, updateCandidateNotes,
   getCandidateCrm, editExam, deleteExam, addQuestionToExam, editQuestionInExam, 
-  deleteQuestionFromExam, saveTestProgress, addTrackLink, deleteTrackLink, changeStatus, ModificaExam}
+  deleteQuestionFromExam, saveTestProgress, addTrackLink, deleteTrackLink, changeStatus, ModificaExam, updateCandidatePreference}

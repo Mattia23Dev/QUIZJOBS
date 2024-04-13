@@ -9,7 +9,7 @@ import Tour from 'reactour'
 const { Option } = Select;
 const typesHero = ['Da contattare', 'Primo colloquio', 'Secondo colloquio', 'Offerta', 'Offerta accettata'];
 
-const DragAndDrop = ({openTour, setOpenTour, tour, showAddCandidateModal, internal, setAddStatus, setShowAddCandidateModal, initialData, setInitialData, selectedCandidate, setShowInfoCandidateModal, setSelectedCandidate, openInfoIntCandidate, originalData, examIdInt, setChangeStatus}) => {
+const DragAndDrop = ({openTour, setOpenTour, tour, showAddCandidateModal, setPreferito, internal, setAddStatus, setShowAddCandidateModal, initialData, setInitialData, selectedCandidate, setShowInfoCandidateModal, setSelectedCandidate, openInfoIntCandidate, originalData, examIdInt, setChangeStatus}) => {
     const [isDragging, setIsDragging] = useState(false);
     const [listItems, setListItems] = useState(initialData);
     const user = useSelector(state=>state.users.user)
@@ -255,7 +255,7 @@ const DragAndDrop = ({openTour, setOpenTour, tour, showAddCandidateModal, intern
 
                       return shouldInclude;
                     })
-                    .map((item) => container === item.status && <CardItem internal={internal} setSelectedCandidate={setSelectedCandidate} selectedCandidate={selectedCandidate} setShowInfoCandidateModal={setShowInfoCandidateModal} openInfoIntCandidate={openInfoIntCandidate} data={item} key={item.id} handleDragging={handleDragging} />)}
+                    .map((item) => container === item.status && <CardItem setPreferito={setPreferito} internal={internal} setSelectedCandidate={setSelectedCandidate} selectedCandidate={selectedCandidate} setShowInfoCandidateModal={setShowInfoCandidateModal} openInfoIntCandidate={openInfoIntCandidate} data={item} key={item.id} handleDragging={handleDragging} />)}
                     </div>
                   </div>
                 ))

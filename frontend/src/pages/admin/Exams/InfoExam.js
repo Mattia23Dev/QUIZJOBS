@@ -1,15 +1,16 @@
 import React,{useState,useEffect, useRef} from 'react';
 import PageTitle from '../../../components/PageTitle';
-import { Modal, message, Table, Segmented, Popconfirm, Popover, Select, Slider, Input, Button, Space } from 'antd';
+import { Modal, message, Table, Segmented, Popconfirm, Popover, Select, Slider, Input, Switch } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { UnorderedListOutlined, AppstoreOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
-import { addExam, addTrackLink, deleteQuestionFromExam, deleteTrackLink, editExam, getExamById, modificaExam } from '../../../apicalls/exams';
+import { addExam, addTrackLink, deleteQuestionFromExam, deleteTrackLink, editExam, getExamById, modificaExam, updateCandidateNotes, updateCandidatePref } from '../../../apicalls/exams';
 import { useDispatch } from 'react-redux';
 import { SearchOutlined } from '@ant-design/icons';
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
 import AddEditQuestion from './AddEditQuestion';
 import copia from '../../../imgs/copia.png';
+import { FaHeart } from 'react-icons/fa';
 import filter from '../../../imgs/filter.png';
 import copiablu from '../../../imgs/copiablu.png';
 import eye from '../../../imgs/eye.png';
@@ -161,8 +162,10 @@ function InfoExam({openTour, setOpenTour, tour}) {
   const [visual, setVisual] = useState("list");
   const [pdfExtract, setPdfExtract] = useState({});
   const [scoreRange, setScoreRange] = useState([0, 100]);
+  const [activePref, setActivePref] = useState(false);
   const [trackingFilter, setTrackingFilter] = useState('Tutti');
   const [questions, setQuestions] = useState();
+  const [selNotes, setSelNotes] = useState('')
   const [config, setConfig] = useState({
    numOfQuestions: 30,
    difficulty: examData?.difficulty || "",
@@ -182,20 +185,25 @@ const [open, setOpen] = useState(false);
   const handleSliderChange = (value) => {
     console.log('Slider Value:', value);
     setScoreRange(value)
-    filterCandidates(value, trackingFilter);
+    filterCandidates(value, trackingFilter, activePref);
+  };
+  const handleSwitchChange = (checked) => {
+    setActivePref(checked);
+    filterCandidates(scoreRange, trackingFilter, checked);
   };
   const handleSelectChange = (value) => {
     console.log('Select Value:', value);
     setTrackingFilter(value)
-    filterCandidates(scoreRange, value);
+    filterCandidates(scoreRange, value, activePref);
   };
-  const filterCandidates = (scoreRange, trackingFilter) => {
+  const filterCandidates = (scoreRange, trackingFilter, activePref) => {
     const filtered = examData?.candidates?.filter(candidate => {
       const scoreInRange = candidate.report?.result?.percentage >= scoreRange[0] && candidate.report?.result?.percentage <= scoreRange[1];
       const trackingMatches = trackingFilter === 'Tutti' ? true : (
         trackingFilter === 'Nessuno' ? candidate.trackLink == "null" : candidate.trackLink === trackingFilter
       );
-      return scoreInRange && trackingMatches;
+      const pref = activePref ? candidate.preferito === true : true;
+      return scoreInRange && trackingMatches && pref;
     });
     setCandidates(filtered);
   };
@@ -242,12 +250,6 @@ const [open, setOpen] = useState(false);
           >
             <SearchOutlined />
           </button>
-          <button
-            className='btn-search-name'
-            onClick={() => handleReset(clearFilters, close)}
-          >
-            x
-          </button>
       </div>
     ),
     filterIcon: (filtered) => (
@@ -257,7 +259,7 @@ const [open, setOpen] = useState(false);
         }}
       />
     ),
-    onFilter: (value, record) => 
+    onFilter: (value, record) =>
     {
       const nomeCompleto = record.candidate.name + ' ' + record.candidate.surname;
       if (record.candidate.name) return record.candidate.name.toString().toLowerCase().includes(value.toLowerCase()) || record.candidate.surname.toString().toLowerCase().includes(value.toLowerCase()) || nomeCompleto.toString().toLowerCase().includes(value.toLowerCase())},
@@ -267,7 +269,8 @@ const [open, setOpen] = useState(false);
       }
     },
     render: (text, record) =>
-      searchedColumn === dataIndex ? (
+    searchedColumn === dataIndex ? (
+      <>
         <Highlighter
           highlightStyle={{
             backgroundColor: '#ffc069',
@@ -275,11 +278,14 @@ const [open, setOpen] = useState(false);
           }}
           searchWords={[searchText]}
           autoEscape
-          textToHighlight={record.candidate.name + ' ' + record.candidate.surname ? record.candidate.name.toString() + ' ' + record.candidate.surname.toString() : ''}
+          textToHighlight={record.candidate.name && record.candidate.surname ? record.candidate.name.toString() + ' ' + record.candidate.surname.toString() : ''}
         />
-      ) : (
-        record.candidate.name + ' ' + record.candidate.surname
-      ),
+      </>
+    ) : (
+      <>
+        {record.candidate.name && record.candidate.surname ? record.candidate.name + ' ' + record.candidate.surname : ''}
+      </>
+    ),
   });
   const getColumnSearchPropsCity = (dataIndex) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
@@ -308,12 +314,6 @@ const [open, setOpen] = useState(false);
             onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
           >
             <SearchOutlined />
-          </button>
-          <button
-            className='btn-search-name'
-            onClick={() => handleReset(clearFilters, close)}
-          >
-            x
           </button>
       </div>
     ),
@@ -456,7 +456,72 @@ const handleCopyLink = () => {
     return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
   }
 
+  const setPreferito = async (candidato, preferito) => {
+    console.log(candidato)
+    try {
+      const payload = {
+        idEsame: examData._id,
+        idCandidato: candidato.candidate._id,
+        preferito: preferito,
+      }
+      const response = await updateCandidatePref(payload)
+      if (response.success){
+        message.success(response.data.preferito ? 'Aggiunto ai preferiti' : 'Rimosso dai preferiti')
+        const candidateAgg = response.data.candidate;
+        setExamData(prevExamData => ({
+          ...prevExamData,
+          candidates: prevExamData.candidates.map(candidate => 
+            candidate.candidate._id === candidateAgg ? { ...candidate, preferito: response.data.preferito } : candidate
+          )
+        }));
+
+        setCandidates(prevCandidates => prevCandidates.map(candidate =>
+          candidate.candidate._id === candidateAgg ? { ...candidate, preferito: response.data.preferito } : candidate
+        ));
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const updateNotes = async (candidato, notes) => {
+    try {
+      const payload = {
+        idEsame: examData._id,
+        idCandidato: candidato._id,
+        note: notes,
+      }
+      const response = await updateCandidateNotes(payload)
+      if (response.success){
+        message.success('Note aggiornate')
+        const candidateAgg = response.data.candidate;
+        console.log(response)
+        setExamData(prevExamData => ({
+          ...prevExamData,
+          candidates: prevExamData.candidates.map(candidate => 
+            candidate.candidate._id === candidateAgg ? { ...candidate, note: response.data.note } : candidate
+          )
+        }));
+
+        setCandidates(prevCandidates => prevCandidates.map(candidate =>
+          candidate.candidate._id === candidateAgg ? { ...candidate, note: response.data.note } : candidate
+        ));
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   const candidateColumns = [
+    {
+      title: "",
+      dataIndex: "",
+      key: "preferiti",
+      render: (text, record) => {
+        return(
+        <span onClick={record.preferito ? () => setPreferito(record, "no") : () => setPreferito(record, "si")} style={{display: 'flex', alignItems: 'center', cursor:'pointer'}}><FaHeart color={record.preferito ? "#F95959" : 'grey'} size={15} /></span>
+      )},
+    },
     {
       title: "Nome",
       dataIndex: "name",
@@ -506,7 +571,7 @@ const handleCopyLink = () => {
       dataIndex: "cv",
       key: "cv",
       render: (text, record) => (
-        <a style={{textAlign: 'center', fontSize: '18px'}} href={record.candidate.cvUrl ? record.candidate.cvUrl : `https://quizjobs-production.up.railway.app/uploads/${record.candidate.cv}`} target="__blank" download className="custom-download-link">
+        <a style={{textAlign: 'center', fontSize: '18px'}} href={record.candidate.cvUrl ? record.candidate.cvUrl : `https://quizjobs-production.up.railway.app/uploads/${record.candidate.cv}`} target="__blank" download>
           <i className="ri-download-line" />
         </a>
       ),
@@ -524,6 +589,7 @@ const handleCopyLink = () => {
               workExperience: record.workExperience,
               education: record.education,
             })
+            setSelNotes(record.note ? record.note : '')
             setShowInfoCandidateModal(true);
           }}><b><u>Info</u></b></span>
           {/*<i className="ri-delete-bin-line cursor-pointer" onClick={() => deleteCandidateById(record.candidate._id)}></i>*/}
@@ -712,6 +778,10 @@ const rowSelection = {
                       ))}
                     </Select>                    
                   </div>
+                  <div>
+                    <label>Filtra per preferiti</label>
+                    <Switch checked={activePref} onChange={handleSwitchChange} style={{ marginLeft: '20px' }} />
+                  </div>
               </div>
             }
             trigger="click"
@@ -749,6 +819,7 @@ const rowSelection = {
 
             </Table> : 
             <DragAndDrop
+            setPreferito={setPreferito}
             setSelectedCandidate={setSelectedCandidate}
             selectedCandidate={selectedCandidate} 
             setShowInfoCandidateModal={setShowInfoCandidateModal}
@@ -773,6 +844,7 @@ const rowSelection = {
                 workExperience: data.workExperience,
                 education: data.education,
               })
+              setSelNotes(data.note ? data.note : '')
             }}
             setOpenTour={setOpenTour}
             openTour={openTour}
@@ -819,7 +891,9 @@ const rowSelection = {
          setSelectedQuestion={setSelectedQuestion}
         />}
         {showInfoCandidateModal&&<InfoCandidate
+        updateNotes={updateNotes}
         pdfExtract={pdfExtract}
+        notes={selNotes}
         jobPosition={examData.jobPosition}
         tag={examData.tag}
         setShowInfoCandidateModal={setShowInfoCandidateModal}

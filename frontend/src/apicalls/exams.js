@@ -20,6 +20,26 @@ export const modificaExam = async(payload) => {
     }
 }
 
+export const updateCandidatePref = async(payload) => {
+    try{
+       const response = await axiosInstance.post('/api/exams/updateCandidatePref',payload)
+       return response.data
+    }
+    catch(error){
+        return error.response.data
+    }
+}
+
+export const updateCandidateNotes = async(payload) => {
+    try{
+       const response = await axiosInstance.post('/api/exams/updateCandidateNotes',payload)
+       return response.data
+    }
+    catch(error){
+        return error.response.data
+    }
+}
+
 export const getAllExams = async() => {
     try{
        const response = await axiosInstance.get('/api/exams/getAllExams')
