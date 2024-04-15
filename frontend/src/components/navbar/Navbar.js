@@ -3,7 +3,7 @@ import './navbar.css';
 import { useNavigate } from 'react-router-dom'
 import logobianco from '../../imgs/logobianco.png'
 
-const Navbar = () => {
+const Navbar = ({user}) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -13,6 +13,8 @@ const Navbar = () => {
 
   return (
     <>
+    {!user ? (
+      <>
       <nav className="navbar-home bg-secondary">
         <p><i className="ri-earth-line"></i> IT</p>
         <div>
@@ -33,9 +35,29 @@ const Navbar = () => {
         <div className='auth-buttons'>
           <button onClick={() => navigate('/register')}>Demo</button>
         </div>
-      </nav>    
+      </nav>
+      </>
+    ) : (
+      <>
+        <nav className="navbar-home bg-secondary">
+          <p><i className="ri-earth-line"></i> IT</p>
+          <div>
+            <button><u>Istruzioni per i candidati</u></button>
+            <button onClick={() => navigate('/contact')}>Aiuto</button>
+            <button onClick={() => navigate('/login')}>Accedi</button>
+          </div>
+        </nav>
+        <nav className='navbar-home bg-primary'>
+          <div className='logo'>
+            <img alt='logo skilltest' src={logobianco} />
+          </div>
+          <div className='auth-buttons'>
+            <button onClick={() => navigate('/register')}>Registrati</button>
+          </div>
+        </nav>      
+      </>
+    )}
     </>
-
   )
 }
 

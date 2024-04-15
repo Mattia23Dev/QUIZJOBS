@@ -75,7 +75,7 @@ function ExamsPage({openTour, setOpenTour, tour}) {
   const getExamsData = async() => {
     try{
       dispatch(ShowLoading())
-      const response = await getExamByUser(user._id)
+      const response = await getExamByUser(user.teamType ? user.company : user._id)
       dispatch(HideLoading())
       if(response.success){
        //message.success(response.message)

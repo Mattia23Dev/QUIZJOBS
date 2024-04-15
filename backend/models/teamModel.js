@@ -18,9 +18,24 @@ const teamSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
   },
-  password: {
+  password: { 
     type: String,
     required: true
+  },
+  role: {
+    type: String,
+  },
+  company: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users",
+  },
+  isAdmin: {
+    type: Boolean,
+    default: true,
+  },
+  teamType: {
+    type: Boolean,
+    default: true,
   }
 });
 

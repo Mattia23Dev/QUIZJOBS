@@ -19,10 +19,10 @@ const { Panel } = Collapse;
 const { Step } = Steps
 
 const SkillsChart = ({ skills }) => {
-  const data = skills.map(() => 1);
+
   return (
     <div className='chart-container'>
-        {skills.map((skill, index) => (
+        {skills?.map((skill, index) => (
           <span 
           className={index % 2 === 0 ? 'even-style' : 'odd-style'} 
           key={index}>{skill}</span>
@@ -35,7 +35,7 @@ const WorkExperienceChart = ({ works }) => {
   return (
     <div className='eduwork'>
       <Steps direction='vertical'>
-        {works.map((work, index) => (
+        {works?.map((work, index) => (
           <Step status="finish" icon={<img src={workImg} alt='work skilltest' />} key={index} description={work} />
         ))}
       </Steps>
@@ -47,7 +47,7 @@ const EducationChart = ({ educ }) => {
   return (
     <div className='eduwork'>
       <Steps direction='vertical'>
-        {educ.map((edu, index) => (
+        {educ?.map((edu, index) => (
           <Step icon={<img src={eduImg} alt='education skilltest'/>} status="process" key={index} description={edu} />
         ))}
       </Steps>
@@ -86,8 +86,8 @@ function InfoCandidate(props) {
   };
 
   const arraySkills = (skills) => {
-    const cleanedSkillsString = skills.replace(/^\d+\.\s.*?:\s*/, '');
-    const skillsArray = cleanedSkillsString.split('\n').filter(skill => skill.trim() !== '');
+    const cleanedSkillsString = skills?.replace(/^\d+\.\s.*?:\s*/, '');
+    const skillsArray = cleanedSkillsString?.split('\n').filter(skill => skill.trim() !== '');
     return skillsArray
   }
   const [openIndex, setOpenIndex] = useState(null);
@@ -157,9 +157,9 @@ function InfoCandidate(props) {
             </div>}
             <div className='modal-bar'>
               <p>Risposte corrette</p>
-              <Progress 
-              percent={candidate?.tests[0].report.result.percentage.toFixed(2)} 
-              strokeColor={candidate?.tests[0].report.result.percentage > 60 ? "#34C15B" : "#F95959"} />
+              <Progress
+              percent={candidate?.tests[0]?.report?.result.percentage.toFixed(2)} 
+              strokeColor={candidate?.tests[0]?.report?.result.percentage > 60 ? "#34C15B" : "#F95959"} />
             </div>
             {tag !== "manual" && 
             <div className='modal-punteggio-summary'>

@@ -13,6 +13,7 @@ import AddCandidate from './AddCandidate'
 function Crm({openTour, setOpenTour, tour}) {
   const [initialData, setInitialData] = useState([])
   const id = useSelector(state=>state.users.user._id);
+  const user = useSelector(state=>state.users.user);
   const [showInfoCandidateModal, setShowInfoCandidateModal] = useState();
   const [showAddCandidateModal, setShowAddCandidateModal] = useState();
   const [addStatus, setAddStatus] = useState();
@@ -25,7 +26,7 @@ function Crm({openTour, setOpenTour, tour}) {
   const getData = async(tempFilters) => {
      try{
        dispatch(ShowLoading())
-       const response = await getCandidateCrm(id)
+       const response = await getCandidateCrm(user.teamType ? user.company : id)
        dispatch(HideLoading())
        if(response.success){
         setInitialData(response.data)

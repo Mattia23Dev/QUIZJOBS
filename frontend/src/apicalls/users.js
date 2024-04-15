@@ -39,6 +39,16 @@ export const getUserInfo = async() => {
   }
 }
 
+export const getTeamInfo = async() => {
+  try{
+    const response = await axiosInstance.post('/api/users/get-team-info')
+    return response.data
+  }
+  catch(error){
+    return error.response.data
+  }
+}
+
 export const getCandidateInfo = async(payload) => {
   try{
     const response = await axiosInstance.post('/api/users/get-candidate-info', payload)

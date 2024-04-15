@@ -4,3 +4,15 @@
     justify-content: space-between;
     align-items: center;
 }
+.team-bottom{
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.team-bottom button {
+    margin-top: 20px;
+}
+.left-team{
+    width: 40%;
+}

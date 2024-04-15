@@ -384,7 +384,7 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
          domande: questions, 
          deadline: config.deadline,
          idEsame: uniqueId,
-         userId: user._id,
+         userId: user.teamType ? user.company : user._id,
          description: config.description,
          tag: config.tag,
        };

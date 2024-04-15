@@ -8,6 +8,7 @@ require("dotenv").config()
 const db = require("./config/dbConfig")
 const userRoute = require("./routes/userRoutes")
 const examRoute = require("./routes/examRoutes")
+const teamRoute = require("./routes/teamRoutes")
 const reportRoute = require("./routes/reportRoutes")
 const appRoute = require("./routes/appointmentRoute")
 
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use("/api/users",userRoute)
 app.use("/api/exams",examRoute)
 app.use("/api/reports",reportRoute)
+app.use("/api/team",teamRoute)
 app.use("/api/app",appRoute)
 
 const storage = multer.diskStorage({

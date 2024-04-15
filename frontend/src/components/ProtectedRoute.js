@@ -1,11 +1,12 @@
 import React, {useEffect, useRef, useState} from 'react'
-import { getUserInfo } from '../apicalls/users'
+import { getTeamInfo, getUserInfo } from '../apicalls/users'
 import {message, Popover} from 'antd'
 import { useDispatch } from 'react-redux'
 import { SetUser } from '../redux/usersSlice'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { HideLoading, ShowLoading } from '../redux/loaderSlice'
+import { jwtDecode } from "jwt-decode";
 import logo from '../imgs/logo.png'
 import logob from '../imgs/logobianco.png'
 import { FaSearch } from 'react-icons/fa'
@@ -15,6 +16,7 @@ function ProtectedRoute({children, setLoginPopup, setTour, handleStartTour, tour
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const user = useSelector(state=>state.users.user)
+  console.log(user)
   const [menu, setMenu] = useState([]);
   const isMobile = () => {
     return window.innerWidth <= 768;
@@ -129,13 +131,13 @@ function ProtectedRoute({children, setLoginPopup, setTour, handleStartTour, tour
     {
       title: "Team",
       paths: ["/admin/team"],
-      icon: <i className='ri-team-line'></i>, // Icona del team
+      icon: <i className='ri-team-line'></i>,
       onClick: () => {
         if (isMobile()) {
           setCollapsed(true);
         }
-        window.alert("Stiamo lavorando per aggiungerlo, scusate il disagio!")
-      } //() => navigate("/admin/team"),
+        navigate("/admin/team");
+      }
     },
     /*{
       title: "Automations",
@@ -165,17 +167,98 @@ function ProtectedRoute({children, setLoginPopup, setTour, handleStartTour, tour
         navigate("/admin/help")
       }
     },
-  ]
+  ];
+  const teamMenu = [
+    {
+      title: "Home",
+      paths: ["/admin/home"],
+      icon: <i className="ri-home-line"></i>,
+      onClick: () => {
+        if (isMobile()) {
+          setCollapsed(true);
+        }
+        window.alert("Stiamo lavorando per aggiungerlo, scusate il disagio!")
+      } //() => navigate("/admin/home"),
+    },
+    {
+      title: "Test",
+      paths: ["/admin/exams", "/admin/exams/add/ai", "/admin/exams/add/mix", "/admin/exams/add/manual", "/admin/exams/edit/:id", "/admin/exams/info/:id"],
+      icon: <i className='ri-file-list-line'></i>,
+      onClick: () => {
+        if (isMobile()) {
+          setCollapsed(true);
+        }
+        navigate("/admin/exams")
+      },
+    },
+    {
+      title: "CRM",
+      paths: ["/admin/crm"],
+      icon: <i className="ri-bar-chart-line"></i>,
+      onClick: ()=>{
+        if (isMobile()) {
+          setCollapsed(true);
+        }
+        navigate("/admin/crm")
+      },
+    },
+    {
+      title: "Calendar",
+      paths: ["/admin/calendar"],
+      icon: <i className='ri-calendar-line'></i>, // Icona del calendario
+      onClick: () => {
+        if (isMobile()) {
+          setCollapsed(true);
+        }
+        navigate("/admin/calendar")
+      },
+    },
+    {
+      title: "Profilo",
+      paths: ["/admin/profile"],
+      icon: <i className='ri-user-line'></i>,
+      onClick: ()=>{
+        if (isMobile()) {
+          setCollapsed(true);
+        }
+        navigate("/admin/profile")
+      },
+    },
+    {
+      title: "Assistenza",
+      paths: ["/admin/help"],
+      icon: <i className="ri-headphone-line"></i>,
+      onClick: ()=>{
+        if (isMobile()) {
+          setCollapsed(true);
+        }
+        navigate("/admin/help")
+      }
+    },
+  ];
   const getUserData = async() => {
     try{
       dispatch(ShowLoading())
-      const response = await getUserInfo()
+      const token = localStorage.getItem('token');
+        const decodedToken = jwtDecode(token);
+        const userType = decodedToken.type;
+      console.log(userType)
+        let response;
+        if (userType === 'user' || !userType) {
+            response = await getUserInfo();
+        } else if (userType === 'team') {
+            response = await getTeamInfo();
+        }
       dispatch(HideLoading())
       if(response.success){
         message.success(response.message)
         dispatch(SetUser(response.data))
         if(response.data.isAdmin){
-              setMenu(adminMenu)
+          if (response.data.teamType){
+            setMenu(teamMenu)
+          } else {
+            setMenu(adminMenu)
+          }
         }
         else{
               setMenu(userMenu)

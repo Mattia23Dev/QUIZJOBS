@@ -39,7 +39,7 @@ function InfoCandidate(props) {
 
   const handleScoreMedium = () => {
     const totalScores = candidate.tests.reduce((accumulator, currentTest) => {
-      return accumulator + currentTest.report.result.percentage;
+      return accumulator + currentTest?.report?.result?.percentage;
     }, 0);
     
     const numberOfTests = candidate.tests.length;

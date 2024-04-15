@@ -30,7 +30,7 @@ const Contatti = () => {
       };
   return (
     <div className='home-out'>
-    <Navbar /> 
+    <Navbar />
     <div className='hero-section'>
       <div>
         <h1>Hai bisogno di <b>assistenza?</b></h1>

@@ -8,6 +8,7 @@ const path = require('path');
 const {OAuth2Client} = require('google-auth-library');
 const { welcomeEmail } = require("./emailControllers");
 const openai = require('openai');
+const Team = require("../models/teamModel");
 const apiKey = process.env.OPENAI_API;
 const client = new OAuth2Client("830063440629-j40l5f7lb1fck6ap120s272d49rp1ph6.apps.googleusercontent.com");
 const clientAi = new openai.OpenAI({
@@ -67,7 +68,8 @@ const login = async(req,res) => {
         //check if passwords are valid
         if(passwordsMatched){
             const token = jwt.sign({
-                userid: user._id
+                userid: user._id,
+                type: 'user',
             },process.env.JWT_SECRET,{})
             res.send({
               message: "User logged in successfully",
@@ -83,10 +85,31 @@ const login = async(req,res) => {
         }
      }
      else{
-        res.status(200).send({
-            message: "User doesnot exist.",
-            success: false
-        })
+      const team = await Team.findOne({email: req.body.email})
+          if (team) {
+            const userT = await User.findById(team.company);
+            if (team.password === req.body.password){
+              const token = jwt.sign({
+                userid: team._id,
+                type: 'team'
+              },process.env.JWT_SECRET,{})
+              res.send({
+                message: "User logged in successfully",
+                data: token,
+                success: true,
+              })
+            } else {
+              res.status(200).send({
+                message: "Password errata.",
+                success: false
+            })
+            }
+          } else {
+          res.status(200).send({
+              message: "User doesnot exist.",
+              success: false
+          })
+        }
      }     
    }
    catch(error){
@@ -124,6 +147,33 @@ const getUserInfo = async(req,res) => {
         success: false
     })
    }
+}
+
+const getTeamInfo = async(req,res) => {
+  try{
+     const user = await Team.findOne({_id: req.body.userid})
+     if(user){
+       res.status(200).send({
+           message: "User Info fetched successfully",
+           data: user,
+           success: true
+       })
+     }
+     else{
+       res.status(200).send({
+           message: "Failed to fetch user info",
+           data: null,
+           success: false
+       })
+     }
+  }
+  catch(error){
+   res.status(400).send({
+       message: error.message,
+       data: error,
+       success: false
+   })
+  }
 }
 
 const getCandidateInfo = async (req, res) => {
@@ -421,4 +471,4 @@ const modifyUserData = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getUserInfo, addCandidate, getCandidateInfo, googleLogin, changeStatusCandidate, modifyUserData }
+module.exports = { register, login, getTeamInfo, getUserInfo, addCandidate, getCandidateInfo, googleLogin, changeStatusCandidate, modifyUserData }

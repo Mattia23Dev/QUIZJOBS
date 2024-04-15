@@ -1,6 +1,6 @@
 const router = require("express").Router()
 const { sendHelpEmail } = require("../controllers/emailControllers");
-const {register, login, getUserInfo, addCandidate, getCandidateInfo, googleLogin, changeStatusCandidate, modifyUserData} = require("../controllers/userControllers")
+const {register, login, getUserInfo, addCandidate, getCandidateInfo, googleLogin, changeStatusCandidate, modifyUserData, getTeamInfo} = require("../controllers/userControllers")
 const authMiddleware = require("../middlewares/authMiddleware")
 const multer = require('multer')
 
@@ -20,6 +20,7 @@ router.post('/register',register)
 router.post('/login',login)
 router.post('/google-login',googleLogin)
 router.post('/get-user-info',authMiddleware,getUserInfo)
+router.post('/get-team-info',authMiddleware,getTeamInfo)
 router.post('/get-candidate-info',authMiddleware,getCandidateInfo)
 router.post('/add-candidate', upload.single('cv'), addCandidate)
 router.post("/changeCandidateStatus",authMiddleware, changeStatusCandidate)
