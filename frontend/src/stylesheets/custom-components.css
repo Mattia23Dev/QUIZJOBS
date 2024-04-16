@@ -115,7 +115,25 @@
     color: white !important;
     border-radius: 5px;
 }
-
+.ant-pagination-next,
+.ant-pagination-prev{
+    border: none !important;
+}
+.ant-pagination-item-link{
+    border: none !important;
+    color: var(--primary) !important;
+    background-color: transparent !important;
+}
+.right-team .ant-pagination-item{
+    margin-top: 1.25rem !important;
+}
+.ant-pagination-item{
+    border-radius: 50% !important;
+    border: 1.5px solid var(--secondary) !important;
+}
+.ant-pagination-item > a {
+    color: var(--secondary) !important;
+}
 .lottie-animation{
     height: 200px;
 }

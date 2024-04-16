@@ -73,7 +73,8 @@ const deleteTeam = async (req, res) => {
   const updateTeamMember = async (req, res) => {
     const memberId = req.params.id;
     const updates = req.body;
-    const allowedUpdates = ['name', 'surname', 'email', 'password', 'role'];
+    console.log(req.body)
+    const allowedUpdates = ['name', 'surname', 'email', 'password', 'role', 'userid'];
     const isValidOperation = Object.keys(updates).every(update => allowedUpdates.includes(update));
 
     if (!isValidOperation) {
