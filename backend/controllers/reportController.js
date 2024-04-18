@@ -16,7 +16,7 @@ const reportOpenaiManual = async (req,res) => {
     try {
         const {email, exam, questions, answers} = req.body;
           const prompt = `Immagina di essere uno specialista ed esperto nella psicologia e nella gestione delle risorse umane e devi dare una valutazione oggettiva del candidato, facendo un riassunto generale delle risposte date. Le risposte lunghe sono di domande aperte, mentre quelle più corte,
-          sono di domande chiuse, questo è un test non focalizzato sulle competenze tecniche, quindi analizza semplicemente in base alle domande fornite l'attitudine del candidato oppure lo screening lavorativo. Ti fornirò un oggetto o array con le domande e lo stesso oggetto con le risposte, analizza le risposte, facendo un riassunto BREVE del candidato. Inserisci nell'analisi tutto ciò che può essere utile ad un'azienda 
+          sono di domande chiuse, questo è un test non focalizzato sulle competenze tecniche, quindi analizza semplicemente in base alle domande fornite l'attitudine del candidato oppure lo screening lavorativo. Ti fornirò un oggetto o array con le domande e lo stesso oggetto con le risposte, analizza le risposte, facendo un riassunto BREVE del candidato di massimo 5 righe. Inserisci nell'analisi tutto ciò che può essere utile ad un'azienda 
           o ad un recruiter sapere di quel candidato.
           `;
           const exampleFormat = JSON.stringify({ questions, answers });
@@ -63,7 +63,7 @@ const reportOpenai = async (req,res) => {
         const {email, exam, questions, answers} = req.body;
         const examObj = await examModel.findById(exam)
           const prompt = `Immagina di essere uno specialista ed esperto nella psicologia e nella gestione delle risorse umane e devi dare una valutazione oggettiva del candidato, facendo un riassunto generale delle risposte date. Le risposte di questo test sono tutte domanda chiuse,
-          focalizzate sulle competenze tecniche, per tesatare queste competenze ${examObj?.skills?.join(', ')} per la posizione lavorativa ${examObj.jobPosition}. Ti fornirò un oggetto o array con le domande e lo stesso oggetto con le risposte, analizza le risposte, facendo un riassunto BREVE del candidato. Inserisci nell'analisi tutto ciò che può essere utile ad un'azienda 
+          focalizzate sulle competenze tecniche, per tesatare queste competenze ${examObj?.skills?.join(', ')} per la posizione lavorativa ${examObj.jobPosition}. Ti fornirò un oggetto o array con le domande e lo stesso oggetto con le risposte, analizza le risposte, facendo un riassunto BREVE del candidato di massimo 5 righe. Inserisci nell'analisi tutto ciò che può essere utile ad un'azienda 
           o ad un recruiter sapere di quel candidato.
           `;
           const exampleFormat = JSON.stringify({ questions, answers });
