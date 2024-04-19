@@ -10,7 +10,7 @@ function PublicRoute({children, loginPopup, registerPopup, setLoginPopup, setReg
    }
   },[])
   return (
-    <div>
+    <div className='public-layout'>
         <Navbar setRegisterPopup={setRegisterPopup} setLoginPopup={setLoginPopup} loginPopup={loginPopup} registerPopup={registerPopup} />
         {children}
     </div>

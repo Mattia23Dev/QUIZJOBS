@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import './azienda.css'
 import { FaSearch } from 'react-icons/fa'
-import { Select } from 'antd'
+import { Select, Drawer, Space } from 'antd'
 import { HideLoading, ShowLoading } from '../../redux/loaderSlice'
 import { useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux'
+import time from '../../imgs/time.png'
+import { useDispatch, useSelector } from 'react-redux'
 import { getExamActiveByUser } from '../../apicalls/exams'
+import { getUserInfoById } from '../../apicalls/users'
+import { BsFillInfoCircleFill } from "react-icons/bs";
+import moment from 'moment'
+import 'moment/locale/it'
+moment.locale('it');
 const {Option} = Select
 
 const provinceItaliane = [
@@ -30,14 +36,17 @@ const provinceItaliane = [
     "Vicenza", "Viterbo"
   ];
 
-const Azienda = () => {
+const Azienda = ({setRegisterPopup}) => {
     let { id } = useParams();
     const dispatch = useDispatch() 
+    const user = useSelector(state=>state.users.user)
     const [searchJob, setSearchJob] = useState('')
-    const [selectedProvince, setSelectedProvince] = useState('');
-    const [selectedContratto, setSelectedContratto] = useState('');
-    const [selectedLavoro, setSelectedLavoro] = useState('');
+    const [selectedProvince, setSelectedProvince] = useState();
+    const [selectedContratto, setSelectedContratto] = useState();
+    const [selectedLavoro, setSelectedLavoro] = useState();
     const [companyExams, setCompanyExams] = useState([])
+    const [companyInfo, setCompanyInfo] = useState()
+    const [drawerMobile, setDrawerMobile] = useState(false)
 
     const getExamCompany = async () => {
         console.log(id)
@@ -53,35 +62,55 @@ const Azienda = () => {
         }
     }
 
+    const getUserInfo = async () => {
+        try {
+            const response = await getUserInfoById(id)
+            console.log(response)
+            dispatch(HideLoading())
+            if (response.success){
+                setCompanyInfo(response.data)
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     useEffect(() => {
         dispatch(ShowLoading())
         getExamCompany()
+        getUserInfo()
     }, [])
 
-    const azienda = {
-        img: "https://cdn.pixabay.com/photo/2013/01/29/22/07/google-76659_1280.png",
-        companyName: "Google",
-        sede: "Milano",
-        descriptions: "Google ha modificato più volte il proprio logo nel corso della sua esistenza. Il primo logo è stato disegnato da Sergey Brin e in seguito modificato dalla designer Ruth Kedar, per la cui realizzazione si è servita del carattere tipografico con grazie Catull. Il logo è usato dal motore di ricerca Google e, in occasione di eventi e ricorrenze particolari, viene sostituito con un doodle attinente, talvolta animato."
+    const handleStartTest = (exam) => {
+        try {
+            console.log(exam)
+        } catch (error) {
+            console.error(error)
+        }
     }
+    const isMobile = () => {
+        return window.innerWidth <= 768;
+      };
+
   return (
     <div className='azienda'>
         <div className='sticky-left-company'>
             <div>
-                <img alt='azienda logo' src={azienda.img} />
-                <h2>{azienda.companyName}</h2>
-                <h4>{azienda.sede}</h4>
-                <p>{azienda.descriptions}</p>
+                <img alt='azienda logo' src={companyInfo?.profileImage} />
+                <h2>{companyInfo?.companyName}</h2>
+                <h4>{companyInfo?.companyCity}</h4>
+                <p>{companyInfo?.companyDescription}</p>
             </div>
             <div>
 
             </div>
         </div>
         <div className='azienda-content'>
+            {isMobile() && <h1 onClick={() => setDrawerMobile(true)}>{companyInfo?.companyName} <BsFillInfoCircleFill size={22} /></h1>}
            <div className='top-azienda-content'>
             <div>
-                <FaSearch className='icon-search' size={32} />
-                <input type='text' value={searchJob} onChange={(e) => setSearchJob(e.target.value)}  />
+                {!isMobile() && <FaSearch className='icon-search' size={32} />}
+                <input className='input-search' type='text' value={searchJob} onChange={(e) => setSearchJob(e.target.value)}  />
                 <Select
                     showSearch
                     style={{ width: 200 }}
@@ -97,7 +126,7 @@ const Azienda = () => {
                     <Option key={index} value={prov}>{prov}</Option>
                     ))}
                 </Select>
-                <button className='primary-outlined-btn'>Cerca posizione</button>
+                <button className='primary-outlined-btn'>{isMobile() ? 'Cerca' :  'Cerca posizione'}</button>
             </div>
             <div>
                 <Select
@@ -123,13 +152,60 @@ const Azienda = () => {
             </div>
            </div>
            <div className='middle-azienda-content'>
-              {companyExams && companyExams.length > 0 && companyExams.map((exam) => (
+              {companyExams && companyExams.length > 0 && companyExams.map((exam) => {
+                const date = moment(exam.createdAt);
+                const timeAgo = date.fromNow()
+
+                return(
                 <div key={exam._id} className='single-job'>
-                    <h3>{exam.jobPosition}</h3>
+                    <div className='single-job-top'>
+                        <h2>{exam.jobPosition}</h2>
+                        <img alt='logo offerta lavorativa' src={companyInfo.profileImage} />
+                    </div>
+                    <hr />
+                    <div className='single-job-middle'>
+                        <div>
+                            <h4>Descrizione lavoro</h4>
+                            <p>{exam.jobDescription}</p>
+                        </div>
+                        <div>
+                            <div>
+                                <span>{exam.jobContract}</span>
+                                <span>{exam.jobCity}</span>
+                                <span>{exam.jobTypeWork}</span>
+                            </div>
+                            <button onClick={user ? () => handleStartTest(exam) : () => setRegisterPopup(true)} className='primary-outlined-btn'>Fai il test</button>
+                        </div>
+                    </div>
+                    <hr />
+                    <div className='single-job-bottom'>
+                        <div>
+                            <span>Competenze</span>
+                            {exam?.skills?.map((skill) => (
+                                <span>{skill}</span>
+                            ))}
+                        </div>
+                        <p><img src={time} alt='time' />{timeAgo && timeAgo}</p>
+                    </div>
                 </div>
-              ))}
+              )})}
            </div>
         </div>
+        <Drawer
+            title="Info azienda"
+            width={isMobile() ? '70%' : 500}
+            className='drawer-dash'
+            onClose={() => setDrawerMobile(false)}
+            open={drawerMobile}
+            placement='right'
+        >
+            <div className='drawer-info-company'>
+                <img alt='azienda logo' src={companyInfo?.profileImage} />
+                <h2>{companyInfo?.companyName}</h2>
+                <h4>{companyInfo?.companyCity}</h4>
+                <p>{companyInfo?.companyDescription}</p>
+            </div>
+        </Drawer>
     </div>
   )
 }

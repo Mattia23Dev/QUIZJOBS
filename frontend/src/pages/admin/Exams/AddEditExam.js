@@ -28,6 +28,28 @@ import { useLocation } from 'react-router-dom';
 import Tour from 'reactour'
 const { Option } = Select;
 
+const provinceItaliane = [
+  "Agrigento", "Alessandria", "Ancona", "Aosta", "Arezzo", "Ascoli Piceno",
+  "Asti", "Avellino", "Bari", "Barletta-Andria-Trani", "Belluno", "Benevento",
+  "Bergamo", "Biella", "Bologna", "Bolzano", "Brescia", "Brindisi", "Cagliari",
+  "Caltanissetta", "Campobasso", "Carbonia-Iglesias", "Caserta", "Catania",
+  "Catanzaro", "Chieti", "Como", "Cosenza", "Cremona", "Crotone", "Cuneo",
+  "Enna", "Fermo", "Ferrara", "Firenze", "Foggia", "Forlì-Cesena",
+  "Frosinone", "Genova", "Gorizia", "Grosseto", "Imperia", "Isernia",
+  "L'Aquila", "La Spezia", "Latina", "Lecce", "Lecco", "Livorno",
+  "Lodi", "Lucca", "Macerata", "Mantova", "Massa-Carrara", "Matera",
+  "Messina", "Milano", "Modena", "Monza e della Brianza", "Napoli",
+  "Novara", "Nuoro", "Olbia-Tempio", "Oristano", "Padova", "Palermo",
+  "Parma", "Pavia", "Perugia", "Pesaro e Urbino", "Pescara", "Piacenza",
+  "Pisa", "Pistoia", "Pordenone", "Potenza", "Prato", "Ragusa", "Ravenna",
+  "Reggio Calabria", "Reggio Emilia", "Rieti", "Rimini", "Roma", "Rovigo",
+  "Salerno", "Medio Campidano", "Sassari", "Savona", "Siena", "Siracusa",
+  "Sondrio", "Taranto", "Teramo", "Terni", "Torino", "Ogliastra",
+  "Trapani", "Trento", "Treviso", "Trieste", "Udine", "Varese",
+  "Venezia", "Verbano-Cusio-Ossola", "Vercelli", "Verona", "Vibo Valentia",
+  "Vicenza", "Viterbo"
+];
+
 const DomandeComponent = ({ domande, onUpdateDomande, setSelectedQuestion, setShowAddEditQuestionModal }) => {
    const [currentDomanda, setCurrentDomanda] = useState(domande[0]);
    const [currentDomandaIndex, setCurrentDomandaIndex] = useState(0); // Inizializza l'indice della domanda corrente a 0
@@ -151,13 +173,13 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
   const {id, tag} = useParams()
   const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
   const [examData,setExamData] = useState();
-  const [activeTab, setActiveTab] = useState(1);
+  const [activeTab, setActiveTab] = useState(0);
   const [showAddEditQuestionModal, setShowAddEditQuestionModal] = useState(false)
   const [selectedQuestion, setSelectedQuestion] = useState();
   const [questions, setQuestions] = useState([]);
   const [showQuestions, setShowQuestions] = useState(false);
   const [showTrackLink, setShowTrackLink] = useState(false);
-  const [passaOltre, setPassaOltre] = useState(1);
+  const [passaOltre, setPassaOltre] = useState(0);
   const [copyLink, setCopyLink] = useState(false);
   const [trackLink, setTrackLink] = useState("");
   const [domandaType, setDomandaType] = useState("Caratteriali");
@@ -179,6 +201,10 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
       deadline: null,
       description: '',
       tag: tag,
+      jobDescription: '',
+      jobCity: '',
+      jobContract: '',
+      jobTypeWork: '',
   });
   const location = useLocation();
   const { storedQuestions } = location.state ?? {};
@@ -387,6 +413,10 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
          userId: user.teamType ? user.company : user._id,
          description: config.description,
          tag: config.tag,
+         jobContract: config.jobContract,
+         jobCity: config.jobCity,
+         jobDescription: config.jobDescription,
+         jobTypeWork: config.jobTypeWork
        };
        console.log(examData)
        let response;
@@ -609,6 +639,16 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
         return window.innerWidth <= 768;
       };
 
+      const nextTabOfferta = () => {
+        if (config.jobDescription === "" || config.jobCity === '' || config.jobContract === '' || config.jobTypeWork === ''){
+          window.alert('Compila tutti i campi')
+          return
+        }
+        console.log(config)
+        setPassaOltre(1)
+        setActiveTab(1)
+      }
+
   return (
       <div className='home-content'>
         {tag === "manual" &&
@@ -621,7 +661,12 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
           {!isMobile() && tag!=="manual" && <a onClick={preview ? handlePreviewClick : null} className={preview ? 'preview': 'preview-disabled'}><img src={eye} alt='Anteprima skilltest' />Anteprima</a>}
         </div>
           <div className={tag === "mix" ? 'create-exam-top2' : 'create-exam-top'}>
-            <div onClick={() => setActiveTab(1)} className={activeTab === 1 ? 'active' : 'elemento1'}>
+            <div onClick={() => setActiveTab(0)} className={activeTab === 0 ? 'active' : 'elemento1'}>
+              <span></span>
+              <p>Offerta</p>
+            </div>
+            <hr />
+            <div onClick={passaOltre < 1 ? null : () => setActiveTab(1)} style={passaOltre < 1 ? {cursor: 'not-allowed'} : null} className={activeTab === 1 ? 'active' : 'elemento1'}>
               <span></span>
               <p>Dettagli test</p>
             </div>
@@ -755,7 +800,7 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
               </button>
               </div>
           </Form>
-          </div> : activeTab === 2 ? 
+          </div> : activeTab === 2 ?
           <div className={activeTab === 2 ? 'create-exam-body elemento2' : 'create-exam-body'}>
             <PageTitle title={"Domande"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
               <div className='flex justify-end'> 
@@ -794,7 +839,83 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
                     </div>
                 </div>
               </div>
-           : 
+           : activeTab === 0 ?
+           <div className={activeTab === 0 ? 'create-exam-body elemento1' : 'create-exam-body'}>
+           <PageTitle title={"Inserisci le info dell'offerta"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
+           <button className='button-ligh-blue' onClick={() => navigate('/admin/exams')}>Visualizza test salvati</button>
+           <Form layout="vertical" onFinish={nextTabOfferta} initialValues={examData} className="create-exam-form">
+             <Row gutter={[10,10]}>
+                   <Col flex="auto">
+                     <Form.Item label="Posizione lavorativa" name="job-position">
+                       <input type="text" value={config.jobPosition} onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, jobPosition: e.target.value }))} />
+                     </Form.Item>
+                   </Col>
+                   <Col flex="auto">
+                    <Form.Item label="Città del lavoro" name="jobCity">
+                        <Select
+                            showSearch
+                            //style={{ width: 200 }}
+                            placeholder="Provincia"
+                            optionFilterProp="children"
+                            filterOption={(input, option) =>
+                            option.children.toLowerCase().includes(input.toLowerCase())
+                            }
+                            onChange={(value) => setConfig(prevConfig => ({ ...prevConfig, jobCity: value }))}
+                            value={config.jobCity}
+                          >
+                            {provinceItaliane.map((prov, index) => (
+                            <Option key={index} value={prov}>{prov}</Option>
+                            ))}
+                        </Select>
+                     </Form.Item>
+                   </Col>
+              </Row>
+             <Row style={{margin: '20px 0'}} gutter={[10,10]}>      
+                   <Col flex="auto">
+                     <Form.Item label="Tipo di luogo di lavoro" name="jobTypeWork">
+                       <Select className='ant-styiling' value={config.jobTypeWork} onChange={(value) => setConfig(prevConfig => ({ ...prevConfig, jobTypeWork: value }))}>
+                          <Option value='In sede'>In sede</Option>
+                          <Option value='Ibrido'>Ibrido</Option>
+                          <Option value='Da remoto'>Da remoto</Option>
+                       </Select>
+                     </Form.Item>
+                   </Col>
+                   <Col span={12}>
+                     <Form.Item label="Tipo di lavoro" name="jobContract">
+                       <Select className='ant-styiling' value={config.jobContract} onChange={(value) => setConfig(prevConfig => ({ ...prevConfig, jobContract: value }))}>
+                          <Option value='Tempo pieno'>Tempo pieno</Option>
+                          <Option value='Part-time'>Part-time</Option>
+                          <Option value='Temporaneo'>Temporaneo</Option>
+                          <Option value='Stage'>Stage</Option>
+                          <Option value='Partita Iva'>Partita Iva</Option>
+                       </Select>
+                     </Form.Item>
+                   </Col>
+             </Row>
+               <Row gutter={[10,10]}>
+                 <Col span={24}>
+                   <Form.Item label="Descrizione" name="jobDescription">
+                     <textarea placeholder='Inserisci la descrizione' value={config.jobDescription} onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, jobDescription: e.target.value }))} />
+                   </Form.Item>
+                 </Col>
+               </Row>
+               <div className='flex justify-center gap-2 flex-column items-center' style={{flexDirection: 'column', marginTop: '40px'}}>
+                 {tag === "ai" || tag === "mix" ? 
+                 <button className='primary-outlined-btn w-25 cursor-pointer' type="submit">
+                     Prossimo step
+                 </button> : 
+                 <button className='primary-outlined-btn w-25 cursor-pointer' type="submit">
+                     Prossimo step
+                 </button>}
+                 <button className='btn btn-link'
+                 style={{ textDecoration: 'underline', cursor: 'pointer', backgroundColor: 'transparent', border: 'none' }}
+                 onClick={()=>navigate('/admin/exams')}
+                 >
+                     Annulla
+               </button>
+               </div>
+           </Form>
+           </div> :
           <div className={activeTab === 3 ? 'candidati-add-exam elemento4' : 'candidati-add-exam'}>
             <PageTitle title={"Candidati"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
             <h4>Non ci sono ancora candidati, <b>condividi il link</b> per profilare i tuoi talenti, puoi inserire il link nell'offerta

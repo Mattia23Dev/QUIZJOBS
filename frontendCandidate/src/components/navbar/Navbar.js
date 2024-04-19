@@ -19,11 +19,6 @@ const Navbar = ({user, setRegisterPopup, setLoginPopup}) => {
         <div className='logo'>
           <img alt='logo skilltest' src={logobianco} />
         </div>
-        <div className={`menu`}>
-          <a href='/#product'>Prodotto</a>
-          <a href='/#price'>Prezzi</a>
-          <a href='/contact'>Contatti</a>
-        </div>
         <div className='auth-buttons'>
           <button onClick={() => setLoginPopup(true)}>Accedi</button>
           <button onClick={() => setRegisterPopup(true)}>Registrati</button>
@@ -37,8 +32,7 @@ const Navbar = ({user, setRegisterPopup, setLoginPopup}) => {
             <img alt='logo skilltest' src={logobianco} />
           </div>
           <div className='auth-buttons'>
-            <button onClick={() => setLoginPopup(true)}>Accedi</button>
-            <button onClick={() => setRegisterPopup(true)}>Registrati</button>
+            <button>{user?.name + ' ' + user.surname}</button>
           </div>
         </nav>      
       </>

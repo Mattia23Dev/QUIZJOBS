@@ -92,7 +92,7 @@ function ProtectedRoute({children, setLoginPopup, setTour, handleStartTour, tour
         if (isMobile()) {
           setCollapsed(true);
         }
-        window.alert("Stiamo lavorando per aggiungerlo, scusate il disagio!")
+        window.alert("Stiamo lavorando per aggiungerlo!")
       } //() => navigate("/admin/home"),
     },
     {
@@ -177,7 +177,7 @@ function ProtectedRoute({children, setLoginPopup, setTour, handleStartTour, tour
         if (isMobile()) {
           setCollapsed(true);
         }
-        window.alert("Stiamo lavorando per aggiungerlo, scusate il disagio!")
+        window.alert("Stiamo lavorando per aggiungerlo!")
       } //() => navigate("/admin/home"),
     },
     {

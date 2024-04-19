@@ -175,7 +175,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 35%;
+    width: 55%;
     margin: 0 auto;
     margin-top: 0.5rem;
   }
@@ -598,6 +598,9 @@
       position: absolute;
       left: 3rem;
       top: -2rem;
+    }
+    .create-exam-top{
+      width: 60%;
     }
     .create-exam-top > div > p,
     .create-exam-top2 > div > p {

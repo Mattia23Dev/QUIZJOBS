@@ -39,19 +39,9 @@ export const getUserInfo = async() => {
   }
 }
 
-export const getTeamInfo = async() => {
+export const getUserInfoById = async(id) => {
   try{
-    const response = await axiosInstance.post('/api/users/get-team-info')
-    return response.data
-  }
-  catch(error){
-    return error.response.data
-  }
-}
-
-export const getCandidateInfo = async(payload) => {
-  try{
-    const response = await axiosInstance.post('/api/users/get-candidate-info', payload)
+    const response = await axiosInstance.get(`/api/candidate/getUserById/${id}`)
     return response.data
   }
   catch(error){

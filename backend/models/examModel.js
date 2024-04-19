@@ -87,6 +87,18 @@ const examSchema = new mongoose.Schema({
     company: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users",
+    },
+    jobDescription: {
+        type: String
+    },
+    jobCity: {
+        type: String,
+    },
+    jobContract: {
+        type: String,
+    },
+    jobTypeWork: {
+        type: String,
     }
 }, {
     timestamps: true

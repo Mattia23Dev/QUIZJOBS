@@ -29,7 +29,7 @@ function App() {
       <Routes>
         <Route path="/user/home" element={<ProtectedRoute><Home /></ProtectedRoute>}/>
         <Route path="/" element={<PublicRoute setLoginPopup={setLoginPopup} setRegisterPopup={setRegisterPopup} loginPopup={loginPopup} registerPopup={registerPopup}><Home /></PublicRoute>}/>
-        <Route path="/azienda/:id" element={<PublicRoute setLoginPopup={setLoginPopup} setRegisterPopup={setRegisterPopup} loginPopup={loginPopup} registerPopup={registerPopup}><Azienda /></PublicRoute>} />
+        <Route path="/azienda/:id" element={<PublicRoute setLoginPopup={setLoginPopup} setRegisterPopup={setRegisterPopup} loginPopup={loginPopup} registerPopup={registerPopup}><Azienda setRegisterPopup={setRegisterPopup} /></PublicRoute>} />
       </Routes>
     </Router>
     </>
