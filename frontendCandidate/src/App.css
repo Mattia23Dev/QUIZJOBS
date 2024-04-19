@@ -1,0 +1,36 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.loader-parent{
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0,0,0,0.638);
+  z-index:  10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader{
+  height: 80px;
+  width: 80px;
+  border: 5px solid #fff;
+  border-left-color: transparent;
+  border-radius: 50%;
+  animation: loader 1s linear infinite;
+}
+
+@keyframes loader{
+  0% {
+     transform: rotate(0deg);
+  }
+  100% {
+     transform: rotate(360deg); 
+  }
+}

@@ -11,6 +11,7 @@ const examRoute = require("./routes/examRoutes")
 const teamRoute = require("./routes/teamRoutes")
 const reportRoute = require("./routes/reportRoutes")
 const appRoute = require("./routes/appointmentRoute")
+const candidateRoute = require("./routes/candidateRoutes")
 
 const port = process.env.PORT || 5000
 
@@ -24,6 +25,7 @@ app.use("/api/exams",examRoute)
 app.use("/api/reports",reportRoute)
 app.use("/api/team",teamRoute)
 app.use("/api/app",appRoute)
+app.use("/api/candidate",candidateRoute)
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {

@@ -318,7 +318,7 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
       - **Risposta corretta: B) register_post_type()**
        E Prendi in considerazione questa ulteriore descrizione che specifica meglio l'obiettivo del test o una descrizione generica: ${config.description}
        `;
-      const prompt = `Immagina di essere un recruiter e devi testare le competenze di un candidato per un'offerta lavorativa per la posizione ${config.jobPosition}. Genera ${config.numOfQuestions < 25 ? config.numOfQuestions : (config.numOfQuestions / 2)} domande a risposta multipla con 4 possibilità e con le rispettive risposte. Ripeti le stesse risposte SOLO SE NECESSARIO inserirle nel contesto della domanda. 
+      const prompt = `Sei un esperto generatore di domande e devi testare le competenze di un candidato per un'offerta lavorativa per la posizione ${config.jobPosition}. Genera ${config.numOfQuestions < 25 ? config.numOfQuestions : (config.numOfQuestions / 2)} domande a risposta multipla con 4 possibilità e con le rispettive risposte. Ripeti le stesse risposte SOLO SE NECESSARIO inserirle nel contesto della domanda. 
       Assicurati di non inserire opzioni che non centrano con il contesto della domanda o del ruolo, Assicurati di fare domande non banali e specifiche alle competenze fornite: ${config.skills.join(', ')}, con difficoltà ${config.difficulty}, nella lingua ${config.testLanguage}.
       Le risposte all'interno della domanda devono essere fatte con una risposta completamente sbagliata, una risposta che possa sembrare corretta e le ultime due risposte simili tra loro, ma una sola corretta.
       Descrizione della difficoltà delle domande, prendi in considerazione il campo sopra con la discrezione sotto:

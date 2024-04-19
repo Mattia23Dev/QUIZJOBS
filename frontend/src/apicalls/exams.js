@@ -62,7 +62,7 @@ export const getExamById = async(id) => {
 
 export const getExamByUser = async(id) => {
     try{
-       const response = await axiosInstance.get(`/api/exams//getAllExamsByUser/${id}`)
+       const response = await axiosInstance.get(`/api/exams/getAllExamsByUser/${id}`)
        return response.data
     }
     catch(error){
@@ -82,7 +82,7 @@ export const getCandidateCrm = async(id) => {
 
 export const editExam = async(payload,id) => {
     try{
-      const response = await axiosInstance.put(`/api/exams//editExam/${id}`,payload)
+      const response = await axiosInstance.put(`/api/exams/editExam/${id}`,payload)
       return response.data
     }
     catch(error){
