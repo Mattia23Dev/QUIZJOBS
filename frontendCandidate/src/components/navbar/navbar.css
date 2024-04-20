@@ -57,6 +57,14 @@
     background-color: transparent;
     text-decoration: underline;
   }
+  .auth-buttons .btn-entra{
+    background-color: var(--secondary);
+    border-radius: 30px;
+    padding: 6px 20px;
+    cursor: pointer;
+    border: none;
+    display: block;
+  }
   
   @media (min-width: 768px) {
     .navbar-home .menu {
@@ -92,6 +100,13 @@
     }
     .navbar-home > .menu > a:last-of-type{
       display: none;
+    }
+    .auth-buttons .btn-entra{
+      background-color: var(--secondary) !important;
+      border-radius: 30px !important;
+      cursor: pointer;
+      border: none;
+      display: block !important;
     }
   }
   

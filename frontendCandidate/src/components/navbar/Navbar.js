@@ -6,7 +6,7 @@ import logobianco from '../../imgs/logonewsmall.png'
 const Navbar = ({user, setRegisterPopup, setLoginPopup}) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
-
+  console.log(user)
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -32,9 +32,9 @@ const Navbar = ({user, setRegisterPopup, setLoginPopup}) => {
             <img alt='logo skilltest' src={logobianco} />
           </div>
           <div className='auth-buttons'>
-            <button>{user?.name + ' ' + user.surname}</button>
+            <button className='btn-entra' onClick={() => navigate('/user/home')}>{user?.name + ' ' + user.surname}</button>
           </div>
-        </nav>      
+        </nav>
       </>
     )}
     </>

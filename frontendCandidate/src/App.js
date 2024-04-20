@@ -19,15 +19,28 @@ import AuthPopup from './pages/AuthPopup/AuthPopup';
 function App() {
   const [loginPopup, setLoginPopup] = useState(false)
   const [registerPopup, setRegisterPopup] = useState(false)
+  const [logoutPopup, setLogoutPopup] = useState(false);
   const {loading} = useSelector(state=>state.loaders)
   return (
     <>
-    {loginPopup && <AuthPopup pop={"log"} loginPopup={loginPopup} registerPopup={registerPopup} setLoginPopup={setLoginPopup} setRegisterPopup={setRegisterPopup} />}
-    {registerPopup && <AuthPopup pop={"reg"} loginPopup={loginPopup} registerPopup={registerPopup} setLoginPopup={setLoginPopup} setRegisterPopup={setRegisterPopup} />}
+    {loginPopup && <AuthPopup pop={"Accedi"} loginPopup={loginPopup} registerPopup={registerPopup} setLoginPopup={setLoginPopup} setRegisterPopup={setRegisterPopup} />}
+    {registerPopup && <AuthPopup pop={"Registrati"} loginPopup={loginPopup} registerPopup={registerPopup} setLoginPopup={setLoginPopup} setRegisterPopup={setRegisterPopup} />}
     {loading && <Loader/> }
+    {logoutPopup && 
+        <div className='popup-shadows'>
+          <div className='popup-logout'>
+            <h2>Sei sicuro di uscire?</h2>
+            <p>Potrai perderti nuovi aggiornamenti e candidati.</p>
+            <button className='primary-outlined-btn' onClick={() => setLogoutPopup(false)}>Non uscire</button>
+            <a href='/login' onClick={() => {
+                localStorage.removeItem("token")
+            }}><u>Esci</u></a>
+          </div>
+        </div>
+      }
     <Router>
       <Routes>
-        <Route path="/user/home" element={<ProtectedRoute><Home /></ProtectedRoute>}/>
+        <Route path="/user/home" element={<ProtectedRoute setLogoutPopup={setLogoutPopup}><Home /></ProtectedRoute>}/>
         <Route path="/" element={<PublicRoute setLoginPopup={setLoginPopup} setRegisterPopup={setRegisterPopup} loginPopup={loginPopup} registerPopup={registerPopup}><Home /></PublicRoute>}/>
         <Route path="/azienda/:id" element={<PublicRoute setLoginPopup={setLoginPopup} setRegisterPopup={setRegisterPopup} loginPopup={loginPopup} registerPopup={registerPopup}><Azienda setRegisterPopup={setRegisterPopup} /></PublicRoute>} />
       </Routes>

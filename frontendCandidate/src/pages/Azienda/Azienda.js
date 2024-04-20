@@ -45,6 +45,7 @@ const Azienda = ({setRegisterPopup}) => {
     const [selectedContratto, setSelectedContratto] = useState();
     const [selectedLavoro, setSelectedLavoro] = useState();
     const [companyExams, setCompanyExams] = useState([])
+    const [originalExams, setOriginalExams] = useState([])
     const [companyInfo, setCompanyInfo] = useState()
     const [drawerMobile, setDrawerMobile] = useState(false)
 
@@ -56,6 +57,7 @@ const Azienda = ({setRegisterPopup}) => {
             dispatch(HideLoading())
             if (response.success){
                 setCompanyExams(response.data)
+                setOriginalExams(response.data)
             }
         } catch (error) {
             console.error(error)
@@ -91,6 +93,17 @@ const Azienda = ({setRegisterPopup}) => {
     const isMobile = () => {
         return window.innerWidth <= 768;
       };
+      const handleSearch = () => {
+        const filteredExams = originalExams.filter(exam => {
+            const matchJob = selectedLavoro === 'Tutti' || !selectedLavoro || exam.jobTypeWork === selectedLavoro;
+            const matchContract = selectedContratto === 'Tutti' || !selectedContratto || exam.jobContract === selectedContratto;
+            const matchProvince = !selectedProvince || selectedProvince === '' || exam.jobCity === selectedProvince;
+            const matchSearchJob = !searchJob || searchJob === '' || exam.jobPosition.toLowerCase().includes(searchJob.toLowerCase());
+
+            return matchJob && matchContract && matchProvince && matchSearchJob;
+        });
+        setCompanyExams(filteredExams);
+    };
 
   return (
     <div className='azienda'>
@@ -126,7 +139,7 @@ const Azienda = ({setRegisterPopup}) => {
                     <Option key={index} value={prov}>{prov}</Option>
                     ))}
                 </Select>
-                <button className='primary-outlined-btn'>{isMobile() ? 'Cerca' :  'Cerca posizione'}</button>
+                <button onClick={handleSearch} className='primary-outlined-btn'>{isMobile() ? 'Cerca' :  'Cerca posizione'}</button>
             </div>
             <div>
                 <Select
@@ -160,7 +173,7 @@ const Azienda = ({setRegisterPopup}) => {
                 <div key={exam._id} className='single-job'>
                     <div className='single-job-top'>
                         <h2>{exam.jobPosition}</h2>
-                        <img alt='logo offerta lavorativa' src={companyInfo.profileImage} />
+                        <img alt='logo offerta lavorativa' src={companyInfo?.profileImage} />
                     </div>
                     <hr />
                     <div className='single-job-middle'>

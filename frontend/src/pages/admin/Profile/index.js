@@ -50,7 +50,7 @@ function Profile() {
           {
             headers: {
               'Content-Type': 'multipart/form-data',
-              'authorization': `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3NraWxsc3Rlc3QuaXQiLCJpYXQiOjE3MTIzMjY1NzIsIm5iZiI6MTcxMjMyNjU3MiwiZXhwIjoxNzEyOTMxMzcyLCJkYXRhIjp7InVzZXIiOnsiaWQiOiIxIn19fQ.Qe6NxaYLpWaS3FIz8pig0atocetVCTLwl7bTSOOZ83k`
+              'authorization': `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3NraWxsc3Rlc3QuaXQiLCJpYXQiOjE3MTM2MDk3OTMsIm5iZiI6MTcxMzYwOTc5MywiZXhwIjoxNzE0MjE0NTkzLCJkYXRhIjp7InVzZXIiOnsiaWQiOiIxIn19fQ.E2Y_CR0GeoElFfUMaSPfc5QQ7d6Gu8vpueSDHibX1_Q`
             },
           }
         );

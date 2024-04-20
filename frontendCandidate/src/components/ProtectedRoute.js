@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import { getTeamInfo, getUserInfo } from '../apicalls/users'
+import { getTeamInfo, getUserInfo, getUserInfoCandidate } from '../apicalls/users'
 import {message, Popover} from 'antd'
 import { useDispatch } from 'react-redux'
 import { SetUser } from '../redux/usersSlice'
@@ -11,7 +11,7 @@ import logob from '../imgs/logobianco.png'
 import { FaSearch } from 'react-icons/fa'
 import Tour from 'reactour'
 
-function ProtectedRoute({children, setLoginPopup, setTour, handleStartTour, tour, openTour, setOpenTour}) {
+function ProtectedRoute({children, setLogoutPopup, setTour, handleStartTour, tour, openTour, setOpenTour}) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const user = useSelector(state=>state.users.user)
@@ -24,23 +24,23 @@ function ProtectedRoute({children, setLoginPopup, setTour, handleStartTour, tour
   const userMenu = [
     {
       title: "Home",
-      paths: ["/","/user/write-exam/:id"],
+      paths: ["/","/user/write-exam/:id", "/user/home"],
       icon: <i className="ri-home-line"></i>,
-      onClick: () => navigate("/")
+      onClick: () => navigate("/user/home")
     },
-    {
+    /*{
       title: "Reports",
       paths: ["/user/reports"],
       icon: <i className="ri-bar-chart-line"></i>,
       onClick: ()=>navigate("/user/reports")
-    },
-    // {
-    //   title: "Profile",
-    //   paths: ["/profile"],
-    //   icon: <i className='ri-user-line'></i>,
-    //   onClick: ()=>navigate("/profile")
-    // },
-    {
+    },*/
+    /*{
+     title: "Profile",
+     paths: ["/profile"],
+     icon: <i className='ri-user-line'></i>,
+     onClick: ()=>navigate("/profile")
+    },*/
+    /*{
       title: "Logout",
       paths: ["/logout"],
       icon: <i className='ri-logout-box-line'></i>,
@@ -48,7 +48,7 @@ function ProtectedRoute({children, setLoginPopup, setTour, handleStartTour, tour
         localStorage.removeItem("token")
         navigate("/login");
       }
-    }
+    }*/
   ] 
   const steps = [
     {
@@ -239,7 +239,7 @@ function ProtectedRoute({children, setLoginPopup, setTour, handleStartTour, tour
     try{
       dispatch(ShowLoading())
       const token = localStorage.getItem('token');
-      let response = await getUserInfo();
+      let response = await getUserInfoCandidate();
       dispatch(HideLoading())
       if(response.success){
         message.success(response.message)
@@ -252,7 +252,7 @@ function ProtectedRoute({children, setLoginPopup, setTour, handleStartTour, tour
           }
         }
         else{
-              setMenu(userMenu)
+            setMenu(userMenu)
         }
       }
       else{
@@ -269,6 +269,8 @@ function ProtectedRoute({children, setLoginPopup, setTour, handleStartTour, tour
     if(localStorage.getItem('token')){
         if(!user){
             getUserData();
+        } else {
+          setMenu(userMenu)
         }
     }
     else{
@@ -358,7 +360,7 @@ const handleSearch = (event) => {
                 </div>
               )
             })}
-            <div onClick={() => setLoginPopup(true)} className='menu-item-bottom'>
+            <div onClick={() => setLogoutPopup(true)} className='menu-item-bottom'>
               <i className='ri-logout-box-line'></i> <span className={!collapsed ? '' : 'hide-menu-title'}>Logout</span>
             </div>
          </div>
@@ -380,7 +382,7 @@ const handleSearch = (event) => {
               <div style={{cursor: 'pointer', fontSize: '14px'}} onClick={handleStartTour}>
                 <u className='how-work'>Come funziona?</u><p className='how-work-mobile'>?</p>
               </div>
-              <div onClick={() => navigate('/admin/profile')} style={{cursor: 'pointer', ontSize: '14px'}} className='flex justify-center items-center gap-1 profile-header-mobile'>
+              <div onClick={() => navigate('/user/home')} style={{cursor: 'pointer', ontSize: '14px'}} className='flex justify-center items-center gap-1 profile-header-mobile'>
               {user?.profileImage
                  ? (
                 <img src={user?.profileImage} className='profile-header' alt="Profile" />

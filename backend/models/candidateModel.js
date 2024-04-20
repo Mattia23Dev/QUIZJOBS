@@ -31,7 +31,6 @@ const candidateSchema = new mongoose.Schema({
     },
     cv: {
         type: String,
-        required: true
     },
     coverLetter: {
         type: String,
@@ -95,7 +94,19 @@ const candidateSchema = new mongoose.Schema({
     },
     trackLead: {
         type: String,
-    }
+    },
+    cvText: {
+        type: String,
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    isAdmin: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
 }, {
     timestamps: true
 });

@@ -20,6 +20,16 @@ export const loginUser = async(payload) => {
     }
 }
 
+export const loginCandidate = async(payload) => {
+  try{
+    const response = await axiosInstance.post('/api/candidate/loginCandidate',payload);
+    return response.data
+  }
+  catch(error){
+    return error.response.data
+  }
+}
+
 export const googleLogin = async(payload) => {
   try {
     const response = await axiosInstance.post('/api/users/google-login',payload);
@@ -29,9 +39,19 @@ export const googleLogin = async(payload) => {
   }
 }
 
+export const getUserInfoCandidate = async() => {
+  try{
+    const response = await axiosInstance.post('/api/candidate/get-user-info-candidate')
+    return response.data
+  }
+  catch(error){
+    return error.response.data
+  }
+}
+
 export const getUserInfo = async() => {
   try{
-    const response = await axiosInstance.post('/api/users/get-user-info')
+    const response = await axiosInstance.post('/api/candidate/get-user-info')
     return response.data
   }
   catch(error){
@@ -62,6 +82,20 @@ export const sendHelpEmail = async(payload) => {
 export const updateUserData = async(payload,id) => {
   try{
       const response = await axiosInstance.post(`/api/users/update/${id}`,payload)
+      return response.data
+  }
+  catch(error){
+      return error.response.data
+  }
+}
+
+export const registerCandidate = async(payload) => {
+  try{
+      const response = await axiosInstance.post(`/api/candidate/registerCandidate`,payload, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
       return response.data
   }
   catch(error){

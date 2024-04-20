@@ -1,0 +1,35 @@
+.form-group{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.form-group > div {
+    width: 48%;
+}
+.auth-reg{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+.choose-auth-type{
+    margin: 0px 0 20px 0;
+    display: flex;
+    justify-content: center;
+}
+@media screen and (max-width: 650px){
+    .upload-mobile{
+        width: 100%;
+    }
+    .upload-mobile .cv-upload {
+        width: 100% !important;
+    }
+    .form2{
+        flex-direction: column !important;
+    }
+    .form2 .ant-form-item,
+    .form2 .password-cont,
+    .form2 .ant-row {
+        width: 100% !important;
+    }
+}

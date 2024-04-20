@@ -12,7 +12,7 @@ const axiosInstance = axios.create({
 const fetchJWTToken = async () => {
     const credentials = {
       username: 'user03170545353762',
-      password: 'MAD7389gva@@@'
+      password: 'SKILLTEST@@@'
     };
   
     try {

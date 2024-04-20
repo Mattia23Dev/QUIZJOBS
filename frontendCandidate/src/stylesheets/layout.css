@@ -258,7 +258,7 @@
   align-items: center;
 }
 .modal-header > img {
-  width: 15%;
+  width: 12%;
 }
 @media screen and (max-width: 1400px){
   .page-title{
@@ -379,6 +379,6 @@
     font-weight: 600;
   }
   .modal-header > img {
-    width: 50% !important;
+    width: 25% !important;
 }
 }
