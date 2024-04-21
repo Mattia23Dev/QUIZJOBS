@@ -5,6 +5,7 @@ import { useCookies } from 'react-cookie';
 import arrowRight from '../../../imgs/arrowright.png'
 import pdfToText from 'react-pdftotext'
 import axios from 'axios';
+import {useDispatch} from 'react-redux'
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
 
 const FAQList = () => {
@@ -43,6 +44,7 @@ const FAQList = () => {
 function Instructions(props) {
   const {examData,setExamData, view, setView, startTimer, setUser, trackLink} = props
   const navigate = useNavigate();
+  const dispatch = useDispatch()
   const [selectedFile, setSelectedFile] = useState(null);
   const [cookies, setCookie] = useCookies(['userData']);
   const [formData, setFormData] = useState({

@@ -257,7 +257,7 @@ const getCandidateInfo = async (req, res) => {
     }
   };
 
-  const extractPdfAi = async (text) => {
+  const extractPdfAi = async (text, candidateId, testId, trackLink) => {
     try {
           const prompt = `
           Estrai informazioni importanti dal testo fornito seguendo questa scaletta:
@@ -265,7 +265,6 @@ const getCandidateInfo = async (req, res) => {
           2. Educazione o istruzione, inserendo luogo di formazione, possibili voti (se forniti) e titoli di studio:
           3. Esperienze lavorative precedenti (solo esperienza, azienda in cui ha lavorato, anni da e quando, ruolo lavorativo);
         `;
-          const exampleFormat = JSON.stringify(text);
           const requestData = {
              max_tokens: 1400, 
              n: 1,
@@ -297,10 +296,22 @@ const getCandidateInfo = async (req, res) => {
            console.log('Education:', education);
            console.log('Work Experience:', workExperience);
 
-           return { skills, education, workExperience };
+           await examModel.findByIdAndUpdate(testId, {
+            $push: {
+              candidates: {
+                candidate: candidateId,
+                trackLink: trackLink,
+                skills: skills,
+                education: education,
+                workExperience: workExperience
+              }
+            }
+          });
+          console.log('PDF data processed and saved successfully');
+           //return { skills, education, workExperience };
 
     } catch (error) {
-        console.error(error)
+        console.error('Error processing PDF data:', error);
     }
 }
 
@@ -311,8 +322,8 @@ const addCandidate = async(req, res) => {
         const cv = req.file.path; 
 
         const candidate = await candidateModel.findOne({ email });
-        const {skills, education, workExperience} = await extractPdfAi(pdfText);
-
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash('123456',salt)
         if (!candidate) {
             const newCandidate = new candidateModel({
                 name,
@@ -323,9 +334,12 @@ const addCandidate = async(req, res) => {
                 cv,
                 coverLetter,
                 degree,
+                cvText: pdfText,
                 cvUrl : url,
                 tests: [{ testId, testName }],
                 trackLead: "test",
+                password: hashedPassword,
+                isAdmin: false,
             });
 
             await newCandidate.save();
@@ -335,21 +349,11 @@ const addCandidate = async(req, res) => {
               { cv: cvFileName },
               { new: true }
             );
-            await examModel.findByIdAndUpdate(testId, {
-              $push: {
-                candidates: {
-                  candidate: newCandidate._id,
-                  trackLink: trackLink,
-                  skills: skills,
-                  education: education,
-                  workExperience: workExperience
-                }
-              }
-            });
             const uploadFolderPath = path.resolve(__dirname, '..', 'uploads');
             const destinationPath = path.join(uploadFolderPath, cvFileName);
             fs.renameSync(cv, destinationPath);
             res.status(201).json({ message: 'Candidate added successfully', success: true, candidate: updatedCandidate });
+            extractPdfAi(pdfText, newCandidate._id, testId, trackLink);
         } else {
             const existingTest = candidate.tests.find(test => test.testId.toString() === testId);
             if (!existingTest) {
@@ -357,24 +361,21 @@ const addCandidate = async(req, res) => {
                     { email },
                     { $push: { tests: { testId, testName } } }
                 );
-                await examModel.findByIdAndUpdate(testId, {
-                  $push: {
-                    candidates: {
-                      candidate: candidate._id,
-                      trackLink: trackLink,
-                      skills: skills,
-                      education: education,
-                      workExperience: workExperience
-                    }
-                  }
-                });
             }
-            const updatedCandidate = await candidateModel.findOneAndUpdate(
-                { email },
-                { $pull: { tests: { testId: { $ne: testId } } } }, // Rimuovi tutti i test che non corrispondono all'ID desiderato
-                { new: true } // Restituisci il nuovo documento aggiornato
-            );
-            res.status(201).json({ message: 'Candidate added successfully', success: true, candidate: updatedCandidate });
+            const updatedCandidate = await candidateModel.findOne({ email });
+            const specificTest = updatedCandidate.tests.find(test => test.testId.toString() === testId);
+
+            res.status(201).json({
+                message: 'Candidate retrieved successfully',
+                success: true,
+                candidate: {
+                    ...updatedCandidate.toObject(),
+                    tests: specificTest ? [specificTest] : []
+                }
+            });
+            if (!existingTest){
+              extractPdfAi(pdfText, candidate._id, testId, trackLink);
+            }
         }
     } catch (error) {
         console.error(error);

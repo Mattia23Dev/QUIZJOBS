@@ -190,6 +190,7 @@ const AuthPopup = ({loginPopup, registerPopup, setRegisterPopup, setLoginPopup, 
             <Segmented
               className='segmented'
               options={['Registrati', 'Accedi']}
+              value={popType}
               onChange={(value) => {
                 setPopType(value)
               }}
