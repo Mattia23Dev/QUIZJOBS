@@ -131,6 +131,7 @@ const AuthPopup = ({loginPopup, registerPopup, setRegisterPopup, setLoginPopup, 
       try {
         const url = await uploadFileToWordPress(selectedFile)
         formDataToSend.append('url', url);
+        formDataToSend.append('pdfText', pdfText);
         const response = await registerCandidate(formDataToSend);
         console.log(response)
         if (response.success){

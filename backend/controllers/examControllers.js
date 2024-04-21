@@ -544,13 +544,18 @@ const saveTestProgress = async (req, res) => {
 
     await candidate.save();
 
-    const updatedCandidate = await candidateModel.findOneAndUpdate(
-      { email },
-      { $pull: { tests: { testId: { $ne: testId } } } },
-      { new: true } 
-  );
+    const updatedCandidate = await candidateModel.findOne({ email });
+    const specificTest = updatedCandidate.tests.find(test => test.testId.toString() === testId);
 
-    res.status(200).json({ message: 'Test progress saved successfully', success: true, candidate: updatedCandidate });
+    res.status(201).json({
+        message: 'Candidate retrieved successfully',
+        success: true,
+        candidate: {
+            ...updatedCandidate.toObject(),
+            tests: specificTest ? [specificTest] : []
+        }
+    });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message, success: false });

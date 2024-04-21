@@ -8,6 +8,7 @@ module.exports = function(req,res,next) {
        next();
     }
     catch(error){
+      console.log(error)
       res.send({
         message: error.message,
         data: error,

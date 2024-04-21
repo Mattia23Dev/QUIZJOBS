@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux';
 import { Modal } from 'antd';
 import { useState } from 'react';
 import AuthPopup from './pages/AuthPopup/AuthPopup';
+import WriteExam from './pages/WriteExam';
 
 function App() {
   const [loginPopup, setLoginPopup] = useState(false)
@@ -43,6 +44,7 @@ function App() {
         <Route path="/user/home" element={<ProtectedRoute setLogoutPopup={setLogoutPopup}><Home /></ProtectedRoute>}/>
         <Route path="/" element={<PublicRoute setLoginPopup={setLoginPopup} setRegisterPopup={setRegisterPopup} loginPopup={loginPopup} registerPopup={registerPopup}><Home /></PublicRoute>}/>
         <Route path="/azienda/:id" element={<PublicRoute setLoginPopup={setLoginPopup} setRegisterPopup={setRegisterPopup} loginPopup={loginPopup} registerPopup={registerPopup}><Azienda setRegisterPopup={setRegisterPopup} /></PublicRoute>} />
+        <Route path="/test/:jobPositionSlug/:uniqueId" element={<PublicRoute><WriteExam /></PublicRoute>} />
       </Routes>
     </Router>
     </>

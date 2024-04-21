@@ -1,0 +1,22 @@
+.home-in{
+    min-height: 89vh;
+}
+.punteggio-column-green{
+    background-color: #4ba66553;
+    color: #4BA665;
+    padding: 8px 30px;
+    border-radius: 5px;
+    border: 1px solid #4BA665;
+  }
+  .punteggio-column-red{
+    background-color: #f9595946;
+    color: #F95959;
+    padding: 8px 30px;
+    border-radius: 5px;
+    border: 1px solid #F95959;
+  }
+@media screen and (max-width: 1000px){
+    .ant-table{
+        overflow-x: auto;
+      }
+}

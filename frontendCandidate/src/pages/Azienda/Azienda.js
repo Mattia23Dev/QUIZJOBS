@@ -6,11 +6,12 @@ import { HideLoading, ShowLoading } from '../../redux/loaderSlice'
 import { useParams } from 'react-router-dom';
 import time from '../../imgs/time.png'
 import { useDispatch, useSelector } from 'react-redux'
-import { getExamActiveByUser } from '../../apicalls/exams'
+import { addCandidateToTest, getExamActiveByUser } from '../../apicalls/exams'
 import { getUserInfoById } from '../../apicalls/users'
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import moment from 'moment'
 import 'moment/locale/it'
+import { useNavigate } from 'react-router-dom'
 moment.locale('it');
 const {Option} = Select
 
@@ -39,6 +40,7 @@ const provinceItaliane = [
 const Azienda = ({setRegisterPopup}) => {
     let { id } = useParams();
     const dispatch = useDispatch() 
+    const navigate = useNavigate()
     const user = useSelector(state=>state.users.user)
     const [searchJob, setSearchJob] = useState('')
     const [selectedProvince, setSelectedProvince] = useState();
@@ -83,9 +85,24 @@ const Azienda = ({setRegisterPopup}) => {
         getUserInfo()
     }, [])
 
-    const handleStartTest = (exam) => {
+    function toSnakeCase(str) {
+        return str.toLowerCase().replace(/\s+/g, '_');
+    }
+
+    const handleStartTest = async (exam) => {
+        dispatch(ShowLoading())
+        const jobPos = toSnakeCase(exam?.jobPosition);
         try {
-            console.log(exam)
+            const payload = {
+                testId: exam._id,
+                candidateId: user._id,
+                email: user.email,
+            }
+            const response = await addCandidateToTest(payload)
+            console.log(response)
+            if (response.success){
+               navigate('/test/'+jobPos+'/'+exam._id)
+            }
         } catch (error) {
             console.error(error)
         }
@@ -168,6 +185,7 @@ const Azienda = ({setRegisterPopup}) => {
               {companyExams && companyExams.length > 0 && companyExams.map((exam) => {
                 const date = moment(exam.createdAt);
                 const timeAgo = date.fromNow()
+                const hasTest = user && user.tests.some(test => test.testId === exam._id);
 
                 return(
                 <div key={exam._id} className='single-job'>
@@ -187,7 +205,15 @@ const Azienda = ({setRegisterPopup}) => {
                                 <span>{exam.jobCity}</span>
                                 <span>{exam.jobTypeWork}</span>
                             </div>
-                            <button onClick={user ? () => handleStartTest(exam) : () => setRegisterPopup(true)} className='primary-outlined-btn'>Fai il test</button>
+                            {hasTest ? (
+                                <button onClick={null} className='primary-outlined-btn'>
+                                    Test già fatto
+                                </button>
+                            ) : (
+                                <button onClick={user ? () => handleStartTest(exam) : () => setRegisterPopup(true)} className='primary-outlined-btn'>
+                                    Fai il test
+                                </button>
+                            )}
                         </div>
                     </div>
                     <hr />

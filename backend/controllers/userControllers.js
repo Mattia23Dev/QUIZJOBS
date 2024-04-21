@@ -185,6 +185,18 @@ const getCandidateInfo = async (req, res) => {
         match: { testId: examId },
         populate: { path: 'report' }
       });
+      console.log(user)
+      const specificTest = user.tests.find(test => test.testId.toString() === examId);
+      const test = await examModel.findById(examId)
+
+      res.status(201).json({
+          message: 'Candidate retrieved successfully',
+          success: true,
+          data: {
+              ...user.toObject(),
+              tests: specificTest ? [specificTest] : []
+          }
+      });
   
       if (!user) {
         return res.status(404).send({
@@ -194,11 +206,6 @@ const getCandidateInfo = async (req, res) => {
         });
       }
   
-      return res.status(200).send({
-        message: "User info fetched successfully",
-        data: user,
-        success: true
-      });
     } catch (error) {
       return res.status(500).send({
         message: error.message,
@@ -359,9 +366,11 @@ const addCandidate = async(req, res) => {
             if (!existingTest) {
                 await candidateModel.findOneAndUpdate(
                     { email },
-                    { $push: { tests: { testId, testName } } }
+                    { $push: { tests: { testId, testName } } },
                 );
             }
+            candidate.cvText = pdfText;
+            await candidate.save();
             const updatedCandidate = await candidateModel.findOne({ email });
             const specificTest = updatedCandidate.tests.find(test => test.testId.toString() === testId);
 

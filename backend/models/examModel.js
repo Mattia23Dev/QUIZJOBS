@@ -83,6 +83,9 @@ const examSchema = new mongoose.Schema({
             type: Date,
             default: new Date()
         },
+        summary: {
+            type: String,
+        },
     }],
     examLink: {
         type: String,

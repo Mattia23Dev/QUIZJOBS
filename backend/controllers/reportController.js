@@ -14,7 +14,7 @@ const client = new openai.OpenAI({
   });
 const reportOpenaiManual = async (req,res) => {
     try {
-        const {email, exam, questions, answers} = req.body;
+        const {email, exam, questions, answers, user} = req.body;
           const prompt = `Immagina di essere uno specialista ed esperto nella psicologia e nella gestione delle risorse umane e devi dare una valutazione oggettiva del candidato, facendo un riassunto generale delle risposte date. Le risposte lunghe sono di domande aperte, mentre quelle più corte,
           sono di domande chiuse, questo è un test non focalizzato sulle competenze tecniche, quindi analizza semplicemente in base alle domande fornite l'attitudine del candidato oppure lo screening lavorativo. Ti fornirò un oggetto o array con le domande e lo stesso oggetto con le risposte, analizza le risposte, facendo un riassunto BREVE del candidato di massimo 5 righe. Inserisci nell'analisi tutto ciò che può essere utile ad un'azienda 
           o ad un recruiter sapere di quel candidato.
@@ -42,6 +42,13 @@ const reportOpenaiManual = async (req,res) => {
             { $set: { "tests.$[elem].summary": response } },
             { arrayFilters: [{ "elem.testId": exam }] }
         );
+        const examModified = await Exam.findOneAndUpdate(
+            { _id: exam },
+            { $set: { "candidates.$[elem].summary": response } },
+            {
+                arrayFilters: [{ "elem.candidateId": user }],
+            }
+        );
 
         res.send({
             message: "Cannot Fetch All Attempts.",
@@ -60,7 +67,7 @@ const reportOpenaiManual = async (req,res) => {
 }
 const reportOpenai = async (req,res) => {
     try {
-        const {email, exam, questions, answers} = req.body;
+        const {email, exam, questions, answers, user} = req.body;
         const examObj = await examModel.findById(exam)
           const prompt = `Immagina di essere uno specialista ed esperto nella psicologia e nella gestione delle risorse umane e devi dare una valutazione oggettiva del candidato, facendo un riassunto generale delle risposte date. Le risposte di questo test sono tutte domanda chiuse,
           focalizzate sulle competenze tecniche, per tesatare queste competenze ${examObj?.skills?.join(', ')} per la posizione lavorativa ${examObj.jobPosition}. Ti fornirò un oggetto o array con le domande e lo stesso oggetto con le risposte, analizza le risposte, facendo un riassunto BREVE del candidato di massimo 5 righe. Inserisci nell'analisi tutto ciò che può essere utile ad un'azienda 
@@ -88,6 +95,13 @@ const reportOpenai = async (req,res) => {
             { email: email },
             { $set: { "tests.$[elem].summary": response } },
             { arrayFilters: [{ "elem.testId": exam }] }
+        );
+        const examModified = await Exam.findOneAndUpdate(
+            { _id: exam },
+            { $set: { "candidates.$[elem].summary": response } },
+            {
+                arrayFilters: [{ "elem.candidateId": user }],
+            }
         );
 
         res.send({

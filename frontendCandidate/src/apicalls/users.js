@@ -102,3 +102,13 @@ export const registerCandidate = async(payload) => {
       return error.response.data
   }
 }
+
+export const getCandidateTest = async(payload) => {
+  try{
+    const response = await axiosInstance.post('/api/candidate/getCandidateTestPopulate', payload)
+    return response.data
+  }
+  catch(error){
+    return error.response.data
+  }
+}
