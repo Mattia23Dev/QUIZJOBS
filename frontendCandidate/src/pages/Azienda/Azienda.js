@@ -140,7 +140,7 @@ const Azienda = ({setRegisterPopup}) => {
            <div className='top-azienda-content'>
             <div>
                 {!isMobile() && <FaSearch className='icon-search' size={32} />}
-                <input className='input-search' type='text' value={searchJob} onChange={(e) => setSearchJob(e.target.value)}  />
+                <input placeholder='Cerca' className='input-search' type='text' value={searchJob} onChange={(e) => setSearchJob(e.target.value)}  />
                 <Select
                     showSearch
                     style={{ width: 200 }}

@@ -356,7 +356,7 @@ const AuthPopup = ({loginPopup, registerPopup, setRegisterPopup, setLoginPopup, 
                   </Form.Item>
                   <Form.Item name='privacyPolicy' valuePropName="checked" className="terms-checkbox">
                     <Checkbox required>
-                      Privacy policy
+                      Accetto la <a href='/privacy' target='__blank'>Privacy policy</a>
                     </Checkbox>
                   </Form.Item>
               </Form>

@@ -128,6 +128,7 @@ const getUserInfoCandidate = async(req,res) => {
            data: user,
            success: true
        })
+       return
      }
      else{
        res.status(200).send({
@@ -153,6 +154,7 @@ const loginCandidate = async(req,res) => {
         message: "L'email non esiste",
         success: false
     })
+    return
     }
        const passwordsMatched = await bcrypt.compare(req.body.password,user.password)
        if(passwordsMatched){

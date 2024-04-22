@@ -16,6 +16,7 @@ import { Modal } from 'antd';
 import { useState } from 'react';
 import AuthPopup from './pages/AuthPopup/AuthPopup';
 import WriteExam from './pages/WriteExam';
+import Privacy from './pages/Privacy';
 
 function App() {
   const [loginPopup, setLoginPopup] = useState(false)
@@ -33,7 +34,7 @@ function App() {
             <h2>Sei sicuro di uscire?</h2>
             <p>Potrai perderti nuovi aggiornamenti e candidati.</p>
             <button className='primary-outlined-btn' onClick={() => setLogoutPopup(false)}>Non uscire</button>
-            <a href='/login' onClick={() => {
+            <a href='/azienda/65e600b01721f1ee1a651351' onClick={() => {
                 localStorage.removeItem("token")
             }}><u>Esci</u></a>
           </div>
@@ -45,6 +46,7 @@ function App() {
         <Route path="/" element={<PublicRoute setLoginPopup={setLoginPopup} setRegisterPopup={setRegisterPopup} loginPopup={loginPopup} registerPopup={registerPopup}><Home /></PublicRoute>}/>
         <Route path="/azienda/:id" element={<PublicRoute setLoginPopup={setLoginPopup} setRegisterPopup={setRegisterPopup} loginPopup={loginPopup} registerPopup={registerPopup}><Azienda setRegisterPopup={setRegisterPopup} /></PublicRoute>} />
         <Route path="/test/:jobPositionSlug/:uniqueId" element={<PublicRoute><WriteExam /></PublicRoute>} />
+        <Route path="/privacy" element={<PublicRoute setLoginPopup={setLoginPopup} setRegisterPopup={setRegisterPopup} loginPopup={loginPopup} registerPopup={registerPopup}><Privacy /></PublicRoute>}/>
       </Routes>
     </Router>
     </>
