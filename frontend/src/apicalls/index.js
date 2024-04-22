@@ -2,8 +2,8 @@ import axios from 'axios'
 //WORDPRESS TOKEN   SKILLTEST2024
 
 const axiosInstance = axios.create({
-    //baseURL: 'http://localhost:5000',
-    baseURL: 'https://quizjobs-production.up.railway.app',
+    baseURL: 'http://localhost:5000',
+    //baseURL: 'https://quizjobs-production.up.railway.app',
     headers: {
        'authorization': `Bearer ${localStorage.getItem('token')}`
     }

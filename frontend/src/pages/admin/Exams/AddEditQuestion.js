@@ -19,9 +19,9 @@ function AddEditQuestion(props) {
       if (creato){
         const requiredPayload1 = {
           question: domandaVisual.domanda,
-          correctOption: selectedQuestion.rispostaCorretta.lettera === "A)" ? 'A) '+domandaVisual.opzioni["A)"] :
-            selectedQuestion.rispostaCorretta.lettera === "B)" ? 'B) '+domandaVisual.opzioni["B)"] : 
-            selectedQuestion.rispostaCorretta.lettera === "C)" ? 'C) '+domandaVisual.opzioni["C)"] :
+          correctOption: selectedQuestion.rispostaCorretta?.lettera?.trim() === "A)" ? 'A) '+domandaVisual.opzioni["A)"] :
+            selectedQuestion.rispostaCorretta?.lettera?.trim() === "B)" ? 'B) '+domandaVisual.opzioni["B)"] : 
+            selectedQuestion.rispostaCorretta?.lettera?.trim() === "C)" ? 'C) '+domandaVisual.opzioni["C)"] :
             'D) '+domandaVisual.opzioni["D)"],
           options: {
             'A)': domandaVisual.opzioni["A)"],
@@ -37,9 +37,9 @@ function AddEditQuestion(props) {
           domanda: domandaVisual.domanda,
           rispostaCorretta: {
             lettera: selectedQuestion.rispostaCorretta.lettera,
-            risposta: selectedQuestion.rispostaCorretta.lettera === "A)" ? domandaVisual.opzioni["A)"] :
-            selectedQuestion.rispostaCorretta.lettera === "B)" ? domandaVisual.opzioni["B)"] : 
-            selectedQuestion.rispostaCorretta.lettera === "C)" ? domandaVisual.opzioni["C)"] :
+            risposta: selectedQuestion.rispostaCorretta?.lettera?.trim() === "A)" ? domandaVisual.opzioni["A)"] :
+            selectedQuestion.rispostaCorretta?.lettera?.trim() === "B)" ? domandaVisual.opzioni["B)"] : 
+            selectedQuestion.rispostaCorretta?.lettera?.trim() === "C)" ? domandaVisual.opzioni["C)"] :
             domandaVisual.opzioni["D)"]
           },
           opzioni: {
@@ -108,7 +108,7 @@ function AddEditQuestion(props) {
     message.error(error.message)
    }
   }
-
+console.log(selectedQuestion)
   const handleChange = (e, name) => {
     const { value } = e.target;
 

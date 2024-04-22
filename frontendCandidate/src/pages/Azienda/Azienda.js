@@ -196,8 +196,8 @@ const Azienda = ({setRegisterPopup}) => {
                     <hr />
                     <div className='single-job-middle'>
                         <div>
-                            <h4>Descrizione lavoro</h4>
-                            <p>{exam.jobDescription}</p>
+                            <h4>Descrizione offerta</h4>
+                            <p dangerouslySetInnerHTML={{ __html: exam.jobDescription }} />
                         </div>
                         <div>
                             <div>

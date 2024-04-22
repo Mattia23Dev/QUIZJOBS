@@ -79,7 +79,18 @@ const Home = () => {
   return (
     <div className='home-in'>
       <h1>Test svolti</h1>
-      <Table dataSource={tests} columns={columns} rowKey={record => record._id} />
+      <Table dataSource={tests} columns={columns} rowKey={record => record._id}
+            expandable={{
+              expandedRowRender: (record) => (
+                <p
+                  style={{
+                    margin: 0,
+                  }}
+                  dangerouslySetInnerHTML={{ __html: record?.testId?.jobDescription ? record.testId.jobDescription : 'Nessuna descrizione' }}
+                />
+              ),
+              rowExpandable: (record) => record?.testName !== 'Not Expandable',
+            }}/>
     </div>
   )
 }

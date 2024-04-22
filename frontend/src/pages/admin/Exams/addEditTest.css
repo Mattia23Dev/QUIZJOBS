@@ -193,6 +193,9 @@
     color: white;
     cursor: pointer;
   }
+ .ck-powered-by{
+  display: none !important;
+ }
   .create-exam-top2{
     display: flex;
     justify-content: center;
@@ -730,9 +733,11 @@
     .create-exam-top{
       width: 100%;
       margin-top: 3rem;
+      gap: 20px;
     }
     .create-exam-top > hr {
-      width: 50px;
+      width: 20px;
+      display: none;
     }
     .domande-container {
       display: flex;
@@ -803,6 +808,9 @@
     }
     .create-exam-form button{
       width: 50%;
+    }
+    .create-exam-form .ant-select{
+      width: 100% !important;
     }
     .domande-container-save > button{
       padding: 6px 15px;

@@ -21,6 +21,6 @@ router.post('/registerCandidate', upload.any(), registerCandidate)
 router.post('/loginCandidate', loginCandidate)
 router.post('/get-user-info-candidate',authMiddleware,getUserInfoCandidate)
 router.post('/addCandidateToTest',addCandidateToTest);
-router.post('/getCandidateTestPopulate',authMiddleware,getCandidateWithPopulatedTests);
+router.post('/getCandidateTestPopulate',getCandidateWithPopulatedTests);
 
 module.exports = router;

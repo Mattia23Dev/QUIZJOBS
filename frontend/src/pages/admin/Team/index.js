@@ -242,7 +242,7 @@ const Team = ({openTour, setOpenTour, tour}) => {
             <PageTitle title={"Team"} />
             <img alt='team avatar skilltest' src={team} />
           </div>
-          <button className='primary-outlined-btn elemento3' onClick={addTeam}>Invita membro per email</button>
+          {!isMobile() ?<button className='primary-outlined-btn elemento3' onClick={addTeam}>Invita membro per email</button> : <button className='primary-outlined-btn elemento3' onClick={addTeam}>Invita</button>}
         </div>
         <div className='team-bottom'>
           <div className='left-team elemento1'>

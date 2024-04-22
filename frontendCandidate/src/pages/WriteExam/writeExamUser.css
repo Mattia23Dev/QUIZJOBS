@@ -154,7 +154,21 @@
   width: 100%;
   min-height: 200px;
 }
-
+.exam-user-container{
+  overflow-y: scroll !important;
+  height: 100vh;
+  padding: 0 0 100px 0;
+}
+.exam-user-container::-webkit-scrollbar{
+  width: 10px;
+}
+.exam-user-container::-webkit-scrollbar-track{
+  background-color: #e0e0e0;
+}
+.exam-user-container::-webkit-scrollbar-thumb {
+  background-color: var(--primary);
+  border-radius: 10px;
+}
 @media screen and (max-width: 700px){
   .exam-user-container{
     overflow-y: scroll !important;

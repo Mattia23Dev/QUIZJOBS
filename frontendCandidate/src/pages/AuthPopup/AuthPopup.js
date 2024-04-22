@@ -140,6 +140,7 @@ const AuthPopup = ({loginPopup, registerPopup, setRegisterPopup, setLoginPopup, 
           message.success("Benvenuto!");
           setLoginPopup(false)
           setRegisterPopup(false)
+          window.location.reload()
         }
         dispatch(HideLoading())
       } catch (error) {
@@ -161,6 +162,7 @@ const AuthPopup = ({loginPopup, registerPopup, setRegisterPopup, setLoginPopup, 
           dispatch(SetUser(response.data.user))
           setLoginPopup(false)
           setRegisterPopup(false)
+          window.location.reload()
         }
         else{
           message.error(response.message)

@@ -27,6 +27,8 @@ import InfoCandidate from './InfoCandidate';
 import moment from 'moment';
 import './infoExam.css'
 import Tour from 'reactour';
+import {CKEditor} from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import DragAndDrop from '../../../components/dragAndDrop/DragAndDrop';
 const {Option} = Select
 
@@ -744,7 +746,7 @@ const rowSelection = {
           <button onClick={() => setShowTrackLink(true)} className='copy-link-active elemento1'><img src={track} alt='track link skilltest' />Track link</button> :
           <button onClick={() => setShowTrackLink(true)} className='copy-link-active elemento1'><img src={track} alt='track link skilltest' />Track link</button>}
       </div>
-      <div className='choose-visualize'>
+      {activeTab === 1 && <div className='choose-visualize'>
         <Segmented
            options={[
             { label: <UnorderedListOutlined style={{ fontSize: '18px'}} />, value: 'list' },
@@ -791,8 +793,8 @@ const rowSelection = {
           >
             <button className='primary-outlined-btn'>Filtra <img alt='filter skilltest' src={filter} /></button>
         </Popover>
-      </div>
-      <div className='create-exam-top'>
+      </div>}
+      <div className='create-exam-top cet-exam'>
             <div onClick={() => setActiveTab(1)} className={activeTab === 1 ? 'active' : 'elemento2'}>
               <span></span>
               <p>Candidati</p>
@@ -815,7 +817,21 @@ const rowSelection = {
             {visual === "list" ? 
             <Table
             rowSelection={rowSelection}
-            columns={candidateColumns} dataSource={candidates} rowKey={(record) => record._id} className="mt-1">
+            columns={candidateColumns} dataSource={candidates} rowKey={(record) => record._id} 
+            className="mt-1"
+            expandable={{
+              expandedRowRender: (record) => (
+                <p
+                  style={{
+                    margin: 0,
+                    textAlign: 'left'
+                  }}
+                >
+                  {record?.candidate?.coverLetter ? record.candidate.coverLetter : 'Nessuna lettera di presentazione'}
+                </p>
+              ),
+              rowExpandable: (record) => record?.name !== 'Not Expandable',
+            }}>
 
             </Table> : 
             <DragAndDrop
@@ -905,6 +921,7 @@ const rowSelection = {
         />}
         {showDettagliTest &&
         <Modal
+        width={isMobile() ? '100%':'55%'}
         title={"Dettagli Test"} 
          open={showDettagliTest}
          footer={false} onCancel={()=>{
@@ -941,14 +958,49 @@ const rowSelection = {
                      <h4>{examData?.skills.map(skill => skill.charAt(0).toUpperCase() + skill.slice(1)).join(', ')}</h4>
                   </div>
                </div>
-               <div className='dettagli-test-modal'>  
-                  <div>
-                     <h4>Descrizione</h4>
-                     <h4>{examData?.description ? examData.description : ""}</h4>
-                  </div>
+               <div className='dettagli-test-modal'>
                   <div>
                      <h4>Tipologia Test</h4>
                      <h4>{examData?.tag === "manual" ? "Manuale" : examData?.tag === "ai" ? "SkillTest Ai" : ""}</h4>
+                  </div>
+                  <div>
+                     <h4>Tipo di contratto</h4>
+                     <h4>{examData?.jobContract ? examData?.jobContract : ''}</h4>
+                  </div>
+               </div>
+               <div className='dettagli-test-modal'>
+                  <div>
+                     <h4>Città</h4>
+                     <h4>{examData?.jobCity ? examData?.jobCity : ''}</h4>
+                  </div>
+                  <div>
+                     <h4>Tipo di contratto</h4>
+                     <h4>{examData?.jobTypeWork ? examData?.jobTypeWork : ''}</h4>
+                  </div>
+               </div>
+               <div className='dettagli-test-modal dtm-desc'>  
+                  <div>
+                     <h4>Descrizione Offerta</h4>
+                     <h4><CKEditor
+                          editor={ClassicEditor}
+                          data={examData?.jobDescription ? examData.jobDescription : ''}
+                          onChange={(event, editor) => {
+                              const data = editor.getData();
+                              setConfig(prevConfig => ({ ...prevConfig, jobDescription: data }))
+                          }}
+                          onReady={editor => {
+                            const editable = editor.editing.view.document.getRoot();
+                            editor.editing.view.change(writer => {
+                                writer.setStyle('height', '300px', editable);
+                            });
+                        }}
+                      /></h4>
+                  </div>
+               </div>
+               <div className='dettagli-test-modal dtm-desc'>  
+                  <div>
+                     <h4>Descrizione Test</h4>
+                     <h4>{examData?.description ? examData.description : ""}</h4>
                   </div>
                </div>
             </div>   

@@ -26,6 +26,8 @@ import cancel from '../../../imgs/cancel.png'
 import track from '../../../imgs/track.png'
 import { useLocation } from 'react-router-dom';
 import Tour from 'reactour'
+import {CKEditor} from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 const { Option } = Select;
 
 const provinceItaliane = [
@@ -648,7 +650,6 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
         setPassaOltre(1)
         setActiveTab(1)
       }
-
   return (
       <div className='home-content'>
         {tag === "manual" &&
@@ -895,7 +896,21 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
                <Row gutter={[10,10]}>
                  <Col span={24}>
                    <Form.Item label="Descrizione" name="jobDescription">
-                     <textarea placeholder='Inserisci la descrizione' value={config.jobDescription} onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, jobDescription: e.target.value }))} />
+                      <CKEditor
+                          editor={ClassicEditor}
+                          data={config.jobDescription}
+                          onChange={(event, editor) => {
+                              const data = editor.getData();
+                              setConfig(prevConfig => ({ ...prevConfig, jobDescription: data }))
+                          }}
+                          onReady={editor => {
+                            const editable = editor.editing.view.document.getRoot();
+                            editor.editing.view.change(writer => {
+                                writer.setStyle('height', '300px', editable);
+                            });
+                        }}
+                      />
+                     {/*<textarea placeholder='Inserisci la descrizione' value={config.jobDescription} onChange={(e) => setConfig(prevConfig => ({ ...prevConfig, jobDescription: e.target.value }))} />*/}
                    </Form.Item>
                  </Col>
                </Row>

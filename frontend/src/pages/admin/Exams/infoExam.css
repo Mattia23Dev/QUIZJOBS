@@ -48,6 +48,9 @@
     gap: 8px;
     width: 50%;
 }
+.dtm-desc div {
+  width: 100%;
+}
 .filter-container{
   width: 100%;
 }
@@ -579,7 +582,13 @@
     .modal-candidate-top{
       width: 75%;
     }
-    
+    .choose-visualize{
+      position: fixed;
+      top: 8rem;
+    }
+    .cet-exam{
+      margin-top: 100px;
+    }
   .modal-candidate-data{
     display: flex;
     align-items: flex-start;

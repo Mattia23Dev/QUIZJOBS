@@ -192,7 +192,7 @@ const getExamById = async(req,res) => {
      const exam = await Exam.find({_id: req.params.id})
       .populate({
           path: "candidates.candidate",
-          select: "name surname email phone city cv cvUrl", // Seleziona i campi desiderati per il candidato
+          select: "name surname email phone city cv cvUrl coverLetter", // Seleziona i campi desiderati per il candidato
       })
       .populate({
           path: "candidates.report",

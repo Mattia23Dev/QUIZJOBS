@@ -293,7 +293,7 @@ const getCandidateWithPopulatedTests = async  (req, res) => {
       .populate({
         path: 'tests.testId',
         model: 'exams',
-        select: 'jobPosition skills jobCity jobContract jobTypeWork company',
+        select: 'jobPosition skills jobCity jobContract jobTypeWork company jobDescription',
         populate: {
           path: 'company',
           model: 'users',
@@ -305,7 +305,6 @@ const getCandidateWithPopulatedTests = async  (req, res) => {
         model: 'reports',
         select: 'result'
       });
-
     if (candidate) {
       console.log("Populated Candidate Tests:", candidate.tests);
       res.status(201).json({
