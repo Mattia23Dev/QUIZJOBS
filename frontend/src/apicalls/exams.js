@@ -10,6 +10,16 @@ export const addExam = async(payload) => {
     }
 }
 
+export const addExamMix = async(payload) => {
+    try{
+       const response = await axiosInstance.post('/api/exams/addExamMix',payload)
+       return response.data
+    }
+    catch(error){
+        return error.response.data
+    }
+}
+
 export const modificaExam = async(payload) => {
     try{
        const response = await axiosInstance.post('/api/exams/modificaExam',payload)

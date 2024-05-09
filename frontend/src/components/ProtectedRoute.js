@@ -107,7 +107,7 @@ function ProtectedRoute({children, setLoginPopup, setTour, handleStartTour, tour
       },
     },
     {
-      title: "CRM",
+      title: "Candidati",
       paths: ["/admin/crm"],
       icon: <i className="ri-bar-chart-line"></i>,
       onClick: ()=>{
@@ -192,7 +192,7 @@ function ProtectedRoute({children, setLoginPopup, setTour, handleStartTour, tour
       },
     },
     {
-      title: "CRM",
+      title: "Candidati",
       paths: ["/admin/crm"],
       icon: <i className="ri-bar-chart-line"></i>,
       onClick: ()=>{
@@ -308,7 +308,7 @@ function ProtectedRoute({children, setLoginPopup, setTour, handleStartTour, tour
         return 'elemento1';
       } else if (paths === "Test"){
         return 'elemento2'
-      } else if (paths === "CRM"){
+      } else if (paths === "Candidati"){
         return 'elemento3'
       } else if (paths === "Calendar"){
         return 'elemento4'

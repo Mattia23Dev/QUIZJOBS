@@ -8,7 +8,7 @@ import { addExam, addTrackLink, deleteQuestionFromExam, deleteTrackLink, editExa
 import { useDispatch } from 'react-redux';
 import { SearchOutlined } from '@ant-design/icons';
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
-import AddEditQuestion from './AddEditQuestion';
+import {AddEditQuestion, AddEditQuestionPersonalizzate} from './AddEditQuestion';
 import copia from '../../../imgs/copia.png';
 import { FaHeart } from 'react-icons/fa';
 import filter from '../../../imgs/filter.png';
@@ -153,8 +153,10 @@ function InfoExam({openTour, setOpenTour, tour}) {
   const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
   const [examData,setExamData] = useState();
   const [showAddEditQuestionModal, setShowAddEditQuestionModal] = useState(false)
+  const [showAddEditQuestionModalPersonalizzate, setShowAddEditQuestionModalPersonalizzate] = useState(false)
   const [selectedQuestion, setSelectedQuestion] = useState();
   const [candidates, setCandidates] = useState([])
+  const [questionsPersonal, setQuestionsPersonal] = useState([]);
   const [activeTab, setActiveTab] = useState(1);
   const [showDettagliTest, setShowDettagliTest] = useState(false);
   const [showInfoCandidateModal, setShowInfoCandidateModal] = useState();
@@ -167,6 +169,8 @@ function InfoExam({openTour, setOpenTour, tour}) {
   const [activePref, setActivePref] = useState(false);
   const [trackingFilter, setTrackingFilter] = useState('Tutti');
   const [questions, setQuestions] = useState();
+  const [selectedQuestionPersonal, setSelectedQuestionPersonal] = useState();
+  const [domandeType, setDomandeType] = useState("Skills");
   const [selNotes, setSelNotes] = useState('')
   const [config, setConfig] = useState({
    numOfQuestions: 30,
@@ -394,6 +398,9 @@ const handleCopyLink = () => {
             setExamData(response.data[0])
             setCandidates(response.data[0].candidates)
             setQuestions(response.data[0].questions)
+            if (response.data[0].tag === "mix"){
+              setQuestionsPersonal(response.data[0].questionsPersonal)
+            }
             setConf(response.data[0])
          }
          else{
@@ -615,6 +622,9 @@ const handleCopyLink = () => {
 const handleUpdateDomande = (updatedDomande) => {
    setQuestions(updatedDomande);
  };
+ const handleUpdateDomandePersonal = (updatedDomande) => {
+  setQuestionsPersonal(updatedDomande);
+};
  const formattedSelectedQuestion = selectedQuestion && (examData?.tag === "manual" ? {
   domanda: selectedQuestion.question,
   opzioni: selectedQuestion.options,
@@ -717,7 +727,10 @@ const aggiungiDomanda = (domanda) => {
   const nuoveDomande = [...questions, domanda];
   setQuestions(nuoveDomande);
 };
-
+const aggiungiDomandaPersonalizzata = (domanda) => {
+  const nuoveDomande = [...questionsPersonal, domanda];
+  setQuestionsPersonal(nuoveDomande);
+};
 const modificaDomanda = (domandaModificata) => {
   const domandeModificate = questions.map(domanda => {
     if (domanda.question === domandaModificata.question) {
@@ -727,6 +740,16 @@ const modificaDomanda = (domandaModificata) => {
   });
   setSelectedQuestion(null)
   setQuestions(domandeModificate);
+};
+const modificaDomandaPersonalizzata = (domandaModificata) => {
+  const domandeModificate = questionsPersonal.map(domanda => {
+    if (domanda.question === domandaModificata.question) {
+      return domandaModificata;
+    }
+    return domanda;
+  });
+
+  setQuestionsPersonal(domandeModificate);
 };
 const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 const onSelectChange = (newSelectedRowKeys) => {
@@ -870,7 +893,19 @@ const rowSelection = {
             initialData={candidates} />}
          </div>
          : activeTab === 2 ?
-         <div className={activeTab === 2 ? 'create-exam-body elemento3' : 'create-exam-body'}>
+          <div className={activeTab === 2 ? 'create-exam-body elemento3' : 'create-exam-body'}>
+            {examData?.tag === "mix"&&
+            <div>
+              <Segmented
+                  options={['Skills', 'Personalizzate']}
+                  onChange={(value) => {
+                    console.log(value);
+                    setDomandeType(value)
+                  }}
+                />
+            </div>}
+            {domandeType === "Skills" ? 
+            <>
                <PageTitle title={"Domande"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
                <div className='flex justify-end'> 
                   <button className="button-ligh-blue"
@@ -888,13 +923,33 @@ const rowSelection = {
                     setSelectedQuestion={setSelectedQuestion}
                     setShowAddEditQuestionModal={setShowAddEditQuestionModal} />
                     :
-                    <DomandeComponent 
+                    <DomandeComponent
                     domande={questions && questions} 
                     onUpdateDomande={handleUpdateDomande}
                     setSelectedQuestion={setSelectedQuestion}
                     setShowAddEditQuestionModal={setShowAddEditQuestionModal} />}
                     {saveButtonQuestion() && <button onClick={onSaveNewQuestion}><img alt='arrow right' src={rightArrow} />Modifica Test</button>}
                </div>}
+            </> : 
+            <>
+               <PageTitle title={"Domande personalizzate"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
+               <div className='flex justify-end'> 
+                  <button className="button-ligh-blue"
+                  onClick={()=>{
+                  setShowAddEditQuestionModalPersonalizzate(true)
+                  }}>+ Aggiungi domanda</button>
+               </div>
+               {examData?.questionsPersonal.length > 0 && questionsPersonal && 
+               <div className='domande-container-save'>
+                     <a onClick={() => setActiveTab(1)}><img alt='left arrow' src={leftArrow} /> Torna ai candidati</a>
+                     <DomandePersonalizzateComponent 
+                    domande={questionsPersonal}
+                    onUpdateDomande={handleUpdateDomandePersonal}
+                    setSelectedQuestion={setSelectedQuestionPersonal}
+                    setShowAddEditQuestionModal={setShowAddEditQuestionModalPersonalizzate} />
+                    {saveButtonQuestion() ? <button onClick={onSaveNewQuestion}><img alt='arrow right' src={rightArrow} />Salva Test</button> : <button onClick={onSaveNewQuestion}><img alt='arrow right' src={rightArrow} />Modifica Test</button>}
+               </div>}
+            </>}
          </div> :
          null
          }
@@ -906,6 +961,13 @@ const rowSelection = {
          selectedQuestion={formattedSelectedQuestion}
          setSelectedQuestion={setSelectedQuestion}
         />}
+        {showAddEditQuestionModalPersonalizzate&&<AddEditQuestionPersonalizzate tag={examData?.tag} editQuestionInExam={modificaDomandaPersonalizzata} addQuestionToExam={aggiungiDomandaPersonalizzata}   setShowAddEditQuestionModal={setShowAddEditQuestionModalPersonalizzate}
+          showAddEditQuestionModal={showAddEditQuestionModalPersonalizzate}
+          examId = {id}
+          refreshData = {getExamDataById}
+          selectedQuestion={selectedQuestionPersonal}
+          setSelectedQuestion={setSelectedQuestionPersonal}
+          />}
         {showInfoCandidateModal&&<InfoCandidate
         updateNotes={updateNotes}
         pdfExtract={pdfExtract}
@@ -961,7 +1023,7 @@ const rowSelection = {
                <div className='dettagli-test-modal'>
                   <div>
                      <h4>Tipologia Test</h4>
-                     <h4>{examData?.tag === "manual" ? "Manuale" : examData?.tag === "ai" ? "SkillTest Ai" : ""}</h4>
+                     <h4>{examData?.tag === "manual" ? "Manuale" : examData?.tag === "ai" ? "SkillTest Ai" : "Misto"}</h4>
                   </div>
                   <div>
                      <h4>Tipo di contratto</h4>
@@ -1146,6 +1208,123 @@ const DomandeMixComponent = ({ domande, onUpdateDomande, setSelectedQuestion, se
         <ul className="opzioni">
           {Object.entries(currentDomanda.options).map(([lettera, risposta], index) => (
             <li className="risposta" key={index}><span>{lettera.substring(0, 1)}</span> {risposta}</li>
+          ))}
+        </ul>}
+      </div>
+    </div>
+  );
+};
+
+const DomandePersonalizzateComponent = ({ domande, onUpdateDomande, setSelectedQuestion, setShowAddEditQuestionModal }) => {
+  const [currentDomanda, setCurrentDomanda] = useState(domande[0]);
+  const [currentDomandaIndex, setCurrentDomandaIndex] = useState(0); // Inizializza l'indice della domanda corrente a 0
+  const [confirmVisible, setConfirmVisible] = useState(Array(domande.length).fill(false));
+  const [draggedDomanda, setDraggedDomanda] = useState(null);
+
+  const handleConfirm = () => {
+    const filteredDomande = domande.filter(domanda => domanda !== currentDomanda);
+    onUpdateDomande(filteredDomande);
+    setCurrentDomanda(domande[0]);
+    const updatedConfirmVisible = [...confirmVisible];
+    const index = domande.indexOf(currentDomanda);
+    updatedConfirmVisible[index] = false;
+    setConfirmVisible(updatedConfirmVisible); 
+  };
+
+  const handleCancel = () => {
+   setConfirmVisible(Array(domande.length).fill(false));
+  };
+
+  const handleDomandaClick = (domanda, index) => {
+    setCurrentDomanda(domanda);
+    setCurrentDomandaIndex(index)
+  };
+
+  const [draggingIndex, setDraggingIndex] = useState(null); // Stato per tener traccia dell'indice della domanda che viene trascinata
+
+  const handleDragStart = (event, domanda, index) => {
+    event.dataTransfer.setData('domanda', JSON.stringify(domanda));
+    setDraggingIndex(index); // Imposta l'indice della domanda che viene trascinata
+    setDraggedDomanda(domanda);
+  };
+  
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+  
+  const handleDragEnter = (index) => {
+    setDraggingIndex(index); // Imposta l'indice della domanda su cui passa sopra
+  };
+  
+  const handleDragLeave = () => {
+    setDraggingIndex(null); // Resettare l'indice della domanda quando si lascia l'area di trascinamento
+  };
+  
+  const handleDrop = (event, index) => {
+   if (!draggedDomanda) return; // Se non c'è nessuna domanda trascinata, esci
+   
+   const droppedDomanda = JSON.parse(event.dataTransfer.getData('domanda'));
+   const updatedDomande = [...domande]; // Crea una copia dell'array delle domande
+   
+   // Rimuovi la domanda trascinata dalla sua posizione originale
+   const draggedIndex = updatedDomande.indexOf(draggedDomanda);
+   if (draggedIndex !== -1) {
+     updatedDomande.splice(draggedIndex, 1);
+   }
+   
+   // Inserisci la domanda trascinata nella nuova posizione
+   updatedDomande.splice(index, 0, droppedDomanda);
+   
+   onUpdateDomande(updatedDomande); // Aggiorna lo stato delle domande
+   
+   setDraggingIndex(null); // Resettare l'indice della domanda trascinata dopo il rilascio
+   setDraggedDomanda(null); // Resetta la domanda trascinata
+ };
+
+  return (
+    <div className="domande-container">
+      <div className="lista-domande">
+        {domande?.map((domanda, index) => (
+          <div
+            key={index}
+            onDragStart={(event) => handleDragStart(event, domanda, index)} // Gestisci l'inizio del trascinamento sulla domanda
+            onDragOver={handleDragOver}
+            onDragEnter={() => handleDragEnter(index)} // Gestisci l'entrata del trascinamento sulla domanda
+            onDragLeave={handleDragLeave} // Gestisci l'uscita del trascinamento dall'area della domanda
+            onDrop={(event) => handleDrop(event, index)}
+            className={`domanda-item ${currentDomanda === domanda ? "domanda-selected" : ""} ${draggingIndex === index ? "dragging" : ""}`}
+            >
+           <Popconfirm
+             visible={confirmVisible[index]}
+             title="Sei sicuro di voler eliminare?"
+             onConfirm={() => handleConfirm(domanda)}
+             onCancel={handleCancel}
+             okText="Sì"
+             cancelText="No"
+             placement="top"
+           >
+           <img alt='cancel question' src={cancel} onClick={() => { setConfirmVisible((prevState) => {
+               const updatedConfirmVisible = [...prevState];
+               updatedConfirmVisible[index] = true;
+               return updatedConfirmVisible;
+             }); setCurrentDomanda(domanda) }} />
+            </Popconfirm> 
+           {domanda.options ? <img alt='edit question' src={edit} onClick={() => {setSelectedQuestion(domanda); setShowAddEditQuestionModal(true)}} /> : null}
+           <img
+           className='drag-handle'
+           src={move}
+           draggable
+           />
+            <p onClick={() => handleDomandaClick(domanda, index)}><span>{index + 1}.</span>{domanda.question}</p>
+          </div>
+        ))}
+      </div>
+      <div className="domanda-attuale">
+        <p><span>{currentDomandaIndex + 1}.</span>{currentDomanda.question}</p>
+        {currentDomanda.options && 
+        <ul className="opzioni">
+          {Object.entries(currentDomanda.options).map(([lettera, risposta], index) => (
+            <li className={currentDomanda.rispostaCorretta && risposta.trim() === currentDomanda.rispostaCorretta.risposta ? "risposta risposta-corretta" : "risposta"} key={index}><span>{lettera.substring(0, 1)}</span> {risposta}</li>
           ))}
         </ul>}
       </div>

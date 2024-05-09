@@ -28,6 +28,7 @@ function ExamsPage({openTour, setOpenTour, tour}) {
   const [numCandidati, setNumCandidati] = useState('tutti');
   const user = useSelector(state=>state.users.user)
   const storedQuestions = JSON.parse(localStorage.getItem('questions'));
+  const storedQuestionsPersonal = JSON.parse(localStorage.getItem('questionsPersonal'));
   const storedConfig = JSON.parse(localStorage.getItem('config'));
   const [confirmVisible, setConfirmVisible] = useState(Array(exams).fill(false));
 
@@ -62,15 +63,21 @@ function ExamsPage({openTour, setOpenTour, tour}) {
           storedQuestions: storedQuestions,
         }
       })
+    } else if (storedConfig.tag === "ai"){
+      navigate('/admin/exams/add/ai',{
+        state: {
+          storedQuestions: storedQuestions,
+        }
+      })    
+    } else {
+      navigate('/admin/exams/add/mix', {
+        state: {
+          storedQuestions: storedQuestions,
+          storedQuestionsPersonal: storedQuestionsPersonal,
+        }
+      })
     }
-  } else if (storedConfig.tag === "ai"){
-    navigate('/admin/exams/add/ai',{
-      state: {
-        storedQuestions: storedQuestions,
-      }
-    })    
   }
-
  }
   const getExamsData = async() => {
     try{
@@ -242,11 +249,14 @@ function ExamsPage({openTour, setOpenTour, tour}) {
           {filteredExams&&filteredExams.map((exam,index)=>{
               const examId = exam._id;
             return (
-                <div className='card-exam' key={examId}>
+                <div className={exam.tag === "mix"? 'card-exam ceg' : 'card-exam'} key={examId}>
                   <div className='card-exam-top'>
-                    <h1>
-                      {exam.jobPosition}
-                    </h1>
+                    <div>
+                      <h1>
+                        {exam.jobPosition}
+                      </h1>
+                      {exam.tag === "mix"&&<div className='taggetto'><img alt='test misto' src={skt} /><span>Misto</span></div>}
+                    </div>
                     {isMobile() ?
                     <button className='elemento2' onClick={()=>navigate(`/admin/exams/info/${exam._id}`)}>Candidati</button>
                      : 
@@ -327,8 +337,8 @@ function ExamsPage({openTour, setOpenTour, tour}) {
           </p>
         </div>
         <div onClick={()=>{
-          //navigate('/admin/exams/add/mix')
-          window.alert("Stiamo lavorando per aggiungerlo, scusate il disagio! Intanto potete creare le altre due tipologie di Test ")
+          navigate('/admin/exams/add/mix')
+          //window.alert("Stiamo lavorando per aggiungerlo, scusate il disagio! Intanto potete creare le altre due tipologie di Test ")
           }}>
           <div><img alt='test misto' src={skt} /><span>Consigliato</span></div>
           <img alt='test misto' src={mix} />

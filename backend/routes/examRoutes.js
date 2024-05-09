@@ -1,8 +1,9 @@
 const router = require("express").Router()
-const {addExam, getAllExams, getExamById, editExam, deleteExam, addQuestionToExam, deleteQuestionFromExam, editQuestionInExam, saveTestProgress, getCandidateCrm, getAllExamsByUser, addTrackLink, deleteTrackLink, changeStatus, ModificaExam, updateCandidatePreference, updateCandidateNotes} = require("../controllers/examControllers")
+const {addExam, getAllExams, getExamById, editExam, deleteExam, addQuestionToExam, deleteQuestionFromExam, editQuestionInExam, saveTestProgress, getCandidateCrm, getAllExamsByUser, addTrackLink, deleteTrackLink, changeStatus, ModificaExam, updateCandidatePreference, updateCandidateNotes, addExamMix} = require("../controllers/examControllers")
 const authMiddleware = require("../middlewares/authMiddleware")
 
 router.post('/addExam',authMiddleware,addExam)
+router.post('/addExamMix',authMiddleware,addExamMix)
 router.get('/getAllExams',authMiddleware,getAllExams)
 router.get('/getAllExamsByUser/:id',getAllExamsByUser)
 router.get('/getExamById/:id',getExamById)

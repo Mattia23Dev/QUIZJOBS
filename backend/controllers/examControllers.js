@@ -100,6 +100,65 @@ const addExam = async (req, res) => {
   }
 };
 
+const addExamMix = async (req, res) => {
+  console.log(req.body);
+      try {
+        const user = await User.findOne({
+            _id: req.body.userId
+        });
+
+        if (user.isAdmin) {
+          const examWithIdExists = await Exam.findOne({ idEsame: req.body.idEsame });
+            if (examWithIdExists) {
+                return res.send({
+                    message: "Exam with the same ID already exists",
+                    success: false
+                });
+            }
+
+            const newExam = new Exam(req.body);
+            const jobPositionSlug = req.body.jobPosition.toLowerCase().replace(/\s/g, '_'); 
+            const examLink = `https://skilltest.app/user/${jobPositionSlug}/${newExam._id}`;
+            newExam.examLink = examLink;
+            const convertedArray = req.body.domandePersonal.map(domanda => ({
+              question: domanda.domanda,
+              options: domanda.opzioni ? domanda.opzioni: undefined,
+            }));
+            if (req.body.domande && req.body.domande.length > 0) {
+              const savedQuestions = [];
+                for (const domanda of req.body.domande) {
+                  const newQuestion = new Question({
+                      question: domanda.domanda,
+                      correctOption: domanda.rispostaCorretta !== null ?
+                        domanda.rispostaCorretta.lettera + ' ' + domanda.rispostaCorretta.risposta
+                        : "Nullo",
+                      options: domanda.opzioni,
+                      exam: newExam._id,
+                  });
+                  const savedQuestion = await newQuestion.save();
+                  savedQuestions.push(savedQuestion);
+              }
+              newExam.questions = savedQuestions;
+            }
+            newExam.questionsPersonal = convertedArray;
+            newExam.company = req.body.userId;
+
+            await newExam.save();
+            res.send({
+                message: "Exam added successfully",
+                success: true,
+                data: newExam,
+            });
+        }
+    } catch (error) {
+        res.send({
+            message: error.message,
+            data: error,
+            success: false
+        });
+    }
+};
+
 const ModificaExam = async (req, res) => {
   if (req.body.tag && req.body.tag === "manual"){
       try {
@@ -651,6 +710,6 @@ const changeStatus = async (req, res) => {
   }
 }
 
-module.exports = {addExam, getAllExams, getAllExamsByUser, getExamById, updateCandidateNotes,
+module.exports = {addExam, addExamMix, getAllExams, getAllExamsByUser, getExamById, updateCandidateNotes,
   getCandidateCrm, editExam, deleteExam, addQuestionToExam, editQuestionInExam, 
   deleteQuestionFromExam, saveTestProgress, addTrackLink, deleteTrackLink, changeStatus, ModificaExam, updateCandidatePreference}

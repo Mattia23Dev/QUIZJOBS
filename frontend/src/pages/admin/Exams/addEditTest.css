@@ -200,8 +200,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 50%;
-    margin: 0 auto;
+    width: 70%;
     margin-top: 0.5rem;
   }
   .create-exam-top > hr,
@@ -585,6 +584,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
   }
 .moduli-container h4 {
   font-weight: 600;

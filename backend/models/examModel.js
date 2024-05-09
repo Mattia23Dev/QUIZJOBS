@@ -36,6 +36,9 @@ const examSchema = new mongoose.Schema({
         type: [Object],
         required: true,
     },
+    questionsPersonal: {
+        type: [Object],
+    },
     idEsame: {
         type: String,
         required: true
