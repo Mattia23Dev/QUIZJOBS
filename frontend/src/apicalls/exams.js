@@ -161,6 +161,15 @@ export const addCandidate = async (payload) => {
       return error
     }
   };
+
+  export const saveTestProgressMix = async (payload) => {
+    try {
+      const response = await axiosInstance.put('/api/exams/save-test-progress-mix', payload);
+      return response.data
+    } catch (error) {
+      return error
+    }
+  };
   
   export const addTrackLink = async(payload) => {
     try{

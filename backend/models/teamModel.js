@@ -36,7 +36,9 @@ const teamSchema = new mongoose.Schema({
   teamType: {
     type: Boolean,
     default: true,
-  }
+  },
+  refreshGoogleToken: String,
+  accessGoogleToken: String,
 });
 
 const Team = mongoose.model('Team', teamSchema);

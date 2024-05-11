@@ -7,7 +7,14 @@
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
   }
-
+.pre-questions{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-direction: column;
+  margin-top: 100px;
+}
 
   /*ISTRUZIONI E DATI*/
 .form-candidato{

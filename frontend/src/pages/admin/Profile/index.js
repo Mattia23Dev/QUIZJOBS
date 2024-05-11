@@ -7,6 +7,7 @@ import { updateUserData } from '../../../apicalls/users';
 import { SetUser } from '../../../redux/usersSlice'
 import axios from 'axios'
 import edit from '../../../imgs/edit.png'
+import { fetchJWTToken } from '../../../apicalls'
 
 function Profile() {
     const [selectedMenu, setSelectedMenu] = useState('datiPersonali');
@@ -39,6 +40,7 @@ function Profile() {
         }
     }
     const uploadImageToWordPress = async (imageFile) => {
+      const token = await fetchJWTToken()
       try {
         const formData = new FormData();
         formData.append('file', imageFile);
@@ -50,7 +52,7 @@ function Profile() {
           {
             headers: {
               'Content-Type': 'multipart/form-data',
-              'authorization': `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3NraWxsc3Rlc3QuaXQiLCJpYXQiOjE3MTM2MDk3OTMsIm5iZiI6MTcxMzYwOTc5MywiZXhwIjoxNzE0MjE0NTkzLCJkYXRhIjp7InVzZXIiOnsiaWQiOiIxIn19fQ.E2Y_CR0GeoElFfUMaSPfc5QQ7d6Gu8vpueSDHibX1_Q`
+              'authorization': `Bearer ${token}`
             },
           }
         );

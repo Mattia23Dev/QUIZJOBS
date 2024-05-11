@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import { getExamById, saveTestProgress } from '../../../apicalls/exams'
+import { getExamById, saveTestProgress, saveTestProgressMix } from '../../../apicalls/exams'
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice'
 import { message } from 'antd'
 import Instructions from './Instructions'
@@ -21,9 +21,13 @@ import './writeExamUser.css';
 function WriteExam() {
   const [examData, setExamData] = useState()
   const [questions, setQuestions] = useState([])
+  const [questionsPersonal, setQuestionsPersonal] = useState([])
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0)
+  const [selectedQuestionIndexPersonal, setSelectedQuestionIndexPersonal] = useState(0)
   const [selectedOptions, setSelectedOptions] = useState({})
+  const [selectedOptionsPersonal, setSelectedOptionsPersonal] = useState({})
   const [seconds, setSeconds] = useState({})
+  const [secondsPersonal, setSecondsPersonal] = useState({})
   const [result, setResult] = useState()
   const { idUser, jobPositionSlug, uniqueId } = useParams()
   const dispatch = useDispatch()
@@ -48,6 +52,7 @@ function WriteExam() {
           message.success(response.message)
           setExamData(response.data[0])
           setQuestions(response.data[0].questions)
+          setQuestionsPersonal(response.data[0].questionsPersonal)
           setSecondsLeft(10000);
        }
        else{
@@ -157,7 +162,51 @@ const calculateResultManual = async() => {
       message.error(error.message);
   }
 };
-console.log(examData)
+
+const calculateResultMixPersonal = async() => {
+  try {
+      let correctAnswersCount = questions.length;
+      const totalQuestions = questions.length;
+
+      const tempResult = {
+          correctAnswersCount,
+          totalQuestions,
+          percentage: 100,
+          verdict : 'Pass',
+          allAnswers: selectedOptions,
+          allSeconds: seconds,
+      };
+
+      setResult(tempResult);
+      dispatch(ShowLoading());
+
+      const response = await addReport({
+          exam: examData._id,
+          result: tempResult,
+          user: user._id,
+          email: user.email,
+      });
+
+      dispatch(HideLoading());
+      setView("thanks");
+      const responseAi = await reportAiManual({
+        exam: examData._id,
+        questions: questions,
+        answers: selectedOptions,
+        user: user._id,
+        email: user.email,
+      })
+
+      if(response.success) {
+          console.log(response);
+      } else {
+          message.error(response.message);
+      }
+  } catch(error) {
+      dispatch(HideLoading());
+      message.error(error.message);
+  }
+};
 useEffect(() => {
   if (user && user.tests && user.tests.length > 0) {
     const currentTest = user.tests[0];
@@ -190,7 +239,12 @@ const handleNextButtonClick = async (index) => {
       correctQuestions.push(question.question);
     }
   }
-  setSelectedQuestionIndex(index);
+  if (selectedQuestionIndex===questions.length-1){
+    clearInterval(intervalId)
+    setTimeUp(true)
+  } else {
+    setSelectedQuestionIndex(index);
+  }
   startTimer();
   const response = await saveTestProgress({
       email: user.email,
@@ -206,11 +260,15 @@ const handleNextButtonClick = async (index) => {
       correctAnswer: correctAnswersCount,
       totalQuestions: selectedQuestionIndex + 1,
   })
-  console.log(response);
 };
 
 const handleNextButtonClickManual = async (index) => {
-  setSelectedQuestionIndex(index);
+  if (selectedQuestionIndex===questions.length-1){
+    clearInterval(intervalId)
+    setTimeUp(true)
+  } else {
+    setSelectedQuestionIndex(index);
+  }
   startTimer();
   const response = await saveTestProgress({
       email: user.email,
@@ -226,37 +284,70 @@ const handleNextButtonClickManual = async (index) => {
       correctAnswer: questions.length,
       totalQuestions: selectedQuestionIndex + 1,
   })
-  console.log(response);
+};
+
+const handleNextButtonClickMixPersonal = async (index) => {
+  if (index === questionsPersonal.length){
+    setView("preQuestions")
+  }
+  setSelectedQuestionIndexPersonal(index);
+  startTimer();
+  const response = await saveTestProgressMix({
+      email: user.email,
+      testId: examData._id,
+      questionIndexPersonal: selectedQuestionIndexPersonal+1,
+      selectedOptionPersonal: selectedOptionsPersonal[selectedQuestionIndexPersonal],
+      arrayAnswersPersonal: {
+        answers: selectedOptionsPersonal,
+        questions: questionsPersonal.slice(0, selectedQuestionIndexPersonal + 1).map(question => question.question),
+        seconds: secondsPersonal,
+      },
+  })
 };
 
 const startTimer = () => {
   clearInterval(intervalId);
-  let remainingTime = examData.tag === "manual" ? 180 : 30;
+  let remainingTime = (examData.tag === "manual" || (examData?.tag === "mix" && view === "questionsPersonal")) ? 180 : 30;
   setSecondsLeft(remainingTime);
 
   const intervalIdSt = setInterval(() => {
     if (remainingTime > 0) {
       remainingTime -= 1; 
       setSecondsLeft(remainingTime); 
-      setSeconds(prevSeconds => ({
-        ...prevSeconds,
-        [selectedQuestionIndex]: examData.tag === "manual" ? 180 - remainingTime : 30 - remainingTime
-      }));
+      if (examData?.tag === "mix" && view === "questionsPersonal"){
+        setSecondsPersonal(
+          prevSeconds => ({
+            ...prevSeconds,
+            [selectedQuestionIndexPersonal]: (examData.tag === "manual" || (examData?.tag === "mix" && view === "questionsPersonal")) ? 180 - remainingTime : 30 - remainingTime
+          })
+        )
+      } else {
+        setSeconds(prevSeconds => ({
+          ...prevSeconds,
+          [selectedQuestionIndex]: (examData.tag === "manual" || (examData?.tag === "mix" && view === "questionsPersonal")) ? 180 - remainingTime : 30 - remainingTime
+        }));        
+      }
     } else {
       clearInterval(intervalIdSt);
-      console.log('ok')
-      if (selectedQuestionIndex < questions.length - 1) {
-        console.log('okok')
-        if (examData.tag === "manual"){
-          setSelectedQuestionIndex(prevIndex => prevIndex + 1);
-          handleNextButtonClickManual(selectedQuestionIndex + 1)
+      if (examData?.tag === "mix" && view === "questionsPersonal"){
+        if (selectedQuestionIndexPersonal < questionsPersonal.length - 1) {
+            setSelectedQuestionIndexPersonal(prevIndex => prevIndex + 1);
+            handleNextButtonClickMixPersonal(selectedQuestionIndexPersonal + 1)
         } else {
-          console.log('okokok')
-          setSelectedQuestionIndex(prevIndex => prevIndex + 1);
-          handleNextButtonClick(selectedQuestionIndex + 1)
+          setTimeUp(true);
         }
       } else {
-        setTimeUp(true);
+        if (selectedQuestionIndex < questions.length - 1) {
+          if (examData.tag === "manual"){
+            setSelectedQuestionIndex(prevIndex => prevIndex + 1);
+            handleNextButtonClickManual(selectedQuestionIndex + 1)
+          } else {
+            setSelectedQuestionIndex(prevIndex => prevIndex + 1);
+            handleNextButtonClick(selectedQuestionIndex + 1)
+          }
+        } else {
+          setTimeUp(true);
+        }        
       }
     }
   }, 1000);
@@ -264,17 +355,31 @@ const startTimer = () => {
 };
 
 useEffect(() => {
-  if (timeUp && view === "questions") {
-    clearInterval(intervalId);
-    if (selectedQuestionIndex < questions.length - 1) {
-      setSelectedQuestionIndex(prevIndex => prevIndex + 1);
-      startTimer(); 
-    } else {
-      if (examData.tag === "manual"){
-        calculateResultManual();
+  if (examData?.tag !== "mix"){
+    if (timeUp && view === "questions") {
+      clearInterval(intervalId);
+      if (selectedQuestionIndex < questions.length - 1) {
+        setSelectedQuestionIndex(prevIndex => prevIndex + 1);
+        startTimer(); 
       } else {
+        if (examData.tag === "manual"){
+          calculateResultManual();
+        } else {
+          calculateResult();
+        };
+      }
+    }    
+  } else {
+    if (timeUp && view === "questions"){
+      console.log('ci siamo')
+      clearInterval(intervalId)
+      if (selectedQuestionIndex < questions.length - 1) {
+        setSelectedQuestionIndex(prevIndex => prevIndex + 1);
+        startTimer();
+      } else {
+        console.log('sii')
         calculateResult();
-      };
+      }
     }
   }
 }, [timeUp]);
@@ -320,7 +425,6 @@ useEffect(()=>{
              key={index}
              onClick={() => {
                setSelectedOptions({...selectedOptions, [selectedQuestionIndex]: risposta});
-               console.log(selectedOptions);
              }}
            >
              <h4 className='text-m user-select-none'>
@@ -356,8 +460,7 @@ useEffect(()=>{
        {selectedQuestionIndex===questions.length-1&&<button className='primary-contained-btn'
        style={{display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center'}}
        onClick={()=>{
-         clearInterval(intervalId)
-         setTimeUp(true)
+          handleNextButtonClickManual(selectedQuestionIndex + 1)
        }}
        >
         <img src={arrowRight} alt='arrow right' />
@@ -385,7 +488,6 @@ useEffect(()=>{
             key={index}
             onClick={() => {
               setSelectedOptions({...selectedOptions, [selectedQuestionIndex]: risposta});
-              console.log(selectedOptions);
             }}
           >
             <h4 className='text-m user-select-none'>
@@ -414,8 +516,7 @@ useEffect(()=>{
       {selectedQuestionIndex===questions.length-1&&<button className='primary-contained-btn'
       style={{display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center'}}
       onClick={()=>{
-        clearInterval(intervalId)
-        setTimeUp(true)
+        handleNextButtonClick(selectedQuestionIndex+1)
       }}
       >
        <img src={arrowRight} alt='arrow right' />
@@ -424,6 +525,81 @@ useEffect(()=>{
      </div>
     </div>
     </div> : null}
+    {view==="preQuestionsPersonal"&&
+    <div className='pre-questions'>
+      <h2>{user?.name}, ti faremo alcune domande</h2>
+      <p>Queste domande non hanno una risposta corretta ma sono solo per conoscerti meglio</p>
+      <button className='primary-contained-btn' onClick={() => setView("questionsPersonal")}>Cominciamo</button>
+    </div>}
+    {view==="preQuestions"&&
+    <div className='pre-questions'>
+      <h2>{user?.name} Complimenti, adesso un breve test di {examData?.questions?.length} domande</h2>
+      <button className='primary-contained-btn' onClick={() => {setView("questions"); startTimer()}}>Cominciamo</button>
+    </div>}
+    {(view==="questionsPersonal"&&questionsPersonal?.length > 0) &&
+     <div className='flex flex-col gap-2 mt-2'>
+     <div className='question-exam-container'>
+     <div className='timer'>
+       <img alt='time user' src={time} />
+       <span className='text-2xl user-select-none'>{secondsLeft >= 60 ? secondsLeft >= 120 ? secondsLeft >= 180 ? '03' : '02' : '01' : '00'}:{secondsLeft <10 ? '0' : null}{secondsLeft >= 180 ? secondsLeft - 180 : secondsLeft >= 120 ? secondsLeft - 120 : secondsLeft >= 60 ? secondsLeft - 60 : secondsLeft}:00</span>
+      </div>
+      <div style={{width: '60%'}} className='flex justify-center mt-2'>
+      <h1 style={{width:'65%'}} className='text-xl user-select-none'>
+        {selectedQuestionIndexPersonal+1} : {questionsPersonal[selectedQuestionIndexPersonal].question}
+      </h1>
+      </div>
+      {questionsPersonal[selectedQuestionIndexPersonal].options ?
+      <div className='flex flex-col gap-2 align-left'>
+       {questionsPersonal[selectedQuestionIndexPersonal] && questionsPersonal[selectedQuestionIndexPersonal].options && Object.entries(questionsPersonal[selectedQuestionIndexPersonal].options).map(([lettera, risposta]) => (
+           <div
+             className={`flex gap-2 items-center ${selectedOptionsPersonal[selectedQuestionIndexPersonal] === risposta ? "selected-option" : "option" }`}
+             key={lettera}
+             onClick={() => {
+              setSelectedOptionsPersonal({...selectedOptionsPersonal, [selectedQuestionIndexPersonal]: risposta});
+             }}
+           >
+             <h4 className='text-m user-select-none'>
+               <span>{lettera.substring(0, 1)}</span>{risposta}
+             </h4>
+           </div>
+         ))}
+      </div> : 
+      <div style={{width: '50%'}} className='flex flex-col gap-2 align-left'>
+        <textarea 
+        className='textarea-writexam'
+        value={selectedOptionsPersonal[selectedQuestionIndexPersonal] || ''}
+        onChange={(e) => {setSelectedOptionsPersonal({...selectedOptionsPersonal, [selectedQuestionIndexPersonal]: e.target.value}); console.log(selectedOptionsPersonal)}}
+        />
+      </div>}
+      <div className='alert-exam'>
+         <img src={alert} alt='alert' />
+         <p>Si prega notare che, in caso di uscita dal test, questo verrà interrotto. <br />
+           Tuttavia, avrai la possibiltà di riprendere esattamente dove ti eri fermato una volta che riaccedi nel sistema.
+         </p>
+      </div>
+      <div className='button-exam-container flex justify-between'>
+       {selectedQuestionIndexPersonal<questionsPersonal.length-1&&
+       <div style={{display: 'flex', flexDirection: 'column', textAlign: 'center', gap: '20px'}}>
+         <button className='primary-contained-btn'
+       onClick={()=> handleNextButtonClickMixPersonal(selectedQuestionIndexPersonal + 1)}
+       style={{display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center'}}>
+        <img src={arrowRight} alt='arrow right' />Domanda successiva
+       </button>
+       <p><b>Non è possibile</b> tornare all <br /> <u style={{color: '#F95959'}}>domanda precedente</u></p>
+       </div>
+       }
+       {selectedQuestionIndexPersonal===questionsPersonal.length-1&&<button className='primary-contained-btn'
+       style={{display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center'}}
+       onClick={()=>{
+         handleNextButtonClickMixPersonal(selectedOptionsPersonal +1)
+       }}
+       >
+        <img src={arrowRight} alt='arrow right' />
+        Prossima sezione
+       </button>}
+      </div>
+     </div>
+     </div>}
     {view==="thanks"&&<div className='thanks-exam-container flex flex-col gap-2'> 
        <img alt='skilltest' src={thanks} className='back-img' />
        <img src={v} alt='ok' />

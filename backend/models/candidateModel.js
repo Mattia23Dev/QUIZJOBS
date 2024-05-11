@@ -63,6 +63,14 @@ const candidateSchema = new mongoose.Schema({
               type: String
             }
         },
+        progressPersonal: {
+            questionIndexPersonal: {
+              type: Number
+            },
+            selectedOptionPersonal: {
+              type: String
+            }
+        },
         score: {
             type: Number,
         },
@@ -83,6 +91,17 @@ const candidateSchema = new mongoose.Schema({
                 type: mongoose.Schema.Types.Mixed,
             },
             correctQuestions: [String],
+        },
+        arrayAnswersPersonal: {
+            answers: {
+                type: mongoose.Schema.Types.Mixed,
+            },
+            questions: {
+                type: mongoose.Schema.Types.Mixed,
+            },
+            seconds: {
+                type: mongoose.Schema.Types.Mixed,
+            },
         },
         report: {
             type: mongoose.Schema.Types.ObjectId,

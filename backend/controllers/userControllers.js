@@ -359,7 +359,11 @@ const addCandidate = async(req, res) => {
             const uploadFolderPath = path.resolve(__dirname, '..', 'uploads');
             const destinationPath = path.join(uploadFolderPath, cvFileName);
             fs.renameSync(cv, destinationPath);
-            res.status(201).json({ message: 'Candidate added successfully', success: true, candidate: updatedCandidate });
+            const token = jwt.sign({
+                userid: newCandidate._id,
+                type: 'candidate'
+            },process.env.JWT_SECRET,{})
+            res.status(201).json({ message: 'Candidate added successfully', success: true, candidate: updatedCandidate, token: token });
             extractPdfAi(pdfText, newCandidate._id, testId, trackLink);
         } else {
             const existingTest = candidate.tests.find(test => test.testId.toString() === testId);
@@ -373,14 +377,18 @@ const addCandidate = async(req, res) => {
             await candidate.save();
             const updatedCandidate = await candidateModel.findOne({ email });
             const specificTest = updatedCandidate.tests.find(test => test.testId.toString() === testId);
-
+            const token = jwt.sign({
+                userid: candidate._id,
+                type: 'candidate'
+            },process.env.JWT_SECRET,{})
             res.status(201).json({
                 message: 'Candidate retrieved successfully',
                 success: true,
                 candidate: {
                     ...updatedCandidate.toObject(),
                     tests: specificTest ? [specificTest] : []
-                }
+                },
+                token: token,
             });
             if (!existingTest){
               extractPdfAi(pdfText, candidate._id, testId, trackLink);

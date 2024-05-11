@@ -140,9 +140,9 @@ function ProtectedRoute({children, setLoginPopup, setTour, handleStartTour, tour
       }
     },
     /*{
-      title: "Automations",
+      title: "Automazioni",
       paths: ["/admin/automations"],
-      icon: <i className='ri-settings-line'></i>, // Icona delle automazioni
+      icon: <i className='ri-settings-line'></i>,
       onClick: () => navigate("/admin/automations")
     },*/
     {
@@ -213,6 +213,12 @@ function ProtectedRoute({children, setLoginPopup, setTour, handleStartTour, tour
         navigate("/admin/calendar")
       },
     },
+    /*{
+      title: "Automazioni",
+      paths: ["/admin/automations"],
+      icon: <i className='ri-settings-line'></i>,
+      onClick: () => navigate("/admin/automations")
+    },*/
     {
       title: "Profilo",
       paths: ["/admin/profile"],

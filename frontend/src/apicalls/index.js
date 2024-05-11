@@ -9,7 +9,7 @@ const axiosInstance = axios.create({
     }
 })
 
-const fetchJWTToken = async () => {
+export const fetchJWTToken = async () => {
     const credentials = {
       username: 'user03170545353762',
       password: 'SKILLTEST@@@'

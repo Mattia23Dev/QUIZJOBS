@@ -5,7 +5,7 @@ import Highlighter from 'react-highlight-words';
 import { UnorderedListOutlined, AppstoreOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { addExam, addTrackLink, deleteQuestionFromExam, deleteTrackLink, editExam, getExamById, modificaExam, updateCandidateNotes, updateCandidatePref } from '../../../apicalls/exams';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SearchOutlined } from '@ant-design/icons';
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
 import {AddEditQuestion, AddEditQuestionPersonalizzate} from './AddEditQuestion';
@@ -151,6 +151,7 @@ function InfoExam({openTour, setOpenTour, tour}) {
   const dispatch = useDispatch();
   const {id} = useParams()
   const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
+  const user = useSelector(state=>state.users.user)
   const [examData,setExamData] = useState();
   const [showAddEditQuestionModal, setShowAddEditQuestionModal] = useState(false)
   const [showAddEditQuestionModalPersonalizzate, setShowAddEditQuestionModalPersonalizzate] = useState(false)
@@ -836,6 +837,7 @@ const rowSelection = {
         {(examData || !id) &&
         activeTab === 1 ?
          <div className={activeTab === 1 ? 'info-exam-candidate elemento2' : 'info-exam-candidate'}>
+            {selectedRowKeys?.length > 0 && <button className='primary-outlined-btn' onClick={user?.accessGoogleToken ? () => console.log('ok') : () => window.alert("Autenticati con email nella pagina automazioni.")}>Invia email</button>}
             <PageTitle title={"Candidati"} style={{textAlign: 'center', fontWeight: '600', marginTop: '20px'}} />
             {visual === "list" ? 
             <Table

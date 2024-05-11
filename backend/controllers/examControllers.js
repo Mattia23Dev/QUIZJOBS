@@ -621,6 +621,46 @@ const saveTestProgress = async (req, res) => {
   }
 };
 
+const saveTestProgressMix = async (req, res) => {
+  console.log(req.body)
+  try {
+    const { email, testId, arrayAnswersPersonal, selectedOptionPersonal, questionIndexPersonal } = req.body;
+
+    const candidate = await candidateModel.findOne({ email });
+
+    if (!candidate) {
+      return res.status(404).json({ message: 'Candidate not found', success: false });
+    }
+
+    const testIndex = candidate.tests.find(test => test.testId.toString() === testId);
+
+    if (!testIndex) {
+      return res.status(404).json({ message: 'Test not found for the candidate', success: false });
+    }
+
+    testIndex.progressPersonal = { questionIndexPersonal, selectedOptionPersonal };
+    testIndex.arrayAnswersPersonal = arrayAnswersPersonal;
+
+    await candidate.save();
+
+    const updatedCandidate = await candidateModel.findOne({ email });
+    const specificTest = updatedCandidate.tests.find(test => test.testId.toString() === testId);
+
+    res.status(201).json({
+        message: 'Candidate retrieved successfully',
+        success: true,
+        candidate: {
+            ...updatedCandidate.toObject(),
+            tests: specificTest ? [specificTest] : []
+        }
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message, success: false });
+  }
+};
+
 const getAllExamsByUser = async(req,res) => {
   try{
      const exam = await Exam.find({company: req.params.id})
@@ -712,4 +752,4 @@ const changeStatus = async (req, res) => {
 
 module.exports = {addExam, addExamMix, getAllExams, getAllExamsByUser, getExamById, updateCandidateNotes,
   getCandidateCrm, editExam, deleteExam, addQuestionToExam, editQuestionInExam, 
-  deleteQuestionFromExam, saveTestProgress, addTrackLink, deleteTrackLink, changeStatus, ModificaExam, updateCandidatePreference}
+  deleteQuestionFromExam, saveTestProgress, saveTestProgressMix, addTrackLink, deleteTrackLink, changeStatus, ModificaExam, updateCandidatePreference}

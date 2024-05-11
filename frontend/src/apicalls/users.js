@@ -49,6 +49,17 @@ export const getTeamInfo = async() => {
   }
 }
 
+export const autenticaGoogleReact = async(code, userId) => {
+  console.log(code, userId)
+  try{
+    const response = await axiosInstance.post(`/api/users/completeAuth?code=${code}&id=${userId}`)
+    return response.data
+  }
+  catch(error){
+    return error.response.data
+  }
+}
+
 export const getCandidateInfo = async(payload) => {
   try{
     const response = await axiosInstance.post('/api/users/get-candidate-info', payload)

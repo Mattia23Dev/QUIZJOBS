@@ -7,6 +7,7 @@ import pdfToText from 'react-pdftotext'
 import axios from 'axios';
 import {useDispatch} from 'react-redux'
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice';
+import { fetchJWTToken } from '../../../apicalls';
 
 const FAQList = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -75,7 +76,6 @@ function Instructions(props) {
     setSelectedFile(file);
     pdfToText(file)
       .then(text => {
-        console.log(text)
         setFormData({...formData, pdfText: text})
       })
       .catch(error => console.error(error))
@@ -110,13 +110,19 @@ function Instructions(props) {
 
     formDataToSend.append('cv', selectedFile);
     try {
-     const url = await uploadFileToWordPress(selectedFile)
+     const token = await fetchJWTToken()
+     const url = await uploadFileToWordPress(selectedFile, token)
      formDataToSend.append('url', url);
      const response = await addCandidate(formDataToSend);
      console.log(response);
      setUser(response.candidate);
-     startTimer();
-     setView("questions")
+     //localStorage.setItem("token",response.token)
+     if (examData?.tag !== "mix"){
+      setView("questions")
+      startTimer();
+     } else {
+      setView("preQuestionsPersonal")
+     }
      dispatch(HideLoading())
     } catch (error) {
       console.error(error);
@@ -124,7 +130,7 @@ function Instructions(props) {
     }
   };
 
-  const uploadFileToWordPress = async (file) => {
+  const uploadFileToWordPress = async (file, token) => {
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -135,7 +141,7 @@ function Instructions(props) {
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3NraWxsc3Rlc3QuaXQiLCJpYXQiOjE3MTM2MDk3OTMsIm5iZiI6MTcxMzYwOTc5MywiZXhwIjoxNzE0MjE0NTkzLCJkYXRhIjp7InVzZXIiOnsiaWQiOiIxIn19fQ.E2Y_CR0GeoElFfUMaSPfc5QQ7d6Gu8vpueSDHibX1_Q`
+            'Authorization': `Bearer ${token}`
           },
         }
       );

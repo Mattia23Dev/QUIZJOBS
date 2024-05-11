@@ -40,7 +40,9 @@ const userSchema = new mongoose.Schema({
    },
    companyCity: {
     type: String,
-   }
+   },
+   refreshGoogleToken: String,
+   accessGoogleToken: String,
 },{
     timestamps: true
 })

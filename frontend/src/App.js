@@ -28,6 +28,8 @@ import Assistenza from './pages/admin/Assistenza';
 import Profile from './pages/admin/Profile';
 import Contatti from './pages/secondaryPages/Contatti';
 import Azienda from './pages/admin/Azienda/Azienda';
+import Automazioni from './pages/admin/Automazioni';
+import { CallbackComponentGoogle } from './pages/admin/Automazioni/Auth2.0';
 
 function App() {
   const {loading} = useSelector(state=>state.loaders)
@@ -75,8 +77,10 @@ function App() {
         <Route path="/admin/crm" element={<ProtectedRoute handleStartTour={() => handleStartTour('crm')} setLoginPopup={setLoginPopup}><Crm tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
         <Route path="/admin/profile" element={<ProtectedRoute setTour={setWhichTour} tour={whichTour} openTour={openTour} setOpenTour={setOpenTour} handleStartTour={() => handleStartTour('total')} setLoginPopup={setLoginPopup}><Profile tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
         <Route path="/admin/help" element={<ProtectedRoute setTour={setWhichTour} tour={whichTour} openTour={openTour} setOpenTour={setOpenTour} handleStartTour={() => handleStartTour('total')} setLoginPopup={setLoginPopup}><Assistenza tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
+        <Route path="/admin/automations" element={<ProtectedRoute setTour={setWhichTour} tour={whichTour} openTour={openTour} setOpenTour={setOpenTour} handleStartTour={() => handleStartTour('automations')} setLoginPopup={setLoginPopup}><Automazioni tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
         <Route path="/user/write-exam/:id" element={<ProtectedRoute handleStartTour={handleStartTour} setLoginPopup={setLoginPopup}><WriteExam tour={whichTour} openTour={openTour} setOpenTour={setOpenTour}/></ProtectedRoute>}/>
         <Route path="/user/azienda/:id" element={<PublicRoute><Azienda /></PublicRoute>} />
+        <Route path='/googleAuth' element={<PublicRoute><CallbackComponentGoogle /></PublicRoute>} />
       </Routes>
     </Router>
     </>

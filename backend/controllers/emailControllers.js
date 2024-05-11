@@ -1,4 +1,7 @@
 const nodemailer = require('nodemailer');
+const {google} = require('googleapis');
+const userModel = require('../models/userModel');
+const SCOPE = "https://www.googleapis.com/auth/gmail.compose";
 
 const sendHelpEmail = async (req, res) => {
   const { helpMessage, email } = req.body;
@@ -1227,4 +1230,42 @@ const finishJobCandidate = async (name, email, score) => {
   });
 };
 //finishJobCandidate("Mattia", "mattianoris23@gmail.com", "90")
-module.exports = { sendHelpEmail, welcomeEmail, finishJobCandidate };
+
+const autenticaGoogle = async (req, res) => {
+    const AUTH_CODE = req.query.code;
+    const user = await userModel.findById(req.query.id);
+    if (!user){
+        console.log('Utente non trovato')
+    }
+   //SKILLTEST UFFICIALI CLIEND ID : 830063440629-j40l5f7lb1fck6ap120s272d49rp1ph6.apps.googleusercontent.com
+   //CLIENT SECRET : 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
+    const postDataUrl = `https://oauth2.googleapis.com/token?` +
+        `code=${AUTH_CODE}` +
+        `&client_id=321609978941-q9opjlcaol9ge415933dsi9r9j9i6ua6.apps.googleusercontent.com` +
+        `&client_secret=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` +
+        `&redirect_uri=http://localhost:3000/automations` +
+        `&grant_type=authorization_code`;
+
+    try {
+        const response = await fetch(postDataUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        });
+        const val = await response.json();
+        console.log(val)
+        const token = {
+            ACCESS_TOKEN: val.access_token,
+            REFRESH_TOKEN: val.refresh_token,
+            status: 200
+        };
+
+        user.accessGoogleToken = val.access_token;
+        user.refreshGoogleToken = val.refresh_token;
+        await user.save()
+        res.json(token);
+    } catch (error) {
+        console.error('Error completing auth:', error);
+        res.status(500).json({ status: 500, message: 'Error completing authorization.' });
+    }
+};
+module.exports = { sendHelpEmail, welcomeEmail, finishJobCandidate, autenticaGoogle };

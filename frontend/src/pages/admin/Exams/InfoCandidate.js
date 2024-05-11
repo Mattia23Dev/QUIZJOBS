@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Modal, message, Progress, Collapse, Tag, Steps } from 'antd'
+import { Modal, message, Progress, Collapse, Tag, Steps, Segmented } from 'antd'
 import { HideLoading, ShowLoading } from '../../../redux/loaderSlice'
 import { useDispatch } from 'react-redux'
 import { getCandidateInfo } from '../../../apicalls/users'
@@ -60,6 +60,7 @@ function InfoCandidate(props) {
   const dispatch = useDispatch()
   const [candidate, setCandidate] = useState()
   const [activeTab, setActiveTab] = useState(1)
+  const [domandaType, setDomandaType] = useState("Skills")
   const [note, setNote] = useState(notes ? notes : '');
   const onFinish = () => {
     setShowInfoCandidateModal(false)
@@ -220,9 +221,17 @@ function InfoCandidate(props) {
                 Invia email
                 </button>
             </div></> : activeTab === 2 ?
-            tag === "manual" ? 
+            tag === "manual" || (tag === "mix" && domandaType === "Personalizzate") ?
             <div className='modal-candidate-domande'>
-              {candidate?.tests[0].arrayAnswers.questions.map((question, index) => {
+                {tag === "mix"&&<Segmented
+                  options={['Skills', 'Personalizzate']}
+                  onChange={(value) => {
+                    console.log(value);
+                    setDomandaType(value)
+                  }}
+                />}
+              {tag !== "mix" ? 
+              candidate?.tests[0].arrayAnswers.questions.map((question, index) => {
                  const answer = candidate?.tests[0].arrayAnswers.answers[index];
                  console.log(answer)
                  const seconds = candidate?.tests[0].arrayAnswers.seconds[index];
@@ -241,9 +250,33 @@ function InfoCandidate(props) {
                         )}
                   </div>
                   )
-              })}
-            </div> : 
+              })  : (
+                candidate?.tests[0].arrayAnswersPersonal.questions.map((question, index) => {
+                  const answer = candidate?.tests[0].arrayAnswersPersonal.answers[index];
+ 
+                  return (
+                   <div className='modal-manual-question'>
+                     <div onClick={() => setOpenIndex(openIndex === index ? null : index)} className='modal-candidate-question-m' key={index}>
+                       <div style={{ marginBottom: '5px' }}><span>{index + 1}.</span><p>{question}</p></div>
+                     </div>
+                     {openIndex === index && (
+                           <div className='answer-manual'>
+                             <p>{answer}</p>
+                           </div>
+                         )}
+                   </div>
+                   )
+               }
+              ))}
+            </div> :
             <div className='modal-candidate-domande'>
+              {tag === "mix"&&<Segmented
+                  options={['Skills', 'Personalizzate']}
+                  onChange={(value) => {
+                    console.log(value);
+                    setDomandaType(value)
+                  }}
+                />}
               {candidate?.tests[0].arrayAnswers.questions.map((question, index) => {
                  const answer = candidate?.tests[0].arrayAnswers.answers[index];
                  const seconds = candidate?.tests[0].arrayAnswers.seconds[index];
