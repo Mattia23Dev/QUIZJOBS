@@ -289,20 +289,33 @@ const handleNextButtonClickManual = async (index) => {
 const handleNextButtonClickMixPersonal = async (index) => {
   if (index === questionsPersonal.length){
     setView("preQuestions")
+    //startTimer();
+    const response = await saveTestProgressMix({
+        email: user.email,
+        testId: examData._id,
+        questionIndexPersonal: selectedQuestionIndexPersonal+1,
+        selectedOptionPersonal: selectedOptionsPersonal[selectedQuestionIndexPersonal],
+        arrayAnswersPersonal: {
+          answers: selectedOptionsPersonal,
+          questions: questionsPersonal.slice(0, selectedQuestionIndexPersonal + 1).map(question => question.question),
+          seconds: secondsPersonal,
+        },
+    })
+  } else {
+    setSelectedQuestionIndexPersonal(index);
+    startTimer();
+    const response = await saveTestProgressMix({
+        email: user.email,
+        testId: examData._id,
+        questionIndexPersonal: selectedQuestionIndexPersonal+1,
+        selectedOptionPersonal: selectedOptionsPersonal[selectedQuestionIndexPersonal],
+        arrayAnswersPersonal: {
+          answers: selectedOptionsPersonal,
+          questions: questionsPersonal.slice(0, selectedQuestionIndexPersonal + 1).map(question => question.question),
+          seconds: secondsPersonal,
+        },
+    })
   }
-  setSelectedQuestionIndexPersonal(index);
-  startTimer();
-  const response = await saveTestProgressMix({
-      email: user.email,
-      testId: examData._id,
-      questionIndexPersonal: selectedQuestionIndexPersonal+1,
-      selectedOptionPersonal: selectedOptionsPersonal[selectedQuestionIndexPersonal],
-      arrayAnswersPersonal: {
-        answers: selectedOptionsPersonal,
-        questions: questionsPersonal.slice(0, selectedQuestionIndexPersonal + 1).map(question => question.question),
-        seconds: secondsPersonal,
-      },
-  })
 };
 
 const startTimer = () => {
@@ -591,7 +604,7 @@ useEffect(()=>{
        {selectedQuestionIndexPersonal===questionsPersonal.length-1&&<button className='primary-contained-btn'
        style={{display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center'}}
        onClick={()=>{
-         handleNextButtonClickMixPersonal(selectedOptionsPersonal +1)
+         handleNextButtonClickMixPersonal(selectedQuestionIndexPersonal +1)
        }}
        >
         <img src={arrowRight} alt='arrow right' />

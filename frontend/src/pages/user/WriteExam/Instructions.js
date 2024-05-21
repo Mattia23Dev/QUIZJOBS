@@ -82,7 +82,6 @@ function Instructions(props) {
   };
   console.log(formData.pdfText)
   const handleSubmit = async (e) => {
-    dispatch(ShowLoading())
     e.preventDefault();
     for (const key in formData) {
       if (key !== "coverLetter" && formData[key] === "") {
@@ -103,6 +102,7 @@ function Instructions(props) {
       alert("Per favore inserisci un numero di cellulare valido.");
       return;
     }
+    dispatch(ShowLoading())
     const formDataToSend = new FormData();
     for (const key in formData) {
       formDataToSend.append(key, formData[key]);

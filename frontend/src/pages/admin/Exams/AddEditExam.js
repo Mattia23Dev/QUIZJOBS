@@ -335,7 +335,7 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
          model: 'gpt-4-turbo-preview',
        });
        const exampleFormat = `
-       Crea delle domande in questo formato: 
+       Crea delle domande inerenti a queste competenze: ${config.skills.join(', ')}, in questo formato, ricorda che questo è un esempio:
        ### Domande per Full Stack Developer
 
       1. In JavaScript, cosa restituisce 'typeof NaN'?
@@ -357,9 +357,22 @@ function AddEditExam({setBigLoading, openTour, setOpenTour, tour}) {
       Assicurati di non inserire opzioni che non centrano con il contesto della domanda o del ruolo, Assicurati di fare domande non banali e specifiche alle competenze fornite: ${config.skills.join(', ')}, con difficoltà ${config.difficulty}, nella lingua ${config.testLanguage}.
       Le risposte all'interno della domanda devono essere fatte con una risposta completamente sbagliata, una risposta che possa sembrare corretta e le ultime due risposte simili tra loro, ma una sola corretta.
       Descrizione della difficoltà delle domande, prendi in considerazione il campo sopra con la discrezione sotto:
-       - Facile (Junior): Le domande si concentrano su concetti di base e conoscenze fondamentali legate alle competenze junior. Utilizza un linguaggio chiaro e comprensibile.
-       - Medio (Middle): Le domande coinvolgono scenari più realistici e situazioni di lavoro quotidiane che richiedono una comprensione più approfondita delle competenze. Coinvolgi terminologia tecnica più avanzata e problemi che richiedono una valutazione critica.
-       - Difficile (Senior): Le domande sono complesse e richiedono un'elevata competenza e esperienza. Coinvolgi scenari pratici e problemi avanzati che richiedono una solida comprensione del dominio e una valutazione strategica. è molto importante che il test sia pensato per renderlo più difficile possibile, anche a costo di trovare domande o risposte poco comuni e originali ma che rientrino nel contesto.
+      - Facile (Junior): Le domande devono focalizzarsi su concetti di base che un candidato dovrebbe conoscere per svolgere il ruolo in modo efficace. Usa un linguaggio chiaro e semplice, evitando terminologia complessa o gergale che potrebbe confondere. Le domande dovrebbero richiedere la conoscenza diretta e applicabile, senza richiedere interpretazioni complesse o analisi dettagliate. Ogni opzione di risposta deve essere distinta, con una risposta corretta che sia chiaramente la migliore scelta tra le opzioni fornite. Attenendosi sempre alla domanda e mantenendo sempre e soltanto una sola risposta Corretta. Opzioni di Risposta:
+      1) Una risposta completamente sbagliata.
+      2) Una risposta che sembri corretta ma non lo è.
+      3) Due risposte simili tra loro, ma solo una corretta.
+      
+      - Medio (Middle): Le domande devono richiedere una comprensione approfondita dei concetti fondamentali e delle applicazioni pratiche delle competenze richieste. Includi scenari realistici che i candidati potrebbero affrontare nel loro lavoro quotidiano. Questo aiuta a valutare la loro capacità di applicare le conoscenze in contesti pratici. Usa terminologia tecnica appropriata per il ruolo, ma non eccessivamente complessa. Questo garantisce che i candidati conoscano il gergo del settore senza essere eccessivamente intimiditi. Opzioni di Risposta:
+      1) Una risposta completamente sbagliata.
+      2) Una risposta che sembri corretta ma non lo è.
+      3) Due risposte simili tra loro, ma solo una corretta.
+      
+      
+      - Difficile (Senior): Le domande devono riguardare argomenti che richiedono una competenza avanzata e un'esperienza significativa nel campo specifico. Le opzioni di risposta sbagliate devono essere sofisticate e plausibili, dimostrando una comprensione superficiale o errata dei concetti avanzati. Alcune domande dovrebbero permettere di valutare l'abilità del candidato di innovare e pensare in modo creativo per risolvere problemi complessi.
+       Opzioni di Risposta:
+      1) Una risposta completamente sbagliata.
+      2) Una risposta che sembri corretta ma non lo è, spesso mostrando una comprensione parziale.
+      3) Due risposte simili alla corretta, ma solo una è esattamente corretta.      
       `;
 
       const requestData = {

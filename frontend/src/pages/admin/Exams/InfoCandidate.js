@@ -277,7 +277,7 @@ function InfoCandidate(props) {
                     setDomandaType(value)
                   }}
                 />}
-              {candidate?.tests[0].arrayAnswers.questions.map((question, index) => {
+              {candidate?.tests[0]?.arrayAnswers?.questions?.map((question, index) => {
                  const answer = candidate?.tests[0].arrayAnswers.answers[index];
                  const seconds = candidate?.tests[0].arrayAnswers.seconds[index];
                  const correctAnswer = examQuestion.find(q => q.question === question)?.correctOption;
