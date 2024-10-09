@@ -10,7 +10,7 @@
 }
 .sidebar{
   background-color: #121430;
-  padding: 10px 14px 10px 6px;
+  /* padding: 10px 14px 10px 6px; */
   color: #8d9ead;
   height: 100%;
   display: flex;

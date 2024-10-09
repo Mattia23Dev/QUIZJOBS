@@ -246,6 +246,28 @@ const Team = ({openTour, setOpenTour, tour}) => {
         </div>
         <div className='team-bottom'>
           <div className='left-team elemento1'>
+          <div>
+              <label>
+                First Name:
+                <input
+                  type="text"
+                  name="fName"
+                  value={formData.name}
+                  onChange={handleChange}
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Last Name:
+                <input
+                  type="text"
+                  name="lName"
+                  value={formData.name}
+                  onChange={handleChange}
+                />
+              </label>
+            </div>
             <div>
               <label>
                 Nome:

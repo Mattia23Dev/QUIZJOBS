@@ -15,6 +15,7 @@
     "gapi-script": "^1.2.0",
     "jwt-decode": "^4.0.0",
     "moment": "^2.29.4",
+    "nprogress": "^0.2.0",
     "openai": "^4.27.0",
     "qrcode.react": "^3.1.0",
     "rc-queue-anim": "^2.0.0",

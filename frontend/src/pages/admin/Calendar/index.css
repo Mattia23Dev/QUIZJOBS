@@ -1,209 +1,337 @@
-.calendar-container{
-    width: 100%;
-    margin-top: 1rem;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
+.calendar-container {
+  width: 100%;
+  margin-top: 1rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
 }
-.calendar-container > div:first-of-type{
-    width: 30%;
+.calendar-container > div:first-of-type {
+  width: 25%;
 }
-.calendar-container > div:first-of-type ul{
-    max-height: 500px;
-    overflow-y: auto;
-    padding-left: 0;
+.calendar-container > div:first-of-type ul {
+  max-height: 500px;
+  padding-top: 10px;
+  overflow-y: auto;
+  padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  row-gap: 17px;
 }
-.calendar-container > div:first-of-type ul > li{
-    list-style-type: none;
-    width: 90%;
-    margin: 10px 0;
-    border: 1px solid var(--primary);
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 12px;
+.calendar-container > div:first-of-type ul > li {
+  list-style-type: none;
+  width: 90%;
+  /* margin: 10px 0; */
+  /* border: 1px solid var(--primary); */
+  border: 1px solid var(--border-color);
+  box-shadow: 0px 0px 4px #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 12px;
+  transition: 0.3s;
 }
-.li-calendar{
-    list-style-type: none;
-    width: 90%;
-    border-radius: 5px;
-    background-color: var(--primary);
-    font-size: 12px;
-    padding: 6px 10px;
-    color: white;
+.calendar-container > div:first-of-type ul > li:hover{
+  box-shadow: 0px 0px 10px #ccc;
+  transition: 0.3s;
 }
-.calendar-container > div:last-of-type{
-    width: 70%;
+
+.li-calendar {
+  list-style-type: none;
+  width: 90%;
+  border-radius: 5px;
+  background-color: var(--primary);
+  font-size: 12px;
+  padding: 6px 10px;
+  color: white;
 }
-.ant-picker-calendar-header{
-    padding: 15px 10px;
+.calendar-container > div:last-of-type {
+  width: 75%;
 }
-.ant-picker-calendar-date{
-    padding: 0 !important;
+.ant-picker-calendar-header {
+  padding: 15px 10px;
+}
+.ant-picker-calendar-date {
+  padding: 0 !important;
+  /* border-top: 0px !important; */
 }
 .ant-picker-calendar-date ul {
-    padding: 0;
+  padding: 0;
 }
 
-.top-calendar{
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 3rem;
-    width: 100%;
+.top-calendar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 3rem;
+  width: 100%;
 }
-.filter-appointment{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.filter-appointment {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .filter-appointment > div {
-    display: flex;
-    width: 40%;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  width: 40%;
+  align-items: center;
+  gap: 10px;
 }
-.filter-appointment .ant-picker{
-    width: 60%;
-    margin-left: 50px;
+.filter-appointment .ant-picker {
+  width: 60%;
+  margin-left: 50px;
 }
-.filter-appointment button{
-    background-color: transparent;
-    border: none;
-    text-decoration: underline;
-    cursor: pointer;
-    border-radius: 5px;
+.filter-appointment button {
+  background-color: transparent;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  border-radius: 5px;
 }
-.filter-appointment > div > button:nth-of-type(2){
-    text-decoration: none;
-    border: 1px solid var(--primary);
-    border-radius: 5px;
+.filter-appointment > div > button:nth-of-type(2) {
+  text-decoration: none;
+  border: 1px solid var(--primary);
+  border-radius: 5px;
 }
-.filter-appointment > div > .active{
-    background-color: var(--primary);
-    color: white;
-    text-decoration: none;
+.filter-appointment > div > .active {
+  background-color: var(--primary);
+  color: white;
+  text-decoration: none;
 }
-.ant-picker-cell-in-view{
-    padding: 0 !important;
+.ant-picker-cell-in-view {
+  padding: 0 !important;
 }
 
-.form-add-appointment{
-    display: flex;
-    position: relative;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 20px;
-    width: 100%;
-    margin: 20px 0;
+.form-add-appointment {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px;
+  width: 100%;
+  margin: 20px 0;
 }
-.form-add-appointment .ant-select{
-    min-width: 100%;
+.form-add-appointment .ant-select {
+  min-width: 100%;
 }
 .form-add-appointment > div {
-    width: 100%;
+  width: 100%;
 }
-.form-add-appointment > div > div{
-    width: 100%;
-    display: flex;
-    gap: 10px;
+.form-add-appointment > div > div {
+  width: 100%;
+  display: flex;
+  gap: 10px;
 }
-.form-add-appointment .ant-picker{
-    min-width: 49% !important;
-    border-radius: 5px !important;
-    height: 40px;
+.form-add-appointment .ant-picker {
+  min-width: 49% !important;
+  border-radius: 5px !important;
+  height: 40px;
 }
-.form-add-appointment .ant-select-selector{
-    height: 40px !important;
+.form-add-appointment .ant-select-selector {
+  height: 40px !important;
 }
 
-
-.appointmend-modal{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
-    width: 100%;
-    margin: 20px 0;
+.appointmend-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  width: 100%;
+  margin: 20px 0;
 }
-.appointment-item{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    border-radius: 5px;
-    border: 1px solid var(--primary);
-    padding: 5px 10px;
+.appointment-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid var(--primary);
+  padding: 5px 10px;
 }
 .appointment-item img {
-    width: 20px;
-    cursor: pointer;
+  width: 20px;
+  cursor: pointer;
 }
-.appointment-item > div:last-of-type{
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+.appointment-item > div:last-of-type {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
-.indietro{
-    background-color: var(--primary);
-    width: 40px !important;
-    position: absolute;
-    top: -40px;
-    left: 0;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px 0;
-    cursor: pointer;
+.indietro {
+  background-color: var(--primary);
+  width: 40px !important;
+  position: absolute;
+  top: -40px;
+  left: 0;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 0;
+  cursor: pointer;
 }
 .indietro img {
-    width: 25px;
+  width: 25px;
 }
 
-@media screen and (max-width: 700px) {
-    .ant-affix{
-        z-index: 1 !important;
-    }
-    .calendar-container{
-        flex-direction: column;
-    }
-    .calendar-container > div:first-of-type{
-        width: 100%;
-    }
-    .calendar-container > div:last-of-type{
-        width: 100%;
-    }
-    .calendar-container > div:first-of-type ul > li{
-        width: 100%;
-    }
-    .li-calendar{
-        width: 100%;
-    }
-    .top-calendar{
-        gap: 0.4rem;
-        flex-direction: column;
-        position: relative;
-    }
-    .calendario{
-        display: none;
-    }
-    .li-calendar{
-        width: 90% !important;
-        font-size: 10px !important;
-        padding: 2px !important;
-        text-align: center;
-    }
-    .ant-picker-calendar-date-content{
-        overflow-y: hidden !important;
-    }
-    .indietro{
-        top: -90px;
-    }
-    .top-calendar > button{
-        position: absolute;
-        top: 0;
-        right: 0;
-    }
+/* @media screen and (max-width: 700px) {
+  .ant-affix {
+    z-index: 1 !important;
+  }
+  .calendar-container {
+    flex-direction: column;
+  }
+  .calendar-container > div:first-of-type {
+    width: 100%;
+  }
+  .calendar-container > div:last-of-type {
+    width: 100%;
+  }
+  .calendar-container > div:first-of-type ul > li {
+    width: 100%;
+  }
+  .li-calendar {
+    width: 100%;
+  }
+  .top-calendar {
+    gap: 0.4rem;
+    flex-direction: column;
+    position: relative;
+  }
+  .calendario {
+    display: none;
+  }
+  .li-calendar {
+    width: 90% !important;
+    font-size: 10px !important;
+    padding: 2px !important;
+    text-align: center;
+  }
+  .ant-picker-calendar-date-content {
+    overflow-y: hidden !important;
+  }
+  .indietro {
+    top: -90px;
+  }
+  .top-calendar > button {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+} */
+
+/* update by hasnain  */
+
+.ant-picker-cell {
+  border: solid var(--border-color) 1px;
+}
+
+.ant-picker-calendar-date {
+  padding: 0 !important;
+  border-top: 0px !important;
+  position: relative !important;
+}
+
+.ant-picker-calendar-date-content {
+  height: 0px !important;
+}
+
+.ant-picker-calendar-date-content .event-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 15px;
+  color: white;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  background-color: var(--primary);
+  z-index: 1000 !important;
+}
+
+.ant-picker-calendar-date-value {
+  height: 120px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.ant-picker-calendar-date {
+  margin: 0px !important;
+}
+
+.ant-picker-calendar-date-today .ant-picker-calendar-date-value {
+  color: black !important;
+}
+
+.ant-picker-calendar-full .ant-picker-panel .ant-picker-body th {
+  text-align: center;
+  padding: 0px !important;
+  height: 60px !important;
+  font-weight: 600;
+}
+
+@media screen and (max-width: 950px) {
+  .ant-picker-calendar-date-content .event-badge {
+    font-size: 12px !important;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .ant-affix {
+    z-index: 1 !important;
+  }
+  .calendar-container {
+    flex-direction: column;
+  }
+  .calendar-container > div:first-of-type {
+    width: 100%;
+    order: 2;
+  }
+  .calendar-container > div:last-of-type {
+    width: 100%;
+    order: 1;
+  }
+  .calendar-container > div:first-of-type ul > li {
+    width: 100%;
+  }
+  .li-calendar {
+    width: 100%;
+  }
+  .top-calendar {
+    gap: 0.4rem;
+    flex-direction: column;
+    position: relative;
+  }
+  /* .calendario {
+      display: none;
+    } */
+  .li-calendar {
+    width: 90% !important;
+    font-size: 10px !important;
+    padding: 2px !important;
+    text-align: center;
+  }
+  .ant-picker-calendar-date-content {
+    overflow-y: hidden !important;
+  }
+  .indietro {
+    top: -90px;
+  }
+  .top-calendar > button {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .ant-picker-calendar-date-content .event-badge {
+    font-size: 10px !important;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
 }

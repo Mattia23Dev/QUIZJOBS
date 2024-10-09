@@ -1,68 +1,81 @@
 :root {
-    --primary: #233142;
-    --secondary: #F95959;
-    --success: #4caf50;
-    --info: #3A97ED;
-    --warning: #ff9800;
-    --danger: #f44336;
-    --light: #f1f1f1;
-    --dark: #212121;
+  --primary: #6a5cff;
+  /* #6d00cc; */
+  /* #233142; */
+  --secondary: #f95959;
+  --success: #4caf50;
+  --info: #3a97ed;
+  --warning: #ff9800;
+  --danger: #f44336;
+  --light: #f1f1f1;
+  --dark: #212121;
+  --dmo-spacing-6: 0.2rem;
+  --border-color: #e3e4e8;
+  --dmo-spacing-12: 0.75rem;
 }
-body::-webkit-scrollbar{
-    width: 10px;
+body::-webkit-scrollbar {
+  width: 10px;
 }
-body::-webkit-scrollbar-track{
-    background-color: #e0e0e0;
+body::-webkit-scrollbar-track {
+  background-color: #e0e0e0;
 }
 body::-webkit-scrollbar-thumb {
-    background-color: var(--primary);
-    border-radius: 10px;
+  background-color: var(--primary);
+  border-radius: 10px;
 }
-.bg-primary{
-    background-color: var(--primary) !important;
-}
-
-.bg-white{
-    background-color: var(--light) !important;
-}
-.bg-secondary{
-    background-color: var(--secondary) !important;
+.bg-primary {
+  background-color: var(--primary) !important;
 }
 
-.text-white{
-    color: white !important;
+.bg-white {
+  background-color: var(--light) !important;
+}
+.bg-secondary {
+  background-color: var(--secondary) !important;
 }
 
-.bg-success{
-    background-color: var(--success);
+.text-white {
+  color: white !important;
 }
 
-.bg-warning{
-    background-color: var(--warning);
+.bg-success {
+  background-color: var(--success);
 }
-.popup-shadows{
-    background-color: rgba(0, 0, 0, 0.449);
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    right: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: center;
-    align-items: center
+
+.bg-warning {
+  background-color: var(--warning);
 }
-.popup-logout{
-    width: 30%;
+.popup-shadows {
+  background-color: rgba(0, 0, 0, 0.449);
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.popup-logout {
+  width: 30%;
+  height: 200px;
+  background-color: #e3e3e3;
+}
+.ant-modal-content{
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+.ant-popover-inner{
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+@media screen and (max-width: 700px) {
+  .popup-logout {
+    width: 90%;
     height: 200px;
     background-color: #e3e3e3;
-}
-@media screen and (max-width: 700px){
-    .popup-logout{
-        width: 90%;
-        height: 200px;
-        background-color: #e3e3e3;
-    }
+  }
 }

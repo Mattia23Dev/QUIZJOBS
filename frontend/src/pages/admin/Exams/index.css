@@ -1,108 +1,132 @@
-.exams-container{
-    overflow-y: auto;
-    padding: 15px;
+.exams-container {
+  overflow-y: auto;
+  padding: 10px;
 }
-.exams-container > div:first-of-type > div:last-of-type{
-    display: flex;
-    gap: 10px;
+.exams-container > div:first-of-type > div:last-of-type {
+  display: flex;
+  gap: 10px;
 }
-.exam-list{
-    justify-content: flex-start;
-    gap: 2rem;
+.exam-list {
+  justify-content: flex-start;
+  gap: 2rem;
 }
-.test-filter{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    gap: 0.5rem;
-    width: 70%;
+
+.test-filter {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  column-gap: 2rem;
+  width: 100%;
+  border-bottom: solid #e3e4e8 1px;
+  padding-bottom: 10px;
+  padding-top: 10px;
 }
 .test-filter select {
-    border: none;
-    background-color: transparent;
-    border-radius: 0;
-    font-size: 13px;
-    padding: 0px 10px;
-    width: 120px;
-    border-bottom: 1px solid var(--primary);
+  border: none;
+  background-color: transparent;
+  border-radius: 0;
+  font-size: 13px;
+  padding: 0px 10px;
+  width: 120px;
+  border-bottom: 1px solid var(--primary);
 }
-.test-filter > div > .ant-select{
-    min-width: 120px;
-    margin-left: 10px;
+.test-filter > div > .ant-select {
+  min-width: 120px;
+  margin-left: 10px;
 }
 .test-filter label {
-    font-size: 12px;
-    width: fit-content;
+  font-size: 12px;
+  width: fit-content;
 }
 .test-filter > div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
-.card-exam{
-    border: 1.3px solid var(--primary);
-    border-radius: 10px;
-    padding: 15px 20px;
-    width: 31%;
-    min-height: 250px;
-    position: relative;
+.card-exam {
+  box-shadow: 0px 2px 5px #ccc;
+  transition: 0.3s;
+  border-radius: 10px;
+  padding: 15px 20px;
+  width: 31%;
+  min-height: 250px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
-.ceg{
-    border: 1px solid var(--primary);
+.card-exam:hover{
+  transition: 0.3s;
+  box-shadow: 0px 2px 13px #ccc;
+}
+.ceg {
+  border: 1px solid var(--primary);
 }
 .card-exam h1 {
-    font-weight: 600;
-    font-size: 16px;
+  font-weight: 600;
+  font-size: 16px;
 }
 .card-exam-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 0rem;
+  align-items: center;
+  border-bottom: solid var(--border-color) 1px;
 }
-.card-exam-top > button {
-    background-color: var(--info);
-    border-radius: 20px;
-    padding: 6px 12px;
-    font-size: 14px;
-    border: none;
-    cursor: pointer;
-    color: white;
-    margin-top: -10px;
+.card-exam > button {
+    margin-top: 5px;
+  background-color: var(--info);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  color: white;
+  /* margin-top: -10px; */
 }
 .card-exam-middle {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 15px 0px;
+  display: flex;
+  /* border: solid black 1px; */
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0px;
+  
 }
-.card-exam-middle-skills{
-    display: flex;
-    flex-wrap: wrap;
+.card-exam-middle-skills {
+  display: flex;
+  flex-wrap: wrap;
+  /* border: solid black 1px; */
+  margin: 0px;
+  padding: 0px 15px;
 }
 .card-exam-middle-skills > li {
-    color: #424242;
-    font-size: 13px;
-    width: fit-content;
-    margin: 4px 1.3rem 0 0;
+  color: #424242;
+  font-size: 13px;
+  /* border: solid black 1px; */
+
+  width: fit-content;
+  margin: 4px 1.3rem 0 0;
 }
-.card-exam-bottom{
-    display: flex;
-    justify-content: space-between;
-    width: 90%;
-    gap: 0rem;
-    align-items: flex-end;
-    position: absolute;
-    bottom: 20px;
+.card-exam-bottom {
+  display: flex;
+  justify-content: space-between;
+  flex: 1;
+  width: 100%;
+  flex-wrap: wrap;
+  /* border: solid black 1px; */
+  /* gap: 0rem; */
+  align-items: flex-end;
+  /* position: absolute; */
+  /* bottom: 20px; */
 }
-.card-exam-bottom > div > h4:first-of-type{
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.card-exam-bottom > div > h4:first-of-type {
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-.exam-testimg{
-    width: 230px;
+.exam-testimg {
+  width: 230px;
 }
 .easy-diff,
 .middle-diff,
@@ -110,242 +134,239 @@
   display: inline-block;
   width: 20px; /* Larghezza del pallino */
   height: 20px; /* Altezza del pallino */
-  border-radius: 50%; 
+  border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .easy-diff {
-    color: green; 
-    background-color: green;
-    font-size: 20px;
-  }
-  
-  .middle-diff {
-    color: orange; 
-    background-color: orange;
-    font-size: 20px;
-  }
-  
-  .hard-diff {
-    color: red;
-    background-color: red;
-    font-size: 20px;
-  }
-.card-exam-bottom > div > h4:last-of-type{
-    color: var(--secondary);
+  color: green;
+  background-color: green;
+  font-size: 20px;
+}
+
+.middle-diff {
+  color: orange;
+  background-color: orange;
+  font-size: 20px;
+}
+
+.hard-diff {
+  color: red;
+  background-color: red;
+  font-size: 20px;
+}
+.card-exam-bottom > div > h4:last-of-type {
+  color: var(--secondary);
 }
 .card-exam-bottom > h4 {
-    color: #5C5967;
-    display: flex;
-    gap: 5px;
+  color: #5c5967;
+  display: flex;
+  gap: 5px;
 }
 .card-exam-bottom > h4 > img {
-    width: 20px;
-    height: auto;
+  width: 20px;
+  height: auto;
 }
 
-
-.choose-test{
-    display: flex;
-    align-items: stretch;
-    flex-direction: row;
-    justify-content: space-around;
-    padding: 30px 0;
-    gap: 2rem;
+.choose-test {
+  display: flex;
+  align-items: stretch;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 30px 0;
+  gap: 2rem;
 }
 .choose-test h2 {
-    font-weight: 600;
-    font-size: 17px;
+  font-weight: 600;
+  font-size: 17px;
 }
 .choose-test p {
-    font-size: 13px;
-    color: #636363;
+  font-size: 13px;
+  color: #636363;
 }
 .choose-test > div {
-    width: 30%;
-    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.179);
-    border-radius: 10px;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    cursor: pointer;
-    border: 1px solid var(--primary);
-    position: relative;
-    flex-grow: 1;
-    transition: 0.3s;
-    min-height: 280px;
+  width: 30%;
+  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.179);
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  cursor: pointer;
+  border: 1px solid var(--primary);
+  position: relative;
+  flex-grow: 1;
+  transition: 0.3s;
+  min-height: 280px;
 }
-.choose-test > div:hover{
-    transform: scale(1.04);
-    transition: 0.2s;
+.choose-test > div:hover {
+  transform: scale(1.04);
+  transition: 0.2s;
 }
-.choose-test > div:nth-of-type(2){
-    border: 2px solid var(--primary);
-    transform: scale(1.04);
+.choose-test > div:nth-of-type(2) {
+  border: 2px solid var(--primary);
+  transform: scale(1.04);
 }
-.choose-test > div:nth-of-type(2):hover{
-    transform: scale(1.08);
+.choose-test > div:nth-of-type(2):hover {
+  transform: scale(1.08);
 }
-.taggetto{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    background-color: var(--secondary);
-    border-radius: 20px;
-    padding: 3px 12px;
-    color: white;
-    font-size: 12px;
-    width: 80px;
-    margin-top: -10px;
-    margin-bottom: 10px;
+.taggetto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background-color: var(--secondary);
+  border-radius: 20px;
+  padding: 3px 12px;
+  color: white;
+  font-size: 12px;
+  width: 80px;
+  margin-top: -10px;
+  margin-bottom: 10px;
 }
 .choose-test > div > div {
-    position: absolute;
-    top: -15px;
-    right: -10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    background-color: var(--secondary);
-    border-radius: 20px;
-    padding: 5px;
+  position: absolute;
+  top: -15px;
+  right: -10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background-color: var(--secondary);
+  border-radius: 20px;
+  padding: 5px;
 }
-.taggetto img{
-    width: 15px;
+.taggetto img {
+  width: 15px;
 }
 .choose-test > div > div > img {
-    width: 17px;
+  width: 17px;
 }
 .choose-test span {
-    font-size: 12px;
-    color: white;
+  font-size: 12px;
+  color: white;
 }
 
 .choose-test img {
-    width: 50px;
+  width: 50px;
 }
-@media screen and (max-width: 1400px){
-    .test-filter > div > .ant-select{
-        min-width: 120px;
-        margin-left: 5px;
-        font-size: 11px;
-    }
-    .test-filter label {
-        font-size: 11px;
-    }
-    .card-exam h1 {
-        font-size: 17px;
-    }
-    .card-exam-top > button {
-        padding: 4px 12px;
-        font-size: 12px;
-    }
-    .card-exam-middle-skills > li {
-        font-size: 12px;
-    }
-    .card-exam-bottom h4 {
-        font-size: 12px;
-    }
-    .easy-diff,
-    .middle-diff,
-    .hard-diff {
+@media screen and (max-width: 1400px) {
+  .test-filter > div > .ant-select {
+    min-width: 120px;
+    margin-left: 5px;
+    font-size: 11px;
+  }
+  .test-filter label {
+    font-size: 11px;
+  }
+  .card-exam h1 {
+    font-size: 17px;
+  }
+  .card-exam-top > button {
+    padding: 4px 12px;
+    font-size: 12px;
+  }
+  .card-exam-middle-skills > li {
+    font-size: 12px;
+  }
+  .card-exam-bottom h4 {
+    font-size: 12px;
+  }
+  .easy-diff,
+  .middle-diff,
+  .hard-diff {
     width: 15px; /* Larghezza del pallino */
     height: 15px; /* Altezza del pallino */
-    }
+  }
 }
 
-@media screen and (max-width: 1300px){
-    .test-filter{
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        gap: 0.2rem;
-        width: 75%;
-    }
-    .card-exam{
-        border: 1px solid var(--primary);
-        width: 30%;
-        min-height: 220px;
-    }
-    .card-exam h1 {
-        font-size: 15px;
-    }
-    .card-exam-bottom h4 {
-        font-size: 11px;
-    }
-    .card-exam-top > button {
-        padding: 4px 12px;
-        font-size: 12px;
-    }
-    .easy-diff,
-    .middle-diff,
-    .hard-diff {
-    width: 15px; 
+@media screen and (max-width: 1300px) {
+  .test-filter {
+    flex-wrap: wrap;
+    column-gap: 2rem;
+    row-gap: 1rem;
+  }
+  .card-exam {
+    /* border: 1px solid var(--primary); */
+    width: 30%;
+    min-height: 220px;
+  }
+  .card-exam h1 {
+    font-size: 15px;
+  }
+  .card-exam-bottom h4 {
+    font-size: 11px;
+  }
+  .card-exam-top > button {
+    padding: 4px 12px;
+    font-size: 12px;
+  }
+  .easy-diff,
+  .middle-diff,
+  .hard-diff {
+    width: 15px;
     height: 15px;
-    }
+  }
 }
 
-@media screen and (max-width: 700px){
-    .test-filter{
-        gap: 0.5rem;
-        width: 100%;
-    }
-    .test-filter > div > .ant-select{
-        min-width: 100px;
-        margin-left: 0px;
-        font-size: 12px;
-    }
-    .test-filter label {
-        font-size: 12px;
-        width: fit-content !important;
-    }
-    .test-filter > div {
-        display: flex;
-        align-items: flex-start;
-        justify-content: flex-start;
-        flex-direction: column;
-        gap: 6px;
-    }
-    .card-exam{
-        border: 1.3px solid var(--primary);
-        border-radius: 10px;
-        padding: 15px 20px;
-        width: 100%;
-        min-height: 250px;
-        position: relative;
-    }
-    .card-exam-bottom h4 {
-        font-size: 14px;
-    }
-    .card-exam-middle-skills > li {
-        font-size: 14px;
-    }
-    .exam-testimg{
-        width: 230px;
-    }
-    .exam-list{
-        justify-content: flex-start;
-        gap: 0.2rem;
-        flex-direction: column;
-    }
-    .exams-container > div:first-of-type > div:last-of-type{
-        width: 100%;
-        justify-content: flex-start;
-        margin-top: 10px;
-    }
-    .exams-container > div:first-of-type > div:last-of-type button{
-        display: inline;
-        width: 50%;
-    }
-    .choose-test{
-        flex-direction: column;
-    }
-    .choose-test > div{
-        width: 100%;
-    }
+@media screen and (max-width: 700px) {
+  .test-filter {
+    flex-wrap: wrap;
+    column-gap: 2rem;
+  }
+  .test-filter > div > .ant-select {
+    min-width: 100px;
+    margin-left: 0px;
+    font-size: 12px;
+  }
+  .test-filter label {
+    font-size: 12px;
+    width: fit-content !important;
+  }
+  .test-filter > div {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .card-exam {
+    border: 1.3px solid var(--primary);
+    border-radius: 10px;
+    padding: 15px 20px;
+    width: 100%;
+    min-height: 250px;
+    position: relative;
+  }
+  .card-exam-bottom h4 {
+    font-size: 14px;
+  }
+  .card-exam-middle-skills > li {
+    font-size: 14px;
+  }
+  .exam-testimg {
+    width: 230px;
+  }
+  .exam-list {
+    justify-content: flex-start;
+    gap: 0.2rem;
+    flex-direction: column;
+  }
+  .exams-container > div:first-of-type > div:last-of-type {
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 10px;
+  }
+  .exams-container > div:first-of-type > div:last-of-type button {
+    display: inline;
+    width: 50%;
+  }
+  .choose-test {
+    flex-direction: column;
+  }
+  .choose-test > div {
+    width: 100%;
+  }
 }
