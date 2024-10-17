@@ -7,11 +7,12 @@ const openai = require('openai');
 const apiKey = process.env.OPENAI_API;
 
 //add attempts
-const client = new openai.OpenAI({
-    apiKey: apiKey,
-    dangerouslyAllowBrowser: true,
-    model: 'gpt-4-turbo-preview',
-  });
+const client = "";
+//  new openai.OpenAI({
+//     apiKey: apiKey,
+//     dangerouslyAllowBrowser: true,
+//     model: 'gpt-4-turbo-preview',
+//   });
 const reportOpenaiManual = async (req,res) => {
     try {
         const {email, exam, questions, answers, user} = req.body;

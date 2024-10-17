@@ -11,6 +11,7 @@ import {
   Select,
   Col,
   Card,
+  Badge,
 } from "antd";
 import { MdMore } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,11 +31,15 @@ import mix from "../../../imgs/mix.png";
 import skt from "../../../imgs/skt.png";
 import Tour from "reactour";
 import logo from "../../../imgs/logo.png";
+import { useTranslation } from "react-i18next";
+import { isMobile } from "../../../utlis/functions";
+import { GenerateTestOptions } from "../../../utlis/constants";
 const { Option } = Select;
 
 function ExamsPage({ openTour, setOpenTour, tour }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const [exams, setExams] = useState([]);
   const [createTest, setCreateTest] = useState();
   const [confirmVisibleMap, setConfirmVisibleMap] = useState({});
@@ -107,7 +112,6 @@ function ExamsPage({ openTour, setOpenTour, tour }) {
       dispatch(HideLoading());
       if (response.success) {
         //message.success(response.message)
-        console.log(response);
         setExams(response.data);
         setConfirmVisible(Array(exams).fill(false));
       } else {
@@ -222,9 +226,7 @@ function ExamsPage({ openTour, setOpenTour, tour }) {
       console.error(error);
     }
   };
-  const isMobile = () => {
-    return window.innerWidth <= 768;
-  };
+
   return (
     <div className="exams-container">
       <div className=" flex justify-between items-center">
@@ -245,7 +247,7 @@ function ExamsPage({ openTour, setOpenTour, tour }) {
             onClick={() => setCreateTest(true)}
           >
             <i className="ri-add-line" style={{ marginRight: "7px" }}></i>
-            Crea Test
+            {t("create_test")}
           </button>
         </div>
       </div>
@@ -253,44 +255,44 @@ function ExamsPage({ openTour, setOpenTour, tour }) {
       <div className="test-filter">
         <div>
           {isMobile() ? (
-            <label>Attività:</label>
+            <label>{t("activity")}:</label>
           ) : (
-            <label>Filtra per attività:</label>
+            <label>{t("filter_by_activity")}</label>
           )}
           <Select value={attivo} onChange={(value) => setAttivo(value)}>
-            <Option value="tutti">Tutti</Option>
-            <Option value="attivo">Attivo</Option>
-            <Option value="non attivo">Non attivo</Option>
+            <Option value="tutti">{t("all")}</Option>
+            <Option value="attivo">{t("active")} </Option>
+            <Option value="non attivo">{t("inactive")} </Option>
           </Select>
         </div>
         <div>
           {isMobile() ? (
-            <label>Difficoltà:</label>
+            <label>{t("difficulty")}</label>
           ) : (
-            <label>filtra per difficoltà:</label>
+            <label>{t("filter_by_difficulty")}</label>
           )}
           <Select value={difficolta} onChange={(value) => setDifficolta(value)}>
-            <Option value="tutti">Tutti</Option>
-            <Option value="facile">Facile</Option>
-            <Option value="medio">Medio</Option>
-            <Option value="difficile">Difficile</Option>
+            <Option value="tutti">{t("all")}</Option>
+            <Option value="facile">{t("easy")}</Option>
+            <Option value="medio">{t("medium")}</Option>
+            <Option value="difficile">{t("difficult")}</Option>
           </Select>
         </div>
         <div>
           {isMobile() ? (
-            <label>Candidati:</label>
+            <label>{t("candidates")}</label>
           ) : (
-            <label>Numero di Candidati:</label>
+            <label>{t("number_of_candidates")}</label>
           )}
           <Select
             value={numCandidati}
             onChange={(value) => setNumCandidati(value)}
           >
-            <Option value="tutti">Tutti</Option>
+            <Option value="tutti">{t("all")}</Option>
             <Option value="0-50">0 - 50</Option>
             <Option value="51-100">51 - 100</Option>
             <Option value="101-500">101 - 500</Option>
-            <Option value="oltre500">Oltre 500</Option>
+            <Option value="oltre500">{t("more_than")} 500</Option>
           </Select>
         </div>
       </div>
@@ -333,12 +335,14 @@ function ExamsPage({ openTour, setOpenTour, tour }) {
                 {/* <div className="divider"></div> */}
                 <div className="card-exam-middle">
                   <ul className="card-exam-middle-skills">
-                    {exam.skills.map((skill) => (
-                      <li className="text-md">{skill}</li>
+                    {exam.skills.map((skill, subIndex) => (
+                      <li className="text-md" key={subIndex}>
+                        {skill}
+                      </li>
                     ))}
                   </ul>
                   <Popconfirm
-                    visible={confirmVisible[index]}
+                    open={confirmVisible[index]}
                     title={
                       exam.active
                         ? "Sei sicuro di voler disattivare il link?"
@@ -360,7 +364,7 @@ function ExamsPage({ openTour, setOpenTour, tour }) {
                     placement="top"
                   >
                     <Switch
-                    size="small"
+                      size="small"
                       className="elemento3"
                       checked={exam.active}
                       onChange={(checked) => handleSwitchChange(index)}
@@ -371,21 +375,23 @@ function ExamsPage({ openTour, setOpenTour, tour }) {
                 <div className="card-exam-bottom">
                   <div>
                     <h4>
-                      Difficoltà:
-                      <span
-                        className={
-                          exam.difficulty === "Facile"
-                            ? "easy-diff"
-                            : exam.difficulty === "Medio"
-                            ? "middle-diff"
-                            : "hard-diff"
+                      {t("difficulty")}
+                      <Badge
+                        text={exam?.difficulty}
+                        color={
+                          exam.difficulty === "Medio"
+                            ? "red"
+                            : exam.difficulty === "Facile"
+                            ? "green"
+                            : "yellow"
                         }
-                      >
-                        o
-                      </span>
+                        count={2}
+                        size="default"
+                      />
                     </h4>
+                    
                     <h4>
-                      Deadline:{" "}
+                      {t("deadline")}:{" "}
                       {exam.deadline
                         ? moment(exam.deadline).format("DD/MM/YYYY")
                         : "Nessuna scadenza"}
@@ -405,14 +411,14 @@ function ExamsPage({ openTour, setOpenTour, tour }) {
                     className="elemento2"
                     onClick={() => navigate(`/admin/exams/info/${exam._id}`)}
                   >
-                    Candidati
+                    {t("candidates")}
                   </button>
                 ) : (
                   <button
                     className="elemento2"
                     onClick={() => navigate(`/admin/exams/info/${exam._id}`)}
                   >
-                    Info candidati
+                    {t("candidate_info")}
                   </button>
                 )}
               </div>
@@ -442,47 +448,25 @@ function ExamsPage({ openTour, setOpenTour, tour }) {
         }}
       >
         <div className="choose-test">
-          <div onClick={() => navigate("/admin/exams/add/ai")}>
-            <img alt="test skilltest" src={skilltest} />
-            <h2>SkillTest AI</h2>
-            <p>
-              Test focalizzato per verificare le competenze del candidato
-              generato dall'AI di SkillTest. Le nostre domande sono generate con
-              cura e attenzione per qualificare al meglio il candidato
-            </p>
-          </div>
-          <div
-            onClick={() => {
-              navigate("/admin/exams/add/mix");
-              //window.alert("Stiamo lavorando per aggiungerlo, scusate il disagio! Intanto potete creare le altre due tipologie di Test ")
-            }}
-          >
-            <div>
-              <img alt="test misto" src={skt} />
-              <span>Consigliato</span>
+          {GenerateTestOptions.map((item, index) => (
+            <div onClick={() => navigate(item?.path ?? "#")} key={index}>
+              {item.badgeImage && item.badgeText ? (
+                <div>
+                  <img alt="test misto" src={item.badgeImage} />
+                  <span>{t(item.badgeText)}</span>
+                </div>
+              ) : (
+                ""
+              )}
+              <img alt="test skilltest" src={item.image} />
+              <h2>{t(item.title)}</h2>
+              <p>{t(item.description)}</p>
             </div>
-            <img alt="test misto" src={mix} />
-            <h2>Test Misto</h2>
-            <p>
-              Testa le competenze del candidato, tramite la nostra AI, con la
-              possibilità di aggiungere moduli secondari di tua scelta,
-              focalizzandoti per esempio sulle soft skills o sul carattere del
-              candidato.
-            </p>
-          </div>
-          <div onClick={() => navigate("/admin/exams/add/manual")}>
-            <img alt="test manual" src={manual} />
-            <h2>Test Manuale</h2>
-            <p>
-              Aggiungi un test manuale o seleziona i moduli creati da noi per un
-              test qualsiasi non focalizzato su competenze tecniche, non ci
-              saranno risposte esatti o punteggi.
-            </p>
-          </div>
+          ))}
         </div>
       </Modal>
     </div>
   );
 }
 
-export default ExamsPage;
+export default React.memo(ExamsPage);

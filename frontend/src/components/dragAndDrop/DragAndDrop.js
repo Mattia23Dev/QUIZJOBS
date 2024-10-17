@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import CardItem from "./CardItem";
 import { changeCandidateStatus, getExamByUser } from "../../apicalls/exams";
 import { useDispatch, useSelector } from "react-redux";
 import { FaSearch } from "react-icons/fa";
-import { message, Select } from "antd";
+import { Checkbox, message, Select, Tooltip } from "antd";
 import { HideLoading, ShowLoading } from "../../redux/loaderSlice";
 import Tour from "reactour";
+import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
+
 const { Option } = Select;
 const typesHero = [
   "Da contattare",
@@ -38,6 +40,7 @@ const DragAndDrop = ({
   const [listItems, setListItems] = useState(initialData);
   const user = useSelector((state) => state.users.user);
   const dispatch = useDispatch();
+  const [selectedItems, setSelectedItems] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [filterCity, setFilterCity] = useState("tutti");
   const [filterTest, setFilterTest] = useState("tutti");
@@ -125,15 +128,14 @@ const DragAndDrop = ({
     extractCities(initialData);
     getExamsData();
   }, [initialData]);
-  console.log(initialData);
+
   const handleDragging = (dragging) => setIsDragging(dragging);
+
   const handleDrop = async (e) => {
     e.preventDefault();
     const dataString = e.dataTransfer.getData("text");
     const draggedItem = JSON.parse(dataString);
-    console.log(draggedItem);
     const { status } = e.currentTarget.dataset;
-    console.log(status);
     const examId = draggedItem.examId;
 
     try {
@@ -148,7 +150,6 @@ const DragAndDrop = ({
             examId: examIdInt,
             newStatus: status,
           });
-      console.log(response);
 
       if (response.success) {
         if (!internal) {
@@ -168,6 +169,7 @@ const DragAndDrop = ({
               return item;
             })
           );
+          setSelectedItems(null);
         } else {
           const newData = initialData?.map((item) => {
             if (item.candidate._id === draggedItem.candidate._id) {
@@ -184,6 +186,7 @@ const DragAndDrop = ({
               return item;
             })
           );
+          setSelectedItems(null);
         }
       }
     } catch (error) {
@@ -198,10 +201,80 @@ const DragAndDrop = ({
 
   const handleDragOver = (e) => e.preventDefault();
 
+  const isSelected = (candidateId, examId) => {
+    return selectedItems?.cards?.find(
+      (item) => item?.candidateId === candidateId && item?.examId === examId
+    );
+  };
+
+  const handleOnSelect = (column, candidateId, examId) => {
+    const selectedColumn = selectedItems?.column === column;
+    if (selectedColumn) {
+      const isExamExists = selectedItems?.cards?.find(
+        (item) => item?.candidateId === candidateId && item?.examId === examId
+      );
+      if (isExamExists) {
+        const newExamArr = selectedItems?.cards?.filter(
+          (item) => item?.candidateId !== candidateId && item?.examId !== examId
+        );
+        setSelectedItems((pre) => ({ ...pre, cards: newExamArr }));
+      } else {
+        setSelectedItems((pre) => ({
+          ...pre,
+          cards: [...pre?.cards, { candidateId, examId }],
+        }));
+      }
+    } else {
+      setSelectedItems({ column, cards: [{ candidateId, examId }] });
+    }
+  };
+
+  const handleDragClick = async (direction) => {
+    try {
+      if (!selectedItems?.cards?.length)
+        throw new Error("Please select an exam.");
+      const currentStatus = typesHero.indexOf(selectedItems.column);
+      const newStatus =
+        direction === "right"
+          ? typesHero[currentStatus + 1]
+          : typesHero[currentStatus - 1];
+      const selectedCards = selectedItems?.cards;
+
+      for (let i = 0; i < selectedCards?.length; i++) {
+        const res = await changeCandidateStatus({
+          userId: selectedCards[i]?.candidateId,
+          examId: selectedCards[i]?.examId,
+          newStatus: newStatus,
+        });
+
+        setInitialData((prevData) =>
+          prevData.map((item) => {
+            if (item.candidateId === selectedCards[i]?.candidateId) {
+              return { ...item, status: res?.data?.newStatus };
+            }
+            return item;
+          })
+        );
+
+        setListItems((prevData) =>
+          prevData.map((item) => {
+            if (item.candidateId === selectedCards[i]?.candidateId) {
+              return { ...item, status: res?.data?.newStatus };
+            }
+            return item;
+          })
+        );
+      }
+      setSelectedItems(null);
+    } catch (error) {
+      message.error(error?.response?.data?.message ?? error?.message);
+    }
+  };
+
   return (
-    <div>
+    <div className="crm-drag-container">
       <div className="filter-crm">
-        <div className={internal ? "search-internal":"" }>
+        <div className={internal ? "search-internal" : ""}>
           <FaSearch />
           <input
             type="text"
@@ -278,6 +351,7 @@ const DragAndDrop = ({
             >
               +
             </button>
+
             <div className="drag-scroll">
               {listItems.length > 0 &&
                 listItems
@@ -358,20 +432,23 @@ const DragAndDrop = ({
                     (item, subId) =>
                       container === item.status && (
                         <React.Fragment key={subId}>
-
-                        <CardItem
-                          setPreferito={setPreferito}
-                          internal={internal}
-                          setSelectedCandidate={setSelectedCandidate}
-                          selectedCandidate={selectedCandidate}
-                          setShowInfoCandidateModal={setShowInfoCandidateModal}
-                          openInfoIntCandidate={openInfoIntCandidate}
-                          data={item}
-                          key={item.id}
-                          handleDragging={handleDragging}
-                        />
+                          <CardItem
+                            setPreferito={setPreferito}
+                            internal={internal}
+                            setSelectedCandidate={setSelectedCandidate}
+                            selectedCandidate={selectedCandidate}
+                            setShowInfoCandidateModal={
+                              setShowInfoCandidateModal
+                            }
+                            column={container}
+                            isSelected={isSelected}
+                            handleOnSelect={handleOnSelect}
+                            openInfoIntCandidate={openInfoIntCandidate}
+                            data={item}
+                            key={item.id}
+                            handleDragging={handleDragging}
+                          />
                         </React.Fragment>
-
                       )
                   )}
             </div>
@@ -386,8 +463,36 @@ const DragAndDrop = ({
         steps={steps}
         rounded={5}
       />
+      {selectedItems && selectedItems?.cards?.length ? (
+        <div className="flex flex-row items-center gap-1 drag-btn-container">
+          {selectedItems?.column !== typesHero[0] ? (
+            <button className="move-next">
+              <FiArrowLeft
+                size={23}
+                color="white"
+                onClick={() => handleDragClick("left")}
+              />
+            </button>
+          ) : (
+            ""
+          )}
+          {selectedItems?.column !== typesHero[typesHero.length - 1] ? (
+            <button className="move-next">
+              <FiArrowRight
+                onClick={() => handleDragClick("right")}
+                size={23}
+                color="white"
+              />
+            </button>
+          ) : (
+            ""
+          )}
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };
 
-export default DragAndDrop;
+export default React.memo(DragAndDrop);

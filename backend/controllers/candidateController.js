@@ -5,11 +5,12 @@ const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const openai = require('openai');
 const apiKey = process.env.OPENAI_API;
-const clientAi = new openai.OpenAI({
-  apiKey: apiKey,
-  dangerouslyAllowBrowser: true,
-  model: 'gpt-4-turbo-preview',
-});
+const clientAi = ""
+//  new openai.OpenAI({
+//   apiKey: apiKey,
+//   dangerouslyAllowBrowser: true,
+//   model: 'gpt-4-turbo-preview',
+// });
 
 const getExamActiveById = async(req,res) => {
     try{

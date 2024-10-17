@@ -52,10 +52,10 @@ const BigLoader = () => {
   
     return (
       <div className='container-big-loader'>
-        <div className='header-big-loader'>
+        {/* <div className='header-big-loader'>
           <img src={logo} alt='logo skilltest' />
           <p>{user?.name}</p>
-        </div>
+        </div> */}
         <div className='big-loader'>
           <img alt='loading' src={gif} />
           <div style={{ marginBottom: '40px', zIndex: 150 }}>{texts[textIndex]}</div>

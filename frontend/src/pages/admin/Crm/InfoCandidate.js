@@ -60,6 +60,8 @@ function InfoCandidate(props) {
     return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
   }
 
+  console.log(selectedCandidate)
+
   return (
     <Modal
     title={
@@ -138,16 +140,16 @@ function InfoCandidate(props) {
                 </button>
             </div></> :
             <div className='modal-candidate-domande'>
-              {selectedCandidate?.tests.length > 0 && selectedCandidate.tests.map((test, index) => {
-                const report = (test.correctAnswers / test.totalQuestions * 100).toFixed(2);
-                const totalSeconds = Object.values(test?.arrayAnswers?.seconds).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+              {selectedCandidate?.tests?.length > 0 && selectedCandidate?.tests.map((test, index) => {
+                const report = (test?.correctAnswers / test?.totalQuestions * 100).toFixed(2);
+                const totalSeconds = Object.values(test?.arrayAnswers?.seconds ?? {}).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
                 const formattedTime = formatTime(totalSeconds);
                  return (
                   <div className='modal-candidate-question' key={index}>
                     {report > 60 ? 
                     <img src={corretta} alt="Icona corretto" style={{ marginRight: '10px' }} />: 
                     <img alt='errata' src={sbagliata} style={{ marginRight: '10px' }} />}
-                    <div style={{ marginBottom: '5px' }}><span>{index + 1}.</span><p style={{fontSize: '14px'}}>{test.testName}</p></div>
+                    <div style={{ marginBottom: '5px' }}><span>{index + 1}.</span><p style={{fontSize: '14px'}}>{test?.testName}</p></div>
                     <div className={report > 60 ? "time-column-green" : "time-column-red"} style={{ textAlign: 'right', fontSize: '12px' }}><span>{report}%</span></div>
                     <div className={report > 60 ? "time-column-green" : "time-column-red"} style={{ textAlign: 'right' }}><img alt='tempo medio' src={report > 60 ? timegreen : timered} /><span>{formattedTime}</span></div>
                   </div>

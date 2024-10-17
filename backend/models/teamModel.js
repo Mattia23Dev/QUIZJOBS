@@ -1,15 +1,24 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const teamSchema = new mongoose.Schema({
+  jobTitle: {
+    type: String,
+  },
+  fName: {
+    type: String,
+    trim: true,
+  },
+  lName: {
+    type: String,
+    trim: true,
+  },
   name: {
     type: String,
-    required: true,
-    trim: true
+    trim: true,
   },
   surname: {
     type: String,
-    required: true,
-    trim: true
+    trim: true,
   },
   email: {
     type: String,
@@ -18,9 +27,9 @@ const teamSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
   },
-  password: { 
+  password: {
     type: String,
-    required: true
+    required: true,
   },
   role: {
     type: String,
@@ -41,6 +50,6 @@ const teamSchema = new mongoose.Schema({
   accessGoogleToken: String,
 });
 
-const Team = mongoose.model('Team', teamSchema);
+const Team = mongoose.model("Team", teamSchema);
 
 module.exports = Team;

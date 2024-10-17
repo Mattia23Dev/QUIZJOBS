@@ -11,6 +11,8 @@ import logo from "../imgs/logo.png";
 import logob from "../imgs/logobianco.png";
 import { FaSearch } from "react-icons/fa";
 import Tour from "reactour";
+import { useTranslation } from "react-i18next";
+import LanguageSelector from "./LanguageSelector";
 
 const routeWithSidebar = ["/admin/exams"];
 
@@ -25,6 +27,7 @@ function ProtectedRoute({
 }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const user = useSelector((state) => state.users.user);
   const [menu, setMenu] = useState([]);
   const isMobile = () => {
@@ -125,7 +128,7 @@ function ProtectedRoute({
       },
     },
     {
-      title: "Candidati",
+      title: "candidates_menu",
       paths: ["/admin/crm"],
       icon: <i className="ri-bar-chart-line"></i>,
       onClick: () => {
@@ -164,7 +167,7 @@ function ProtectedRoute({
       onClick: () => navigate("/admin/automations")
     },*/
     {
-      title: "Profilo",
+      title: "Profile",
       paths: ["/admin/profile"],
       icon: <i className="ri-user-line"></i>,
       onClick: () => {
@@ -175,7 +178,7 @@ function ProtectedRoute({
       },
     },
     {
-      title: "Assistenza",
+      title: "Support",
       paths: ["/admin/help"],
       icon: <i className="ri-headphone-line"></i>,
       onClick: () => {
@@ -447,7 +450,7 @@ function ProtectedRoute({
                   >
                     {item.icon}
                     <span className={!collapsed ? "" : "hide-menu-title"}>
-                      {item.title}
+                      {t(item.title?.toLowerCase())}
                     </span>
                   </div>
                 );
@@ -458,7 +461,7 @@ function ProtectedRoute({
               >
                 <i className="ri-logout-box-line"></i>{" "}
                 <span className={!collapsed ? "" : "hide-menu-title"}>
-                  Logout
+                  {t("logout")}
                 </span>
               </div>
             </div>
@@ -491,15 +494,16 @@ function ProtectedRoute({
                 </div>
               </div>
               <div
-                style={{ display: "flex", gap: "3rem", alignItems: "center" }}
+                style={{ display: "flex", gap: "1.3rem", alignItems: "center" }}
               >
                 <div
                   style={{ cursor: "pointer", fontSize: "14px" }}
                   onClick={handleStartTour}
                 >
-                  <u className="how-work">Come funziona?</u>
+                  <u className="how-work">{t("how_it_works")}</u>
                   <p className="how-work-mobile">?</p>
                 </div>
+                <LanguageSelector />
                 <div
                   onClick={() => navigate("/admin/profile")}
                   style={{ cursor: "pointer", ontSize: "14px" }}

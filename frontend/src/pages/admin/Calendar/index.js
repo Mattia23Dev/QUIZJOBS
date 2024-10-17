@@ -22,7 +22,6 @@ import Tour from "reactour";
 const { Option } = Select;
 
 const CalendarComponent = ({ tour, openTour, setOpenTour }) => {
-  console.log(tour, openTour);
   const [eventVisible, setEventVisible] = useState(false);
   const [openDrawerApp, setOpenDrawerApp] = useState(false);
   const [drawerEvent, setDrawerEvent] = useState(null);
@@ -53,7 +52,6 @@ const CalendarComponent = ({ tour, openTour, setOpenTour }) => {
   const getAppointment = async () => {
     try {
       const response = await getAppointmentUser(user._id);
-      console.log(response);
       setEvents(response.data);
       dispatch(HideLoading());
     } catch (error) {
@@ -68,7 +66,6 @@ const CalendarComponent = ({ tour, openTour, setOpenTour }) => {
         moment(e.date).format("YYYY-MM-DD") ===
         moment(date).format("YYYY-MM-DD")
     );
-    console.log(eventsForDate);
     if (eventsForDate) {
       setSelectedEvent(eventsForDate);
       setActiveTab(1);

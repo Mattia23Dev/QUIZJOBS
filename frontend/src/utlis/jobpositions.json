@@ -1,0 +1,1668 @@
+[
+  { "label": "Software Engineer", "value": "software_engineer" },
+  { "label": "Data Scientist", "value": "data_scientist" },
+  { "label": "Product Manager", "value": "product_manager" },
+  { "label": "UI/UX Designer", "value": "ui_ux_designer" },
+  { "label": "Web Developer", "value": "web_developer" },
+  { "label": "Mobile Developer", "value": "mobile_developer" },
+  { "label": "DevOps Engineer", "value": "devops_engineer" },
+  { "label": "QA Engineer", "value": "qa_engineer" },
+  { "label": "Marketing Specialist", "value": "marketing_specialist" },
+  { "label": "Sales Manager", "value": "sales_manager" },
+  { "label": "HR Manager", "value": "hr_manager" },
+  {
+    "label": "Customer Support Representative",
+    "value": "customer_support_representative"
+  },
+  { "label": "Business Analyst", "value": "business_analyst" },
+  { "label": "Graphic Designer", "value": "graphic_designer" },
+  { "label": "Content Writer", "value": "content_writer" },
+  { "label": "SEO Specialist", "value": "seo_specialist" },
+  { "label": "Network Administrator", "value": "network_administrator" },
+  { "label": "System Administrator", "value": "system_administrator" },
+  { "label": "Database Administrator", "value": "database_administrator" },
+  { "label": "Cloud Engineer", "value": "cloud_engineer" },
+  { "label": "Cybersecurity Analyst", "value": "cybersecurity_analyst" },
+  { "label": "IT Support Specialist", "value": "it_support_specialist" },
+  { "label": "Financial Analyst", "value": "financial_analyst" },
+  { "label": "Accountant", "value": "accountant" },
+  { "label": "Legal Advisor", "value": "legal_advisor" },
+  { "label": "Project Manager", "value": "project_manager" },
+  { "label": "Operations Manager", "value": "operations_manager" },
+  { "label": "Recruiter", "value": "recruiter" },
+  { "label": "Data Analyst", "value": "data_analyst" },
+  {
+    "label": "Business Development Manager",
+    "value": "business_development_manager"
+  },
+  { "label": "Sales Executive", "value": "sales_executive" },
+  { "label": "Retail Manager", "value": "retail_manager" },
+  { "label": "E-commerce Specialist", "value": "ecommerce_specialist" },
+  { "label": "Supply Chain Manager", "value": "supply_chain_manager" },
+  { "label": "Warehouse Manager", "value": "warehouse_manager" },
+  { "label": "Event Coordinator", "value": "event_coordinator" },
+  {
+    "label": "Public Relations Specialist",
+    "value": "public_relations_specialist"
+  },
+  { "label": "Training Coordinator", "value": "training_coordinator" },
+  { "label": "Technical Writer", "value": "technical_writer" },
+  { "label": "Research Scientist", "value": "research_scientist" },
+  {
+    "label": "Pharmaceutical Sales Representative",
+    "value": "pharmaceutical_sales_representative"
+  },
+  { "label": "Insurance Agent", "value": "insurance_agent" },
+  { "label": "Real Estate Agent", "value": "real_estate_agent" },
+  { "label": "Insurance Underwriter", "value": "insurance_underwriter" },
+  { "label": "Construction Manager", "value": "construction_manager" },
+  { "label": "Electrician", "value": "electrician" },
+  { "label": "Plumber", "value": "plumber" },
+  { "label": "Carpenter", "value": "carpenter" },
+  { "label": "Heavy Equipment Operator", "value": "heavy_equipment_operator" },
+  { "label": "Social Media Manager", "value": "social_media_manager" },
+  { "label": "Brand Manager", "value": "brand_manager" },
+  {
+    "label": "Digital Marketing Manager",
+    "value": "digital_marketing_manager"
+  },
+  { "label": "Content Strategist", "value": "content_strategist" },
+  { "label": "User Researcher", "value": "user_researcher" },
+  { "label": "Account Manager", "value": "account_manager" },
+  {
+    "label": "Technical Support Specialist",
+    "value": "technical_support_specialist"
+  },
+  { "label": "Frontend Developer", "value": "frontend_developer" },
+  { "label": "Backend Developer", "value": "backend_developer" },
+  { "label": "Full Stack Developer", "value": "full_stack_developer" },
+  {
+    "label": "Machine Learning Engineer",
+    "value": "machine_learning_engineer"
+  },
+  { "label": "Blockchain Developer", "value": "blockchain_developer" },
+  { "label": "Game Developer", "value": "game_developer" },
+  { "label": "Video Producer", "value": "video_producer" },
+  { "label": "Photographer", "value": "photographer" },
+  { "label": "Data Entry Clerk", "value": "data_entry_clerk" },
+  { "label": "Inventory Specialist", "value": "inventory_specialist" },
+  { "label": "Merchandising Manager", "value": "merchandising_manager" },
+  {
+    "label": "Quality Control Inspector",
+    "value": "quality_control_inspector"
+  },
+  { "label": "Environmental Scientist", "value": "environmental_scientist" },
+  { "label": "Civil Engineer", "value": "civil_engineer" },
+  { "label": "Mechanical Engineer", "value": "mechanical_engineer" },
+  { "label": "Electrical Engineer", "value": "electrical_engineer" },
+  { "label": "Chemical Engineer", "value": "chemical_engineer" },
+  { "label": "Aerospace Engineer", "value": "aerospace_engineer" },
+  {
+    "label": "Health and Safety Officer",
+    "value": "health_and_safety_officer"
+  },
+  { "label": "Occupational Therapist", "value": "occupational_therapist" },
+  { "label": "Physical Therapist", "value": "physical_therapist" },
+  { "label": "Nurse", "value": "nurse" },
+  { "label": "Doctor", "value": "doctor" },
+  { "label": "Veterinarian", "value": "veterinarian" },
+  { "label": "Pharmacist", "value": "pharmacist" },
+  {
+    "label": "Medical Laboratory Technician",
+    "value": "medical_laboratory_technician"
+  },
+  {
+    "label": "Clinical Research Coordinator",
+    "value": "clinical_research_coordinator"
+  },
+  { "label": "Healthcare Administrator", "value": "healthcare_administrator" },
+  { "label": "Mental Health Counselor", "value": "mental_health_counselor" },
+  { "label": "Social Worker", "value": "social_worker" },
+  { "label": "Policy Analyst", "value": "policy_analyst" },
+  { "label": "Legislative Assistant", "value": "legislative_assistant" },
+  { "label": "Urban Planner", "value": "urban_planner" },
+  { "label": "Environmental Consultant", "value": "environmental_consultant" },
+  { "label": "Geologist", "value": "geologist" },
+  { "label": "Statistician", "value": "statistician" },
+  { "label": "Economist", "value": "economist" },
+  { "label": "Market Research Analyst", "value": "market_research_analyst" },
+  { "label": "Actuary", "value": "actuary" },
+  { "label": "Fundraiser", "value": "fundraiser" },
+  { "label": "Grant Writer", "value": "grant_writer" },
+  { "label": "Compliance Officer", "value": "compliance_officer" },
+  { "label": "Risk Manager", "value": "risk_manager" },
+  { "label": "Internal Auditor", "value": "internal_auditor" },
+  { "label": "Financial Advisor", "value": "financial_advisor" },
+  { "label": "Tax Specialist", "value": "tax_specialist" },
+  { "label": "Investment Banker", "value": "investment_banker" },
+  { "label": "Private Equity Analyst", "value": "private_equity_analyst" },
+  { "label": "Real Estate Developer", "value": "real_estate_developer" },
+  {
+    "label": "Business Operations Specialist",
+    "value": "business_operations_specialist"
+  },
+  { "label": "Program Manager", "value": "program_manager" },
+  {
+    "label": "Quality Assurance Manager",
+    "value": "quality_assurance_manager"
+  },
+  {
+    "label": "Application Support Analyst",
+    "value": "application_support_analyst"
+  },
+  {
+    "label": "Technical Account Manager",
+    "value": "technical_account_manager"
+  },
+  { "label": "IT Consultant", "value": "it_consultant" },
+  { "label": "Network Engineer", "value": "network_engineer" },
+  {
+    "label": "Information Security Analyst",
+    "value": "information_security_analyst"
+  },
+  { "label": "Help Desk Technician", "value": "help_desk_technician" },
+  {
+    "label": "Desktop Support Technician",
+    "value": "desktop_support_technician"
+  },
+  {
+    "label": "Telecommunications Technician",
+    "value": "telecommunications_technician"
+  },
+  {
+    "label": "Quality Assurance Analyst",
+    "value": "quality_assurance_analyst"
+  },
+  {
+    "label": "Business Intelligence Analyst",
+    "value": "business_intelligence_analyst"
+  },
+  { "label": "Web Designer", "value": "web_designer" },
+  { "label": "SEO Analyst", "value": "seo_analyst" },
+  { "label": "Online Community Manager", "value": "online_community_manager" },
+  {
+    "label": "Influencer Marketing Specialist",
+    "value": "influencer_marketing_specialist"
+  },
+  {
+    "label": "Content Marketing Manager",
+    "value": "content_marketing_manager"
+  },
+  { "label": "Chatbot Developer", "value": "chatbot_developer" },
+  { "label": "Digital Analyst", "value": "digital_analyst" },
+  {
+    "label": "Customer Experience Manager",
+    "value": "customer_experience_manager"
+  },
+  {
+    "label": "Product Marketing Manager",
+    "value": "product_marketing_manager"
+  },
+  {
+    "label": "Affiliate Marketing Manager",
+    "value": "affiliate_marketing_manager"
+  },
+  {
+    "label": "Digital Advertising Specialist",
+    "value": "digital_advertising_specialist"
+  },
+  { "label": "Ad Operations Manager", "value": "ad_operations_manager" },
+  { "label": "User Interface Developer", "value": "user_interface_developer" },
+  { "label": "User Experience Designer", "value": "user_experience_designer" },
+  { "label": "Information Architect", "value": "information_architect" },
+  { "label": "Mobile UX Designer", "value": "mobile_ux_designer" },
+  { "label": "3D Modeler", "value": "3d_modeler" },
+  { "label": "Animator", "value": "animator" },
+  { "label": "Web Analytics Specialist", "value": "web_analytics_specialist" },
+  {
+    "label": "Mobile Application Tester",
+    "value": "mobile_application_tester"
+  },
+  { "label": "User Acceptance Tester", "value": "user_acceptance_tester" },
+  { "label": "Data Governance Analyst", "value": "data_governance_analyst" },
+  {
+    "label": "Machine Learning Researcher",
+    "value": "machine_learning_researcher"
+  },
+  {
+    "label": "Data Visualization Specialist",
+    "value": "data_visualization_specialist"
+  },
+  { "label": "Bioinformatics Scientist", "value": "bioinformatics_scientist" },
+  {
+    "label": "Health Informatics Specialist",
+    "value": "health_informatics_specialist"
+  },
+  { "label": "Clinical Data Manager", "value": "clinical_data_manager" },
+  {
+    "label": "Behavioral Health Technician",
+    "value": "behavioral_health_technician"
+  },
+  { "label": "Exercise Physiologist", "value": "exercise_physiologist" },
+  {
+    "label": "Medical Billing Specialist",
+    "value": "medical_billing_specialist"
+  },
+  { "label": "Health Coach", "value": "health_coach" },
+  { "label": "Dietitian", "value": "dietitian" },
+  { "label": "Medical Records Clerk", "value": "medical_records_clerk" },
+  { "label": "Phlebotomist", "value": "phlebotomist" },
+  { "label": "Surgical Technician", "value": "surgical_technician" },
+  { "label": "Radiologic Technologist", "value": "radiologic_technologist" },
+  { "label": "Dental Hygienist", "value": "dental_hygienist" },
+  { "label": "Veterinary Technician", "value": "veterinary_technician" },
+  {
+    "label": "Occupational Health and Safety Specialist",
+    "value": "occupational_health_and_safety_specialist"
+  },
+  {
+    "label": "Healthcare Quality Improvement Manager",
+    "value": "healthcare_quality_improvement_manager"
+  },
+  { "label": "Health Data Analyst", "value": "health_data_analyst" },
+  {
+    "label": "Speech Language Pathologist",
+    "value": "speech_language_pathologist"
+  },
+  { "label": "Medical Assistant", "value": "medical_assistant" },
+  { "label": "Therapist", "value": "therapist" },
+  { "label": "Addiction Counselor", "value": "addiction_counselor" },
+  { "label": "Genetic Counselor", "value": "genetic_counselor" },
+  { "label": "Hearing Aid Specialist", "value": "hearing_aid_specialist" },
+  { "label": "Chiropractor", "value": "chiropractor" },
+  { "label": "Acupuncturist", "value": "acupuncturist" },
+  { "label": "Massage Therapist", "value": "massage_therapist" },
+  { "label": "Fitness Trainer", "value": "fitness_trainer" },
+  { "label": "Personal Trainer", "value": "personal_trainer" },
+  { "label": "Sports Coach", "value": "sports_coach" },
+  { "label": "Yoga Instructor", "value": "yoga_instructor" },
+  { "label": "Pilates Instructor", "value": "pilates_instructor" },
+  { "label": "Dance Instructor", "value": "dance_instructor" },
+  {
+    "label": "Health and Wellness Coach",
+    "value": "health_and_wellness_coach"
+  },
+  { "label": "Nutritional Therapist", "value": "nutritional_therapist" },
+  { "label": "School Counselor", "value": "school_counselor" },
+  {
+    "label": "Educational Administrator",
+    "value": "educational_administrator"
+  },
+  {
+    "label": "Special Education Teacher",
+    "value": "special_education_teacher"
+  },
+  { "label": "Teaching Assistant", "value": "teaching_assistant" },
+  { "label": "Substitute Teacher", "value": "substitute_teacher" },
+  { "label": "Librarian", "value": "librarian" },
+  { "label": "Curriculum Developer", "value": "curriculum_developer" },
+  { "label": "Instructional Designer", "value": "instructional_designer" },
+  { "label": "Training Specialist", "value": "training_specialist" },
+  {
+    "label": "Youth Program Coordinator",
+    "value": "youth_program_coordinator"
+  },
+  {
+    "label": "Community Outreach Coordinator",
+    "value": "community_outreach_coordinator"
+  },
+  {
+    "label": "Nonprofit Program Manager",
+    "value": "nonprofit_program_manager"
+  },
+  { "label": "Grant Manager", "value": "grant_manager" },
+  { "label": "Philanthropy Officer", "value": "philanthropy_officer" },
+  { "label": "Volunteer Coordinator", "value": "volunteer_coordinator" },
+  {
+    "label": "Civic Engagement Coordinator",
+    "value": "civic_engagement_coordinator"
+  },
+  { "label": "Advocacy Director", "value": "advocacy_director" },
+  { "label": "Policy Advocate", "value": "policy_advocate" },
+  { "label": "Community Organizer", "value": "community_organizer" },
+  { "label": "Public Policy Analyst", "value": "public_policy_analyst" },
+  { "label": "Political Consultant", "value": "political_consultant" },
+  { "label": "Campaign Manager", "value": "campaign_manager" },
+  { "label": "Lobbyist", "value": "lobbyist" },
+  { "label": "Legislative Liaison", "value": "legislative_liaison" },
+  {
+    "label": "Public Affairs Specialist",
+    "value": "public_affairs_specialist"
+  },
+  { "label": "Social Justice Advocate", "value": "social_justice_advocate" },
+  {
+    "label": "Environmental Policy Analyst",
+    "value": "environmental_policy_analyst"
+  },
+  {
+    "label": "Corporate Social Responsibility Manager",
+    "value": "corporate_social_responsibility_manager"
+  },
+  {
+    "label": "Sustainability Coordinator",
+    "value": "sustainability_coordinator"
+  },
+  { "label": "Climate Change Analyst", "value": "climate_change_analyst" },
+  {
+    "label": "Urban Development Planner",
+    "value": "urban_development_planner"
+  },
+  { "label": "Transportation Planner", "value": "transportation_planner" },
+  {
+    "label": "Renewable Energy Consultant",
+    "value": "renewable_energy_consultant"
+  },
+  {
+    "label": "Energy Efficiency Specialist",
+    "value": "energy_efficiency_specialist"
+  },
+  { "label": "Natural Resource Manager", "value": "natural_resource_manager" },
+  { "label": "Wildlife Biologist", "value": "wildlife_biologist" },
+  { "label": "Environmental Educator", "value": "environmental_educator" },
+  { "label": "Marine Biologist", "value": "marine_biologist" },
+  { "label": "Conservation Scientist", "value": "conservation_scientist" },
+  { "label": "Land Use Planner", "value": "land_use_planner" },
+  { "label": "Forester", "value": "forester" },
+  { "label": "Wildlife Technician", "value": "wildlife_technician" },
+  { "label": "Park Ranger", "value": "park_ranger" },
+  { "label": "Environmental Scientist", "value": "environmental_scientist" },
+  { "label": "Geospatial Analyst", "value": "geospatial_analyst" },
+  { "label": "Epidemiologist", "value": "epidemiologist" },
+  { "label": "Public Health Educator", "value": "public_health_educator" },
+  { "label": "Health Policy Analyst", "value": "health_policy_analyst" },
+  {
+    "label": "Population Health Manager",
+    "value": "population_health_manager"
+  },
+  {
+    "label": "Healthcare Compliance Officer",
+    "value": "healthcare_compliance_officer"
+  },
+  {
+    "label": "Clinical Quality Specialist",
+    "value": "clinical_quality_specialist"
+  },
+  { "label": "Healthcare Analyst", "value": "healthcare_analyst" },
+  { "label": "Healthcare Risk Manager", "value": "healthcare_risk_manager" },
+  { "label": "Behavioral Scientist", "value": "behavioral_scientist" },
+  {
+    "label": "Clinical Research Coordinator",
+    "value": "clinical_research_coordinator"
+  },
+  { "label": "Clinical Trials Manager", "value": "clinical_trials_manager" },
+  {
+    "label": "Pharmaceutical Sales Representative",
+    "value": "pharmaceutical_sales_representative"
+  },
+  { "label": "Drug Safety Associate", "value": "drug_safety_associate" },
+  {
+    "label": "Regulatory Affairs Specialist",
+    "value": "regulatory_affairs_specialist"
+  },
+  { "label": "Quality Control Analyst", "value": "quality_control_analyst" },
+  {
+    "label": "Clinical Quality Assurance Manager",
+    "value": "clinical_quality_assurance_manager"
+  },
+  { "label": "Laboratory Technician", "value": "laboratory_technician" },
+  { "label": "Research Scientist", "value": "research_scientist" },
+  { "label": "Biomedical Engineer", "value": "biomedical_engineer" },
+  { "label": "Clinical Engineer", "value": "clinical_engineer" },
+  {
+    "label": "Healthcare Informatics Specialist",
+    "value": "healthcare_informatics_specialist"
+  },
+  {
+    "label": "Health Information Manager",
+    "value": "health_information_manager"
+  },
+  { "label": "Health Data Scientist", "value": "health_data_scientist" },
+  {
+    "label": "Digital Health Specialist",
+    "value": "digital_health_specialist"
+  },
+  { "label": "Public Health Researcher", "value": "public_health_researcher" },
+  { "label": "Health Economics Analyst", "value": "health_economics_analyst" },
+  {
+    "label": "Pharmacovigilance Officer",
+    "value": "pharmacovigilance_officer"
+  },
+  {
+    "label": "Pharmaceutical Research Scientist",
+    "value": "pharmaceutical_research_scientist"
+  },
+  { "label": "Clinical Pharmacologist", "value": "clinical_pharmacologist" },
+  {
+    "label": "Health Insurance Underwriter",
+    "value": "health_insurance_underwriter"
+  },
+  {
+    "label": "Insurance Claims Adjuster",
+    "value": "insurance_claims_adjuster"
+  },
+  { "label": "Insurance Sales Agent", "value": "insurance_sales_agent" },
+  { "label": "Insurance Broker", "value": "insurance_broker" },
+  { "label": "Actuary", "value": "actuary" },
+  { "label": "Financial Analyst", "value": "financial_analyst" },
+  { "label": "Budget Analyst", "value": "budget_analyst" },
+  { "label": "Investment Analyst", "value": "investment_analyst" },
+  { "label": "Risk Manager", "value": "risk_manager" },
+  { "label": "Credit Analyst", "value": "credit_analyst" },
+  { "label": "Loan Officer", "value": "loan_officer" },
+  { "label": "Mortgage Broker", "value": "mortgage_broker" },
+  { "label": "Tax Consultant", "value": "tax_consultant" },
+  { "label": "Corporate Treasurer", "value": "corporate_treasurer" },
+  { "label": "Chief Financial Officer", "value": "chief_financial_officer" },
+  { "label": "Financial Controller", "value": "financial_controller" },
+  {
+    "label": "Accounts Payable Specialist",
+    "value": "accounts_payable_specialist"
+  },
+  {
+    "label": "Accounts Receivable Specialist",
+    "value": "accounts_receivable_specialist"
+  },
+  { "label": "Payroll Specialist", "value": "payroll_specialist" },
+  { "label": "Financial Auditor", "value": "financial_auditor" },
+  { "label": "Compliance Officer", "value": "compliance_officer" },
+  {
+    "label": "Financial Reporting Manager",
+    "value": "financial_reporting_manager"
+  },
+  { "label": "Financial Advisor", "value": "financial_advisor" },
+  { "label": "Wealth Manager", "value": "wealth_manager" },
+  { "label": "Investment Banker", "value": "investment_banker" },
+  { "label": "Portfolio Manager", "value": "portfolio_manager" },
+  { "label": "Private Equity Associate", "value": "private_equity_associate" },
+  { "label": "Venture Capital Analyst", "value": "venture_capital_analyst" },
+  { "label": "Quantitative Analyst", "value": "quantitative_analyst" },
+  {
+    "label": "Business Development Manager",
+    "value": "business_development_manager"
+  },
+  { "label": "Sales Manager", "value": "sales_manager" },
+  { "label": "Account Executive", "value": "account_executive" },
+  { "label": "Sales Representative", "value": "sales_representative" },
+  { "label": "Customer Success Manager", "value": "customer_success_manager" },
+  { "label": "Business Analyst", "value": "business_analyst" },
+  { "label": "Product Manager", "value": "product_manager" },
+  { "label": "Project Manager", "value": "project_manager" },
+  { "label": "Operations Manager", "value": "operations_manager" },
+  { "label": "Supply Chain Manager", "value": "supply_chain_manager" },
+  { "label": "Logistics Coordinator", "value": "logistics_coordinator" },
+  { "label": "Inventory Manager", "value": "inventory_manager" },
+  { "label": "Warehouse Manager", "value": "warehouse_manager" },
+  { "label": "Procurement Specialist", "value": "procurement_specialist" },
+  {
+    "label": "Quality Assurance Manager",
+    "value": "quality_assurance_manager"
+  },
+  { "label": "Safety Manager", "value": "safety_manager" },
+  { "label": "Maintenance Manager", "value": "maintenance_manager" },
+  { "label": "Facilities Manager", "value": "facilities_manager" },
+  { "label": "Building Inspector", "value": "building_inspector" },
+  { "label": "Real Estate Agent", "value": "real_estate_agent" },
+  { "label": "Property Manager", "value": "property_manager" },
+  {
+    "label": "Commercial Real Estate Broker",
+    "value": "commercial_real_estate_broker"
+  },
+  {
+    "label": "Residential Real Estate Broker",
+    "value": "residential_real_estate_broker"
+  },
+  { "label": "Construction Manager", "value": "construction_manager" },
+  { "label": "Architect", "value": "architect" },
+  { "label": "Civil Engineer", "value": "civil_engineer" },
+  { "label": "Mechanical Engineer", "value": "mechanical_engineer" },
+  { "label": "Electrical Engineer", "value": "electrical_engineer" },
+  { "label": "Chemical Engineer", "value": "chemical_engineer" },
+  { "label": "Environmental Engineer", "value": "environmental_engineer" },
+  { "label": "Geotechnical Engineer", "value": "geotechnical_engineer" },
+  { "label": "Petroleum Engineer", "value": "petroleum_engineer" },
+  { "label": "Industrial Engineer", "value": "industrial_engineer" },
+  { "label": "Aerospace Engineer", "value": "aerospace_engineer" },
+  { "label": "Software Engineer", "value": "software_engineer" },
+  { "label": "Database Administrator", "value": "database_administrator" },
+  { "label": "Network Administrator", "value": "network_administrator" },
+  { "label": "System Administrator", "value": "system_administrator" },
+  { "label": "DevOps Engineer", "value": "devops_engineer" },
+  { "label": "Cloud Engineer", "value": "cloud_engineer" },
+  {
+    "label": "Information Security Analyst",
+    "value": "information_security_analyst"
+  },
+  { "label": "Cybersecurity Specialist", "value": "cybersecurity_specialist" },
+  { "label": "IT Support Specialist", "value": "it_support_specialist" },
+  {
+    "label": "Technical Support Specialist",
+    "value": "technical_support_specialist"
+  },
+  { "label": "Help Desk Technician", "value": "help_desk_technician" },
+  { "label": "Technical Writer", "value": "technical_writer" },
+  {
+    "label": "Instructional Systems Designer",
+    "value": "instructional_systems_designer"
+  },
+  { "label": "Business Systems Analyst", "value": "business_systems_analyst" },
+  { "label": "Data Analyst", "value": "data_analyst" },
+  { "label": "Data Engineer", "value": "data_engineer" },
+  {
+    "label": "Business Intelligence Developer",
+    "value": "business_intelligence_developer"
+  },
+  { "label": "UI/UX Developer", "value": "ui_ux_developer" },
+  { "label": "Blockchain Developer", "value": "blockchain_developer" },
+  { "label": "Game Developer", "value": "game_developer" },
+  { "label": "Mobile Developer", "value": "mobile_developer" },
+  { "label": "Web Developer", "value": "web_developer" },
+  { "label": "Full Stack Developer", "value": "full_stack_developer" },
+  {
+    "label": "Embedded Systems Engineer",
+    "value": "embedded_systems_engineer"
+  },
+  { "label": "Hardware Engineer", "value": "hardware_engineer" },
+  {
+    "label": "Quality Assurance Engineer",
+    "value": "quality_assurance_engineer"
+  },
+  { "label": "Automation Engineer", "value": "automation_engineer" },
+  { "label": "Test Engineer", "value": "test_engineer" },
+  { "label": "Release Manager", "value": "release_manager" },
+  { "label": "DevSecOps Engineer", "value": "devsecops_engineer" },
+  {
+    "label": "Digital Marketing Specialist",
+    "value": "digital_marketing_specialist"
+  },
+  {
+    "label": "Search Engine Marketing Specialist",
+    "value": "search_engine_marketing_specialist"
+  },
+  { "label": "Social Media Manager", "value": "social_media_manager" },
+  {
+    "label": "Content Marketing Specialist",
+    "value": "content_marketing_specialist"
+  },
+  {
+    "label": "Email Marketing Specialist",
+    "value": "email_marketing_specialist"
+  },
+  { "label": "SEO Specialist", "value": "seo_specialist" },
+  {
+    "label": "Affiliate Marketing Manager",
+    "value": "affiliate_marketing_manager"
+  },
+  { "label": "Brand Manager", "value": "brand_manager" },
+  {
+    "label": "Public Relations Specialist",
+    "value": "public_relations_specialist"
+  },
+  { "label": "Market Research Analyst", "value": "market_research_analyst" },
+  {
+    "label": "Market Development Manager",
+    "value": "market_development_manager"
+  },
+  {
+    "label": "Customer Insights Analyst",
+    "value": "customer_insights_analyst"
+  },
+  { "label": "Advertising Manager", "value": "advertising_manager" },
+  { "label": "Media Buyer", "value": "media_buyer" },
+  { "label": "Event Planner", "value": "event_planner" },
+  { "label": "Creative Director", "value": "creative_director" },
+  { "label": "Graphic Designer", "value": "graphic_designer" },
+  { "label": "Art Director", "value": "art_director" },
+  { "label": "Fashion Designer", "value": "fashion_designer" },
+  { "label": "Interior Designer", "value": "interior_designer" },
+  { "label": "Photographer", "value": "photographer" },
+  { "label": "Videographer", "value": "videographer" },
+  { "label": "Animator", "value": "animator" },
+  {
+    "label": "User Experience Researcher",
+    "value": "user_experience_researcher"
+  },
+  { "label": "User Interface Designer", "value": "user_interface_designer" },
+  { "label": "Visual Designer", "value": "visual_designer" },
+  { "label": "Data Scientist", "value": "data_scientist" },
+  {
+    "label": "Machine Learning Engineer",
+    "value": "machine_learning_engineer"
+  },
+  {
+    "label": "Artificial Intelligence Engineer",
+    "value": "artificial_intelligence_engineer"
+  },
+  { "label": "Statistician", "value": "statistician" },
+  {
+    "label": "Operations Research Analyst",
+    "value": "operations_research_analyst"
+  },
+  { "label": "Supply Chain Analyst", "value": "supply_chain_analyst" },
+  { "label": "Healthcare Data Analyst", "value": "healthcare_data_analyst" },
+  { "label": "Policy Analyst", "value": "policy_analyst" },
+  { "label": "Political Scientist", "value": "political_scientist" },
+  { "label": "Epidemiologist", "value": "epidemiologist" },
+  { "label": "Sociologist", "value": "sociologist" },
+  { "label": "Psychologist", "value": "psychologist" },
+  { "label": "Human Resources Manager", "value": "human_resources_manager" },
+  { "label": "Recruiter", "value": "recruiter" },
+  {
+    "label": "Talent Acquisition Specialist",
+    "value": "talent_acquisition_specialist"
+  },
+  {
+    "label": "Employee Relations Manager",
+    "value": "employee_relations_manager"
+  },
+  {
+    "label": "Compensation and Benefits Manager",
+    "value": "compensation_and_benefits_manager"
+  },
+  {
+    "label": "Learning and Development Manager",
+    "value": "learning_and_development_manager"
+  },
+  { "label": "Training Specialist", "value": "training_specialist" },
+  {
+    "label": "Organizational Development Consultant",
+    "value": "organizational_development_consultant"
+  },
+  {
+    "label": "Labor Relations Specialist",
+    "value": "labor_relations_specialist"
+  },
+  { "label": "HR Generalist", "value": "hr_generalist" },
+  { "label": "HR Business Partner", "value": "hr_business_partner" },
+  {
+    "label": "Diversity and Inclusion Officer",
+    "value": "diversity_and_inclusion_officer"
+  },
+  {
+    "label": "Change Management Consultant",
+    "value": "change_management_consultant"
+  },
+  {
+    "label": "Business Continuity Manager",
+    "value": "business_continuity_manager"
+  },
+  { "label": "Insurance Underwriter", "value": "insurance_underwriter" },
+  {
+    "label": "Financial Services Sales Agent",
+    "value": "financial_services_sales_agent"
+  },
+  { "label": "Real Estate Appraiser", "value": "real_estate_appraiser" },
+  { "label": "Urban Planner", "value": "urban_planner" },
+  { "label": "Market Manager", "value": "market_manager" },
+  { "label": "Franchise Manager", "value": "franchise_manager" },
+  {
+    "label": "Franchise Development Manager",
+    "value": "franchise_development_manager"
+  },
+  { "label": "Franchise Consultant", "value": "franchise_consultant" },
+  { "label": "Talent Manager", "value": "talent_manager" },
+  {
+    "label": "Leadership Development Coach",
+    "value": "leadership_development_coach"
+  },
+  {
+    "label": "Employee Engagement Specialist",
+    "value": "employee_engagement_specialist"
+  },
+  { "label": "Workforce Analyst", "value": "workforce_analyst" },
+  {
+    "label": "Employee Wellness Coordinator",
+    "value": "employee_wellness_coordinator"
+  },
+  { "label": "Health Coach", "value": "health_coach" },
+  {
+    "label": "Medical Billing Specialist",
+    "value": "medical_billing_specialist"
+  },
+  { "label": "Medical Coder", "value": "medical_coder" },
+  { "label": "Healthcare Consultant", "value": "healthcare_consultant" },
+  { "label": "Clinical Psychologist", "value": "clinical_psychologist" },
+  { "label": "Health Services Manager", "value": "health_services_manager" },
+  {
+    "label": "Healthcare Compliance Specialist",
+    "value": "healthcare_compliance_specialist"
+  },
+  {
+    "label": "Risk Assessment Specialist",
+    "value": "risk_assessment_specialist"
+  },
+  { "label": "Health Systems Analyst", "value": "health_systems_analyst" },
+  { "label": "Healthcare Strategist", "value": "healthcare_strategist" },
+  {
+    "label": "Clinical Quality Improvement Specialist",
+    "value": "clinical_quality_improvement_specialist"
+  },
+  { "label": "Infection Control Nurse", "value": "infection_control_nurse" },
+  {
+    "label": "Clinical Documentation Improvement Specialist",
+    "value": "clinical_documentation_improvement_specialist"
+  },
+  { "label": "Patient Advocate", "value": "patient_advocate" },
+  {
+    "label": "Health Information Technician",
+    "value": "health_information_technician"
+  },
+  { "label": "Case Manager", "value": "case_manager" },
+  { "label": "Medical Social Worker", "value": "medical_social_worker" },
+  {
+    "label": "Healthcare Project Manager",
+    "value": "healthcare_project_manager"
+  },
+  {
+    "label": "Healthcare Quality Improvement Manager",
+    "value": "healthcare_quality_improvement_manager"
+  },
+  {
+    "label": "Healthcare Financial Analyst",
+    "value": "healthcare_financial_analyst"
+  },
+  {
+    "label": "Healthcare Business Analyst",
+    "value": "healthcare_business_analyst"
+  },
+  {
+    "label": "Healthcare Operations Manager",
+    "value": "healthcare_operations_manager"
+  },
+  {
+    "label": "Healthcare Sales Representative",
+    "value": "healthcare_sales_representative"
+  },
+  {
+    "label": "Healthcare Policy Analyst",
+    "value": "healthcare_policy_analyst"
+  },
+  {
+    "label": "Healthcare Compliance Officer",
+    "value": "healthcare_compliance_officer"
+  },
+  { "label": "Healthcare Risk Analyst", "value": "healthcare_risk_analyst" },
+  {
+    "label": "Behavioral Health Technician",
+    "value": "behavioral_health_technician"
+  },
+  {
+    "label": "Clinical Laboratory Technician",
+    "value": "clinical_laboratory_technician"
+  },
+  {
+    "label": "Clinical Informatics Specialist",
+    "value": "clinical_informatics_specialist"
+  },
+  { "label": "Clinical Data Manager", "value": "clinical_data_manager" },
+  { "label": "Clinical Trial Assistant", "value": "clinical_trial_assistant" },
+  {
+    "label": "Pharmaceutical Project Manager",
+    "value": "pharmaceutical_project_manager"
+  },
+  {
+    "label": "Drug Development Scientist",
+    "value": "drug_development_scientist"
+  },
+  { "label": "Clinical Data Analyst", "value": "clinical_data_analyst" },
+  {
+    "label": "Health Insurance Claims Specialist",
+    "value": "health_insurance_claims_specialist"
+  },
+  {
+    "label": "Health Information Management Director",
+    "value": "health_information_management_director"
+  },
+  {
+    "label": "Health Services Coordinator",
+    "value": "health_services_coordinator"
+  },
+  { "label": "Public Health Manager", "value": "public_health_manager" },
+  {
+    "label": "Public Health Program Coordinator",
+    "value": "public_health_program_coordinator"
+  },
+  {
+    "label": "Health Communication Specialist",
+    "value": "health_communication_specialist"
+  },
+  {
+    "label": "Health Services Administrator",
+    "value": "health_services_administrator"
+  },
+  {
+    "label": "Healthcare Technology Specialist",
+    "value": "healthcare_technology_specialist"
+  },
+  {
+    "label": "Clinical Documentation Specialist",
+    "value": "clinical_documentation_specialist"
+  },
+  {
+    "label": "Patient Experience Manager",
+    "value": "patient_experience_manager"
+  },
+  { "label": "Health Systems Engineer", "value": "health_systems_engineer" },
+  { "label": "Patient Care Coordinator", "value": "patient_care_coordinator" },
+  {
+    "label": "Healthcare Risk Consultant",
+    "value": "healthcare_risk_consultant"
+  },
+  { "label": "Medical Science Liaison", "value": "medical_science_liaison" },
+  {
+    "label": "Regulatory Affairs Specialist",
+    "value": "regulatory_affairs_specialist"
+  },
+  {
+    "label": "Healthcare Marketing Manager",
+    "value": "healthcare_marketing_manager"
+  },
+  { "label": "Healthcare Brand Manager", "value": "healthcare_brand_manager" },
+  {
+    "label": "Medical Affairs Specialist",
+    "value": "medical_affairs_specialist"
+  },
+  {
+    "label": "Clinical Research Associate",
+    "value": "clinical_research_associate"
+  },
+  { "label": "Research Scientist", "value": "research_scientist" },
+  { "label": "Biostatistician", "value": "biostatistician" },
+  {
+    "label": "Pharmaceutical Sales Representative",
+    "value": "pharmaceutical_sales_representative"
+  },
+  {
+    "label": "Healthcare Quality Manager",
+    "value": "healthcare_quality_manager"
+  },
+  { "label": "Public Health Educator", "value": "public_health_educator" },
+  {
+    "label": "Health Informatics Specialist",
+    "value": "health_informatics_specialist"
+  },
+  { "label": "Health Systems Analyst", "value": "health_systems_analyst" },
+  { "label": "Clinical Trials Monitor", "value": "clinical_trials_monitor" },
+  {
+    "label": "Clinical Operations Manager",
+    "value": "clinical_operations_manager"
+  },
+  {
+    "label": "Clinical Safety Associate",
+    "value": "clinical_safety_associate"
+  },
+  { "label": "Clinical Project Manager", "value": "clinical_project_manager" },
+  {
+    "label": "Clinical Research Coordinator",
+    "value": "clinical_research_coordinator"
+  },
+  { "label": "Patient Safety Officer", "value": "patient_safety_officer" },
+  {
+    "label": "Clinical Compliance Manager",
+    "value": "clinical_compliance_manager"
+  },
+  {
+    "label": "Clinical Quality Assurance Specialist",
+    "value": "clinical_quality_assurance_specialist"
+  },
+  {
+    "label": "Clinical Laboratory Scientist",
+    "value": "clinical_laboratory_scientist"
+  },
+  { "label": "Laboratory Technician", "value": "laboratory_technician" },
+  { "label": "Medical Technologist", "value": "medical_technologist" },
+  {
+    "label": "Pharmaceutical Technician",
+    "value": "pharmaceutical_technician"
+  },
+  { "label": "Pharmacy Technician", "value": "pharmacy_technician" },
+  {
+    "label": "Healthcare Compliance Consultant",
+    "value": "healthcare_compliance_consultant"
+  },
+  {
+    "label": "Healthcare Data Architect",
+    "value": "healthcare_data_architect"
+  },
+  {
+    "label": "Healthcare Product Manager",
+    "value": "healthcare_product_manager"
+  },
+  { "label": "Healthcare Risk Manager", "value": "healthcare_risk_manager" },
+  {
+    "label": "Clinical Research Scientist",
+    "value": "clinical_research_scientist"
+  },
+  {
+    "label": "Clinical Affairs Specialist",
+    "value": "clinical_affairs_specialist"
+  },
+  { "label": "Patient Liaison", "value": "patient_liaison" },
+  { "label": "Patient Navigator", "value": "patient_navigator" },
+  {
+    "label": "Healthcare Operations Analyst",
+    "value": "healthcare_operations_analyst"
+  },
+  {
+    "label": "Patient Satisfaction Coordinator",
+    "value": "patient_satisfaction_coordinator"
+  },
+  {
+    "label": "Healthcare Operations Consultant",
+    "value": "healthcare_operations_consultant"
+  },
+  {
+    "label": "Healthcare Project Coordinator",
+    "value": "healthcare_project_coordinator"
+  },
+  {
+    "label": "Healthcare Quality Coordinator",
+    "value": "healthcare_quality_coordinator"
+  },
+  {
+    "label": "Healthcare Information Systems Analyst",
+    "value": "healthcare_information_systems_analyst"
+  },
+  { "label": "Medical Science Director", "value": "medical_science_director" },
+  { "label": "Clinical Data Associate", "value": "clinical_data_associate" },
+  {
+    "label": "Clinical Development Director",
+    "value": "clinical_development_director"
+  },
+  {
+    "label": "Healthcare Quality Assurance Manager",
+    "value": "healthcare_quality_assurance_manager"
+  },
+  {
+    "label": "Healthcare Regulatory Affairs Manager",
+    "value": "healthcare_regulatory_affairs_manager"
+  },
+  { "label": "Clinical Trial Manager", "value": "clinical_trial_manager" },
+  {
+    "label": "Clinical Operations Director",
+    "value": "clinical_operations_director"
+  },
+  {
+    "label": "Healthcare Research Scientist",
+    "value": "healthcare_research_scientist"
+  },
+  {
+    "label": "Healthcare Solutions Architect",
+    "value": "healthcare_solutions_architect"
+  },
+  {
+    "label": "Healthcare Transformation Consultant",
+    "value": "healthcare_transformation_consultant"
+  },
+  {
+    "label": "Healthcare Technology Consultant",
+    "value": "healthcare_technology_consultant"
+  },
+  { "label": "Healthcare IT Consultant", "value": "healthcare_it_consultant" },
+  { "label": "Healthcare Data Analyst", "value": "healthcare_data_analyst" },
+  {
+    "label": "Healthcare Integration Specialist",
+    "value": "healthcare_integration_specialist"
+  },
+  {
+    "label": "Healthcare Database Administrator",
+    "value": "healthcare_database_administrator"
+  },
+  {
+    "label": "Healthcare Network Analyst",
+    "value": "healthcare_network_analyst"
+  },
+  {
+    "label": "Healthcare Solutions Engineer",
+    "value": "healthcare_solutions_engineer"
+  },
+  {
+    "label": "Healthcare Application Analyst",
+    "value": "healthcare_application_analyst"
+  },
+  {
+    "label": "Healthcare Systems Administrator",
+    "value": "healthcare_systems_administrator"
+  },
+  {
+    "label": "Healthcare User Experience Designer",
+    "value": "healthcare_user_experience_designer"
+  },
+  {
+    "label": "Healthcare User Interface Designer",
+    "value": "healthcare_user_interface_designer"
+  },
+  { "label": "Healthcare Web Developer", "value": "healthcare_web_developer" },
+  {
+    "label": "Healthcare Mobile Developer",
+    "value": "healthcare_mobile_developer"
+  },
+  {
+    "label": "Healthcare Software Engineer",
+    "value": "healthcare_software_engineer"
+  },
+  { "label": "Healthcare Data Engineer", "value": "healthcare_data_engineer" },
+  {
+    "label": "Healthcare Cloud Engineer",
+    "value": "healthcare_cloud_engineer"
+  },
+  {
+    "label": "Healthcare Cybersecurity Specialist",
+    "value": "healthcare_cybersecurity_specialist"
+  },
+  {
+    "label": "Healthcare DevOps Engineer",
+    "value": "healthcare_devops_engineer"
+  },
+  { "label": "Healthcare AI Engineer", "value": "healthcare_ai_engineer" },
+  {
+    "label": "Healthcare Blockchain Developer",
+    "value": "healthcare_blockchain_developer"
+  },
+  {
+    "label": "Healthcare Virtual Reality Developer",
+    "value": "healthcare_virtual_reality_developer"
+  },
+  {
+    "label": "Healthcare IoT Specialist",
+    "value": "healthcare_iot_specialist"
+  },
+  {
+    "label": "Healthcare Augmented Reality Developer",
+    "value": "healthcare_augmented_reality_developer"
+  },
+  {
+    "label": "Healthcare 3D Printing Specialist",
+    "value": "healthcare_3d_printing_specialist"
+  },
+  {
+    "label": "Healthcare Robotics Engineer",
+    "value": "healthcare_robotics_engineer"
+  },
+  {
+    "label": "Healthcare Simulation Specialist",
+    "value": "healthcare_simulation_specialist"
+  },
+  {
+    "label": "Healthcare Digital Marketing Specialist",
+    "value": "healthcare_digital_marketing_specialist"
+  },
+  {
+    "label": "Healthcare eCommerce Specialist",
+    "value": "healthcare_ecommerce_specialist"
+  },
+  {
+    "label": "Healthcare Social Media Specialist",
+    "value": "healthcare_social_media_specialist"
+  },
+  {
+    "label": "Healthcare Mobile Application Developer",
+    "value": "healthcare_mobile_application_developer"
+  },
+  {
+    "label": "Healthcare Web Application Developer",
+    "value": "healthcare_web_application_developer"
+  },
+  {
+    "label": "Healthcare Software Development Manager",
+    "value": "healthcare_software_development_manager"
+  },
+  {
+    "label": "Healthcare Product Development Manager",
+    "value": "healthcare_product_development_manager"
+  },
+  {
+    "label": "Healthcare Product Manager",
+    "value": "healthcare_product_manager"
+  },
+  {
+    "label": "Healthcare Service Delivery Manager",
+    "value": "healthcare_service_delivery_manager"
+  },
+  {
+    "label": "Healthcare Service Design Manager",
+    "value": "healthcare_service_design_manager"
+  },
+  {
+    "label": "Healthcare Service Strategy Manager",
+    "value": "healthcare_service_strategy_manager"
+  },
+  {
+    "label": "Healthcare Service Operations Manager",
+    "value": "healthcare_service_operations_manager"
+  },
+  {
+    "label": "Healthcare Service Improvement Manager",
+    "value": "healthcare_service_improvement_manager"
+  },
+  {
+    "label": "Healthcare Service Quality Manager",
+    "value": "healthcare_service_quality_manager"
+  },
+  {
+    "label": "Healthcare Service Development Manager",
+    "value": "healthcare_service_development_manager"
+  },
+  {
+    "label": "Healthcare Service Transformation Manager",
+    "value": "healthcare_service_transformation_manager"
+  },
+  {
+    "label": "Healthcare Service Innovation Manager",
+    "value": "healthcare_service_innovation_manager"
+  },
+  {
+    "label": "Healthcare Service Experience Manager",
+    "value": "healthcare_service_experience_manager"
+  },
+  {
+    "label": "Healthcare Service Engagement Manager",
+    "value": "healthcare_service_engagement_manager"
+  },
+  {
+    "label": "Healthcare Service Partnership Manager",
+    "value": "healthcare_service_partnership_manager"
+  },
+  {
+    "label": "Healthcare Service Planning Manager",
+    "value": "healthcare_service_planning_manager"
+  },
+  {
+    "label": "Healthcare Service Coordination Manager",
+    "value": "healthcare_service_coordination_manager"
+  },
+  {
+    "label": "Healthcare Service Integration Manager",
+    "value": "healthcare_service_integration_manager"
+  },
+  {
+    "label": "Healthcare Service Development Consultant",
+    "value": "healthcare_service_development_consultant"
+  },
+  {
+    "label": "Healthcare Service Management Consultant",
+    "value": "healthcare_service_management_consultant"
+  },
+  {
+    "label": "Healthcare Service Performance Manager",
+    "value": "healthcare_service_performance_manager"
+  },
+  {
+    "label": "Healthcare Service Resource Manager",
+    "value": "healthcare_service_resource_manager"
+  },
+  {
+    "label": "Healthcare Service Sustainability Manager",
+    "value": "healthcare_service_sustainability_manager"
+  },
+  {
+    "label": "Healthcare Service Delivery Consultant",
+    "value": "healthcare_service_delivery_consultant"
+  },
+  {
+    "label": "Healthcare Service Strategy Consultant",
+    "value": "healthcare_service_strategy_consultant"
+  },
+  {
+    "label": "Healthcare Service Operations Consultant",
+    "value": "healthcare_service_operations_consultant"
+  },
+  {
+    "label": "Healthcare Service Improvement Consultant",
+    "value": "healthcare_service_improvement_consultant"
+  },
+  {
+    "label": "Healthcare Service Quality Consultant",
+    "value": "healthcare_service_quality_consultant"
+  },
+  {
+    "label": "Healthcare Service Development Specialist",
+    "value": "healthcare_service_development_specialist"
+  },
+  {
+    "label": "Healthcare Service Innovation Specialist",
+    "value": "healthcare_service_innovation_specialist"
+  },
+  {
+    "label": "Healthcare Service Experience Specialist",
+    "value": "healthcare_service_experience_specialist"
+  },
+  {
+    "label": "Healthcare Service Engagement Specialist",
+    "value": "healthcare_service_engagement_specialist"
+  },
+  {
+    "label": "Healthcare Service Partnership Specialist",
+    "value": "healthcare_service_partnership_specialist"
+  },
+  {
+    "label": "Healthcare Service Planning Specialist",
+    "value": "healthcare_service_planning_specialist"
+  },
+  {
+    "label": "Healthcare Service Coordination Specialist",
+    "value": "healthcare_service_coordination_specialist"
+  },
+  {
+    "label": "Healthcare Service Integration Specialist",
+    "value": "healthcare_service_integration_specialist"
+  },
+  {
+    "label": "Healthcare Service Development Advisor",
+    "value": "healthcare_service_development_advisor"
+  },
+  {
+    "label": "Healthcare Service Management Advisor",
+    "value": "healthcare_service_management_advisor"
+  },
+  {
+    "label": "Healthcare Service Performance Advisor",
+    "value": "healthcare_service_performance_advisor"
+  },
+  {
+    "label": "Healthcare Service Resource Advisor",
+    "value": "healthcare_service_resource_advisor"
+  },
+  {
+    "label": "Healthcare Service Sustainability Advisor",
+    "value": "healthcare_service_sustainability_advisor"
+  },
+  {
+    "label": "Healthcare Service Delivery Advisor",
+    "value": "healthcare_service_delivery_advisor"
+  },
+  {
+    "label": "Healthcare Service Strategy Advisor",
+    "value": "healthcare_service_strategy_advisor"
+  },
+  {
+    "label": "Healthcare Service Operations Advisor",
+    "value": "healthcare_service_operations_advisor"
+  },
+  {
+    "label": "Healthcare Service Improvement Advisor",
+    "value": "healthcare_service_improvement_advisor"
+  },
+  {
+    "label": "Healthcare Service Quality Advisor",
+    "value": "healthcare_service_quality_advisor"
+  },
+  {
+    "label": "Healthcare Service Development Officer",
+    "value": "healthcare_service_development_officer"
+  },
+  {
+    "label": "Healthcare Service Management Officer",
+    "value": "healthcare_service_management_officer"
+  },
+  {
+    "label": "Healthcare Service Performance Officer",
+    "value": "healthcare_service_performance_officer"
+  },
+  {
+    "label": "Healthcare Service Resource Officer",
+    "value": "healthcare_service_resource_officer"
+  },
+  {
+    "label": "Healthcare Service Sustainability Officer",
+    "value": "healthcare_service_sustainability_officer"
+  },
+  {
+    "label": "Healthcare Service Delivery Officer",
+    "value": "healthcare_service_delivery_officer"
+  },
+  {
+    "label": "Healthcare Service Strategy Officer",
+    "value": "healthcare_service_strategy_officer"
+  },
+  {
+    "label": "Healthcare Service Operations Officer",
+    "value": "healthcare_service_operations_officer"
+  },
+  {
+    "label": "Healthcare Service Improvement Officer",
+    "value": "healthcare_service_improvement_officer"
+  },
+  {
+    "label": "Healthcare Service Quality Officer",
+    "value": "healthcare_service_quality_officer"
+  },
+  {
+    "label": "Healthcare Service Development Executive",
+    "value": "healthcare_service_development_executive"
+  },
+  {
+    "label": "Healthcare Service Management Executive",
+    "value": "healthcare_service_management_executive"
+  },
+  {
+    "label": "Healthcare Service Performance Executive",
+    "value": "healthcare_service_performance_executive"
+  },
+  {
+    "label": "Healthcare Service Resource Executive",
+    "value": "healthcare_service_resource_executive"
+  },
+  {
+    "label": "Healthcare Service Sustainability Executive",
+    "value": "healthcare_service_sustainability_executive"
+  },
+  {
+    "label": "Healthcare Service Delivery Executive",
+    "value": "healthcare_service_delivery_executive"
+  },
+  {
+    "label": "Healthcare Service Strategy Executive",
+    "value": "healthcare_service_strategy_executive"
+  },
+  {
+    "label": "Healthcare Service Operations Executive",
+    "value": "healthcare_service_operations_executive"
+  },
+  {
+    "label": "Healthcare Service Improvement Executive",
+    "value": "healthcare_service_improvement_executive"
+  },
+  {
+    "label": "Healthcare Service Quality Executive",
+    "value": "healthcare_service_quality_executive"
+  },
+  {
+    "label": "Healthcare Service Development Lead",
+    "value": "healthcare_service_development_lead"
+  },
+  {
+    "label": "Healthcare Service Management Lead",
+    "value": "healthcare_service_management_lead"
+  },
+  {
+    "label": "Healthcare Service Performance Lead",
+    "value": "healthcare_service_performance_lead"
+  },
+  {
+    "label": "Healthcare Service Resource Lead",
+    "value": "healthcare_service_resource_lead"
+  },
+  {
+    "label": "Healthcare Service Sustainability Lead",
+    "value": "healthcare_service_sustainability_lead"
+  },
+  {
+    "label": "Healthcare Service Delivery Lead",
+    "value": "healthcare_service_delivery_lead"
+  },
+  {
+    "label": "Healthcare Service Strategy Lead",
+    "value": "healthcare_service_strategy_lead"
+  },
+  {
+    "label": "Healthcare Service Operations Lead",
+    "value": "healthcare_service_operations_lead"
+  },
+  {
+    "label": "Healthcare Service Improvement Lead",
+    "value": "healthcare_service_improvement_lead"
+  },
+  {
+    "label": "Healthcare Service Quality Lead",
+    "value": "healthcare_service_quality_lead"
+  },
+  {
+    "label": "Healthcare Service Development Manager",
+    "value": "healthcare_service_development_manager"
+  },
+  {
+    "label": "Healthcare Service Management Manager",
+    "value": "healthcare_service_management_manager"
+  },
+  {
+    "label": "Healthcare Service Performance Manager",
+    "value": "healthcare_service_performance_manager"
+  },
+  {
+    "label": "Healthcare Service Resource Manager",
+    "value": "healthcare_service_resource_manager"
+  },
+  {
+    "label": "Healthcare Service Sustainability Manager",
+    "value": "healthcare_service_sustainability_manager"
+  },
+  {
+    "label": "Healthcare Service Delivery Manager",
+    "value": "healthcare_service_delivery_manager"
+  },
+  {
+    "label": "Healthcare Service Strategy Manager",
+    "value": "healthcare_service_strategy_manager"
+  },
+  {
+    "label": "Healthcare Service Operations Manager",
+    "value": "healthcare_service_operations_manager"
+  },
+  {
+    "label": "Healthcare Service Improvement Manager",
+    "value": "healthcare_service_improvement_manager"
+  },
+  {
+    "label": "Healthcare Service Quality Manager",
+    "value": "healthcare_service_quality_manager"
+  },
+  {
+    "label": "Healthcare Service Development Consultant",
+    "value": "healthcare_service_development_consultant"
+  },
+  {
+    "label": "Healthcare Service Management Consultant",
+    "value": "healthcare_service_management_consultant"
+  },
+  {
+    "label": "Healthcare Service Performance Consultant",
+    "value": "healthcare_service_performance_consultant"
+  },
+  {
+    "label": "Healthcare Service Resource Consultant",
+    "value": "healthcare_service_resource_consultant"
+  },
+  {
+    "label": "Healthcare Service Sustainability Consultant",
+    "value": "healthcare_service_sustainability_consultant"
+  },
+  {
+    "label": "Healthcare Service Delivery Consultant",
+    "value": "healthcare_service_delivery_consultant"
+  },
+  {
+    "label": "Healthcare Service Strategy Consultant",
+    "value": "healthcare_service_strategy_consultant"
+  },
+  {
+    "label": "Healthcare Service Operations Consultant",
+    "value": "healthcare_service_operations_consultant"
+  },
+  {
+    "label": "Healthcare Service Improvement Consultant",
+    "value": "healthcare_service_improvement_consultant"
+  },
+  {
+    "label": "Healthcare Service Quality Consultant",
+    "value": "healthcare_service_quality_consultant"
+  },
+  {
+    "label": "Healthcare Service Development Specialist",
+    "value": "healthcare_service_development_specialist"
+  },
+  {
+    "label": "Healthcare Service Management Specialist",
+    "value": "healthcare_service_management_specialist"
+  },
+  {
+    "label": "Healthcare Service Performance Specialist",
+    "value": "healthcare_service_performance_specialist"
+  },
+  {
+    "label": "Healthcare Service Resource Specialist",
+    "value": "healthcare_service_resource_specialist"
+  },
+  {
+    "label": "Healthcare Service Sustainability Specialist",
+    "value": "healthcare_service_sustainability_specialist"
+  },
+  {
+    "label": "Healthcare Service Delivery Specialist",
+    "value": "healthcare_service_delivery_specialist"
+  },
+  {
+    "label": "Healthcare Service Strategy Specialist",
+    "value": "healthcare_service_strategy_specialist"
+  },
+  {
+    "label": "Healthcare Service Operations Specialist",
+    "value": "healthcare_service_operations_specialist"
+  },
+  {
+    "label": "Healthcare Service Improvement Specialist",
+    "value": "healthcare_service_improvement_specialist"
+  },
+  {
+    "label": "Healthcare Service Quality Specialist",
+    "value": "healthcare_service_quality_specialist"
+  },
+  {
+    "label": "Healthcare Service Development Leader",
+    "value": "healthcare_service_development_leader"
+  },
+  {
+    "label": "Healthcare Service Management Leader",
+    "value": "healthcare_service_management_leader"
+  },
+  {
+    "label": "Healthcare Service Performance Leader",
+    "value": "healthcare_service_performance_leader"
+  },
+  {
+    "label": "Healthcare Service Resource Leader",
+    "value": "healthcare_service_resource_leader"
+  },
+  {
+    "label": "Healthcare Service Sustainability Leader",
+    "value": "healthcare_service_sustainability_leader"
+  },
+  {
+    "label": "Healthcare Service Delivery Leader",
+    "value": "healthcare_service_delivery_leader"
+  },
+  {
+    "label": "Healthcare Service Strategy Leader",
+    "value": "healthcare_service_strategy_leader"
+  },
+  {
+    "label": "Healthcare Service Operations Leader",
+    "value": "healthcare_service_operations_leader"
+  },
+  {
+    "label": "Healthcare Service Improvement Leader",
+    "value": "healthcare_service_improvement_leader"
+  },
+  {
+    "label": "Healthcare Service Quality Leader",
+    "value": "healthcare_service_quality_leader"
+  },
+  { "label": "Web Development Manager", "value": "web_development_manager" },
+  {
+    "label": "Web Development Consultant",
+    "value": "web_development_consultant"
+  },
+  {
+    "label": "Web Development Specialist",
+    "value": "web_development_specialist"
+  },
+  { "label": "Web Development Lead", "value": "web_development_lead" },
+  {
+    "label": "Web Development Executive",
+    "value": "web_development_executive"
+  },
+  { "label": "Front-End Web Developer", "value": "front_end_web_developer" },
+  { "label": "Back-End Web Developer", "value": "back_end_web_developer" },
+  { "label": "Full-Stack Web Developer", "value": "full_stack_web_developer" },
+  {
+    "label": "Web Application Developer",
+    "value": "web_application_developer"
+  },
+  { "label": "Website Designer", "value": "website_designer" },
+  { "label": "UI/UX Web Designer", "value": "ui_ux_web_designer" },
+  { "label": "Web Development Intern", "value": "web_development_intern" },
+  { "label": "E-commerce Web Developer", "value": "ecommerce_web_developer" },
+  { "label": "Responsive Web Developer", "value": "responsive_web_developer" },
+  {
+    "label": "Content Management System (CMS) Developer",
+    "value": "cms_developer"
+  },
+  { "label": "WordPress Developer", "value": "wordpress_developer" },
+  { "label": "Shopify Developer", "value": "shopify_developer" },
+  { "label": "Web Performance Engineer", "value": "web_performance_engineer" },
+  { "label": "Web Security Specialist", "value": "web_security_specialist" },
+  {
+    "label": "Web Optimization Specialist",
+    "value": "web_optimization_specialist"
+  },
+  {
+    "label": "Website Quality Assurance Tester",
+    "value": "website_quality_assurance_tester"
+  },
+  { "label": "JavaScript Developer", "value": "javascript_developer" },
+  { "label": "JavaScript Engineer", "value": "javascript_engineer" },
+  {
+    "label": "JavaScript Full-Stack Developer",
+    "value": "javascript_full_stack_developer"
+  },
+  {
+    "label": "JavaScript Front-End Developer",
+    "value": "javascript_front_end_developer"
+  },
+  {
+    "label": "JavaScript Back-End Developer",
+    "value": "javascript_back_end_developer"
+  },
+  {
+    "label": "JavaScript Software Engineer",
+    "value": "javascript_software_engineer"
+  },
+  {
+    "label": "JavaScript Application Developer",
+    "value": "javascript_application_developer"
+  },
+  {
+    "label": "JavaScript Framework Developer",
+    "value": "javascript_framework_developer"
+  },
+  { "label": "Node.js Developer", "value": "node_js_developer" },
+  { "label": "React.js Developer", "value": "react_js_developer" },
+  { "label": "Vue.js Developer", "value": "vue_js_developer" },
+  { "label": "Angular Developer", "value": "angular_developer" },
+  {
+    "label": "JavaScript Game Developer",
+    "value": "javascript_game_developer"
+  },
+  {
+    "label": "JavaScript Mobile Developer",
+    "value": "javascript_mobile_developer"
+  },
+  { "label": "JavaScript UI Developer", "value": "javascript_ui_developer" },
+  {
+    "label": "JavaScript Technical Lead",
+    "value": "javascript_technical_lead"
+  },
+  {
+    "label": "JavaScript DevOps Engineer",
+    "value": "javascript_devops_engineer"
+  },
+  {
+    "label": "JavaScript Automation Engineer",
+    "value": "javascript_automation_engineer"
+  },
+  {
+    "label": "JavaScript Solutions Architect",
+    "value": "javascript_solutions_architect"
+  },
+  { "label": "JavaScript Consultant", "value": "javascript_consultant" },
+  { "label": "JavaScript Intern", "value": "javascript_intern" }
+]

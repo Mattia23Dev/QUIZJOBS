@@ -31,7 +31,6 @@ function Crm({openTour, setOpenTour, tour}) {
        if(response.success){
         setInitialData(response.data)
         //message.success(response.message)
-        console.log(response.data)
        }
        else{
         message.error(response.message)

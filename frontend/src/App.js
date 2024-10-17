@@ -41,7 +41,6 @@ import ProgressBar from "./components/ProgressBar";
 function App() {
   const { loading } = useSelector((state) => state.loaders);
   const [logoutPopup, setLoginPopup] = useState(false);
-  const [bigLoading, setBigLoading] = useState(false);
   const [openTour, setOpenTour] = useState(false);
   const [whichTour, setWhichTour] = useState("");
   const handleStartTour = (tour) => {
@@ -54,7 +53,9 @@ function App() {
     <>
       {/* {loading && <Loader/> } */}
       {/* <ProgressBar /> */}
-      {bigLoading && <BigLoader />}
+      {/* {bigLoading &&  */}
+      {/* <BigLoader /> */}
+      {/* } */}
       {logoutPopup && (
         <div className="popup-shadows">
           <div className="popup-logout">
@@ -191,7 +192,6 @@ function App() {
                   tour={whichTour}
                   openTour={openTour}
                   setOpenTour={setOpenTour}
-                  setBigLoading={setBigLoading}
                 />
               </ProtectedRoute>
             }
@@ -222,7 +222,6 @@ function App() {
                   tour={whichTour}
                   openTour={openTour}
                   setOpenTour={setOpenTour}
-                  setBigLoading={setBigLoading}
                 />
               </ProtectedRoute>
             }

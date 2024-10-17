@@ -130,7 +130,7 @@ const addExamMix = async (req, res) => {
                   const newQuestion = new Question({
                       question: domanda.domanda,
                       correctOption: domanda.rispostaCorretta !== null ?
-                        domanda.rispostaCorretta.lettera + ' ' + domanda.rispostaCorretta.risposta
+                        domanda?.rispostaCorretta?.lettera + ' ' + domanda?.rispostaCorretta?.risposta
                         : "Nullo",
                       options: domanda.opzioni,
                       exam: newExam._id,
@@ -663,7 +663,7 @@ const saveTestProgressMix = async (req, res) => {
 
 const getAllExamsByUser = async(req,res) => {
   try{
-     const exam = await Exam.find({company: req.params.id})
+     const exam = await Exam.find({company: req.params.id}).select(['-questions','-description','-jobDescription'])
      if(exam){
       res.send({
         message: "Exams list fetched successfully.",

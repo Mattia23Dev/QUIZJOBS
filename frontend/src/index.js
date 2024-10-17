@@ -6,6 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import "antd/dist/antd.min.css";
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import "./i18n.js";
 
 import NProgress from "nprogress";
 

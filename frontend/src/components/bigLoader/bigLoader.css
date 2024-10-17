@@ -5,7 +5,7 @@
   height: 100vh;
   left: 0;
   background-color: white;
-  z-index: 20;
+  z-index: 1000;
   overflow: hidden;
 }
 .header-big-loader{
