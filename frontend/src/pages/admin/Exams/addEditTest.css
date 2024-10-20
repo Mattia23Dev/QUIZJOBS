@@ -225,22 +225,23 @@
   .create-exam-top > div > span,
   .create-exam-top2 > div > span {
     display: inline-block;
-    width: 17px;
-    height: 17px;
-    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
     background-color: gray;
   }
   .create-exam-top > div > p,
   .create-exam-top2 > div > p {
     color: #b4b4b4;
+    font-size: 14px;
   }
   .create-exam-top > div.active > span,
   .create-exam-top2 > div.active > span {
-    background-color: var(--secondary);
+    background-color: var(--primary);
   }
   .create-exam-top > div.active > p,
   .create-exam-top2 > div.active > p {
-    color: var(--secondary);
+    color: var(--primary);
   }
   .copy-link{
     border: 1px solid #b4b4b4;
@@ -618,7 +619,7 @@
     }
     .create-exam-top > div > p,
     .create-exam-top2 > div > p {
-      font-size: 13px;
+      font-size: 14px;
       margin-top: 3px;
     }
     .copy-link{

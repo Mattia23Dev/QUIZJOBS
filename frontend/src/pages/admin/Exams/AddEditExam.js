@@ -27,6 +27,7 @@ import {
   Select,
   Popconfirm,
   Modal,
+  Tooltip,
 } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -75,6 +76,7 @@ import skillsjson from "../../../utlis/skills.json";
 import jobPositionsJson from "../../../utlis/jobpositions.json";
 import { useTranslation } from "react-i18next";
 import BigLoader from "../../../components/bigLoader/BigLoader";
+import { BsQuestion } from "react-icons/bs";
 
 const { Option } = Select;
 
@@ -236,7 +238,7 @@ const DomandeComponent = React.memo(
     );
   }
 );
-const apiKey = process.env.REACT_APP_OPENAI_API_KEY ??""
+const apiKey = process.env.REACT_APP_OPENAI_API_KEY ?? "";
 
 function AddEditExam({ openTour, setOpenTour, tour }) {
   const navigate = useNavigate();
@@ -277,7 +279,7 @@ function AddEditExam({ openTour, setOpenTour, tour }) {
     generalSector: "",
     jobPosition: "",
     testLanguage: "",
-    skills: [""],
+    skills: [],
     deadline: null,
     description: "",
     tag: tag,
@@ -293,24 +295,21 @@ function AddEditExam({ openTour, setOpenTour, tour }) {
     {
       content:
         tag === "ai" || tag === "mix"
-          ? "Compila il modulo per fornire all'AI istruzioni su come deve essere il Test"
-          : "Inserisci le informazioni dell'annuncio di lavoro",
-      selector: ".elemento1", // Selettore CSS dell'elemento
+          ? t("exam_tour_step_1")
+          : t("exam_tour_step_1_manual"),
+      selector: ".elemento1",
     },
     {
-      content:
-        "Modifica le domande a tuo piacimento, puoi aggiungere anche un modulo aggiuntivo con domande non in focus sulle competenze",
-      selector: ".elemento2", // Selettore CSS dell'elemento
+      content:t("exam_tour_step_2"),
+      selector: ".elemento2",
     },
     {
-      content:
-        "Inserisci i moduli che vuoi inserire nel test, crea delle domande oppure scegli le nostre.",
-      selector: ".elemento3", // Selettore CSS dell'elemento
+      content:t("exam_tour_step_3"),
+      selector: ".elemento3",
     },
     {
-      content:
-        "Condividi il link del test, e crea dei link appositi per i vari canali che utilizzi",
-      selector: ".elemento4", // Selettore CSS dell'elemento
+      content:t("exam_tour_step_4"),
+      selector: ".elemento4",
     },
   ];
 
@@ -740,6 +739,7 @@ function AddEditExam({ openTour, setOpenTour, tour }) {
       addItemToLocalStorage("questions", nuoveDomande);
     }
   };
+
   const handleDeleteModuleQuestion = (domanda, type) => {
     if (type === "aperta") {
       const newQuestions = questions.filter((item) => item.domanda !== domanda);
@@ -751,6 +751,7 @@ function AddEditExam({ openTour, setOpenTour, tour }) {
       setQuestions(newQuestions);
     }
   };
+  
   const checkIfAdded = (domanda, type) => {
     if (type === "aperta") {
       const esiste = questions.filter((d) => d.domanda === domanda);
@@ -913,7 +914,6 @@ function AddEditExam({ openTour, setOpenTour, tour }) {
           </div>
         </div>
 
-        
         {/* {tag === "manual" && (
         <div
           onClick={
@@ -983,7 +983,14 @@ function AddEditExam({ openTour, setOpenTour, tour }) {
                   <Form.Item
                     initialValue={config.generalSector}
                     required
-                    label={t("sector")}
+                    label={
+                      <div className="flex flex-row items-center description-tooltip gap-1">
+                        {t("sector")}
+                        <Tooltip title={t("sector_tooltip")}>
+                          <BsQuestion size={18} />
+                        </Tooltip>
+                      </div>
+                    }
                     name="generalSector"
                   >
                     <input
@@ -1110,7 +1117,14 @@ function AddEditExam({ openTour, setOpenTour, tour }) {
                 <Col span={12}>
                   <Form.Item
                     initialValue={config.skills}
-                    label={t("skills")}
+                    label={
+                      <div className="flex flex-row items-center description-tooltip gap-1">
+                        {t("skills")}
+                        <Tooltip title={t("skills_tooltip")}>
+                          <BsQuestion size={18} />
+                        </Tooltip>
+                      </div>
+                    }
                     required
                     name="skills"
                   >
@@ -1136,7 +1150,16 @@ function AddEditExam({ openTour, setOpenTour, tour }) {
                 <Col span={24}>
                   <Form.Item
                     required
-                    label={t("description")}
+                    label={
+                      <div className="flex flex-row items-center description-tooltip gap-1">
+                        {t("description")}
+                        {tag !== "manual" && (
+                          <Tooltip title={t("ai_description_tooltip")}>
+                            <BsQuestion size={18} />
+                          </Tooltip>
+                        )}
+                      </div>
+                    }
                     name="description"
                     initialValue={config.description}
                   >

@@ -75,6 +75,14 @@
   "generateLink": "You can generate a link for the test with a tracking name that you set (e.g., LinkedIn, Indeed, Email, etc.).",
   "createTrackedLink": "Create tracked link.",
   "tracking": "Tracking.",
-  "next_step":"Next step"
-
+  "next_step": "Next step",
+  "ai_description_tooltip": "Provide a detailed description of the job role and required skills. This helps the AI generate a tailored test for applicants, ensuring it matches the job's needs.",
+  "sector_tooltip": "Select the job sector for which you're creating the test. This helps generate relevant and specific questions.",
+  "skills_tooltip": "Add the required skills for this role. The AI will use this information to create targeted questions that assess the candidates' abilities.",
+  "exam_tour_step_1": "Fill out the form to provide the AI with instructions on how the test should be generated.",
+  "exam_tour_step_1_manual": "Enter the job listing information.",
+  "exam_tour_step_2": "Edit the questions as you like, you can also add an additional section with non-skill-focused questions.",
+  "exam_tour_step_3": "Insert the sections you want in the test, create your own questions or choose from ours.",
+  "exam_tour_step_4": "Share the test link, and create specific links for the different channels you use.",
+  "search_job":"Search job"
 }

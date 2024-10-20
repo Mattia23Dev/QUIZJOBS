@@ -12,6 +12,7 @@ import {
   Col,
   Card,
   Badge,
+  Input,
 } from "antd";
 import { MdMore } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
@@ -46,6 +47,7 @@ function ExamsPage({ openTour, setOpenTour, tour }) {
   const [attivo, setAttivo] = useState("tutti"); // Valori possibili: 'tutti', 'attivo', 'non attivo'
   const [difficolta, setDifficolta] = useState("tutti"); // Valori possibili: 'tutti', 'facile', 'medio', 'difficile'
   const [numCandidati, setNumCandidati] = useState("tutti");
+  const [searchExam, setSearchExam] = useState("");
   const user = useSelector((state) => state.users.user);
   const storedQuestions = JSON.parse(localStorage.getItem("questions"));
   const storedQuestionsPersonal = JSON.parse(
@@ -79,6 +81,7 @@ function ExamsPage({ openTour, setOpenTour, tour }) {
       selector: ".elemento3", // Selettore CSS dell'elemento
     },
   ];
+
   const continueExam = () => {
     if (storedConfig && storedQuestions) {
       if (storedConfig.tag === "manual") {
@@ -103,6 +106,7 @@ function ExamsPage({ openTour, setOpenTour, tour }) {
       }
     }
   };
+
   const getExamsData = async () => {
     try {
       dispatch(ShowLoading());
@@ -122,6 +126,7 @@ function ExamsPage({ openTour, setOpenTour, tour }) {
       message.error(error.message);
     }
   };
+
   const deleteExamById = async (id) => {
     try {
       dispatch(ShowLoading());
@@ -196,6 +201,7 @@ function ExamsPage({ openTour, setOpenTour, tour }) {
   useEffect(() => {
     getExamsData();
   }, []);
+
   const handleSwitchChange = (index) => {
     setConfirmVisible((prevState) => {
       const updatedConfirmVisible = [...prevState];
@@ -227,10 +233,22 @@ function ExamsPage({ openTour, setOpenTour, tour }) {
     }
   };
 
+  const filteredExamsByTitle = (search) =>
+    exams.filter((item) =>
+      item?.jobPosition?.toLowerCase()?.includes(search?.toLowerCase())
+    );
+
   return (
     <div className="exams-container">
-      <div className=" flex justify-between items-center">
-        {!isMobile() && <PageTitle title="Test" />}
+      {!isMobile() && <PageTitle title="Test" />}
+      <div className="flex flex-row justify-between items-center flex-wrap">
+        <div className="exam-search-bar">
+          <Input
+            placeholder={t("search_job")}
+            value={searchExam}
+            onChange={(e) => setSearchExam(e.target.value)}
+          />
+        </div>
 
         <div>
           {storedQuestions && (
@@ -298,25 +316,27 @@ function ExamsPage({ openTour, setOpenTour, tour }) {
       </div>
 
       <Row gutter={[16, 16]} className="exam-list mt-2">
-        {filteredExams &&
-          filteredExams.map((exam, index) => {
-            const examId = exam._id;
-            return (
-              <div
-                className={exam.tag === "mix" ? "card-exam ceg" : "card-exam"}
-                key={examId}
-              >
-                <div className="card-exam-top">
-                  <div>
-                    <h1>{exam.jobPosition}</h1>
-                    {exam.tag === "mix" && (
-                      <div className="taggetto">
-                        <img alt="test misto" src={skt} />
-                        <span>Misto</span>
-                      </div>
-                    )}
-                  </div>
-                  {/* {isMobile() ? (
+        {(searchExam?.length
+          ? filteredExamsByTitle(searchExam)
+          : filteredExams
+        ).map((exam, index) => {
+          const examId = exam._id;
+          return (
+            <div
+              className={exam.tag === "mix" ? "card-exam ceg" : "card-exam"}
+              key={examId}
+            >
+              <div className="card-exam-top">
+                <div>
+                  <h1>{exam.jobPosition}</h1>
+                  {exam.tag === "mix" && (
+                    <div className="taggetto">
+                      <img alt="test misto" src={skt} />
+                      <span>Misto</span>
+                    </div>
+                  )}
+                </div>
+                {/* {isMobile() ? (
                     <button
                       className="elemento2"
                       onClick={() => navigate(`/admin/exams/info/${exam._id}`)}
@@ -331,99 +351,98 @@ function ExamsPage({ openTour, setOpenTour, tour }) {
                       Info candidati
                     </button>
                   )} */}
-                </div>
-                {/* <div className="divider"></div> */}
-                <div className="card-exam-middle">
-                  <ul className="card-exam-middle-skills">
-                    {exam.skills.map((skill, subIndex) => (
-                      <li className="text-md" key={subIndex}>
-                        {skill}
-                      </li>
-                    ))}
-                  </ul>
-                  <Popconfirm
-                    open={confirmVisible[index]}
-                    title={
-                      exam.active
-                        ? "Sei sicuro di voler disattivare il link?"
-                        : "Sei sicuro di voler attivare il link?"
+              </div>
+              {/* <div className="divider"></div> */}
+              <div className="card-exam-middle">
+                <ul className="card-exam-middle-skills">
+                  {exam.skills.map((skill, subIndex) => (
+                    <li className="text-md" key={subIndex}>
+                      {skill}
+                    </li>
+                  ))}
+                </ul>
+                <Popconfirm
+                  open={confirmVisible[index]}
+                  title={
+                    exam.active
+                      ? "Sei sicuro di voler disattivare il link?"
+                      : "Sei sicuro di voler attivare il link?"
+                  }
+                  onConfirm={async () => {
+                    try {
+                      await handleOnOff(exam);
+                    } catch (error) {
+                      console.error(
+                        "Si è verificato un errore durante la conferma:",
+                        error
+                      );
                     }
-                    onConfirm={async () => {
-                      try {
-                        await handleOnOff(exam);
-                      } catch (error) {
-                        console.error(
-                          "Si è verificato un errore durante la conferma:",
-                          error
-                        );
-                      }
-                    }}
-                    onCancel={handleCancel}
-                    okText="Sì"
-                    cancelText="No"
-                    placement="top"
-                  >
-                    <Switch
-                      size="small"
-                      className="elemento3"
-                      checked={exam.active}
-                      onChange={(checked) => handleSwitchChange(index)}
-                    />
-                  </Popconfirm>
-                </div>
+                  }}
+                  onCancel={handleCancel}
+                  okText="Sì"
+                  cancelText="No"
+                  placement="top"
+                >
+                  <Switch
+                    size="small"
+                    className="elemento3"
+                    checked={exam.active}
+                    onChange={(checked) => handleSwitchChange(index)}
+                  />
+                </Popconfirm>
+              </div>
 
-                <div className="card-exam-bottom">
-                  <div>
-                    <h4>
-                      {t("difficulty")}
-                      <Badge
-                        text={exam?.difficulty}
-                        color={
-                          exam.difficulty === "Medio"
-                            ? "red"
-                            : exam.difficulty === "Facile"
-                            ? "green"
-                            : "yellow"
-                        }
-                        count={2}
-                        size="default"
-                      />
-                    </h4>
-                    
-                    <h4>
-                      {t("deadline")}:{" "}
-                      {exam.deadline
-                        ? moment(exam.deadline).format("DD/MM/YYYY")
-                        : "Nessuna scadenza"}
-                    </h4>
-                  </div>
-                  <h4 className="text-md">
-                    <img
-                      src={candidateNumber}
-                      alt="candidati al test di SkillTest"
+              <div className="card-exam-bottom">
+                <div>
+                  <h4>
+                    {t("difficulty")}
+                    <Badge
+                      count={exam?.difficulty}
+                      color={
+                        exam.difficulty === "Medio"
+                          ? "yellow"
+                          : exam.difficulty === "Facile"
+                          ? "green"
+                          : "red"
+                      }
+                      size="default"
                     />
-                    {exam.candidates.length} / 100
+                  </h4>
+
+                  <h4>
+                    {t("deadline")}:{" "}
+                    {exam.deadline
+                      ? moment(exam.deadline).format("DD/MM/YYYY")
+                      : "Nessuna scadenza"}
                   </h4>
                 </div>
-
-                {isMobile() ? (
-                  <button
-                    className="elemento2"
-                    onClick={() => navigate(`/admin/exams/info/${exam._id}`)}
-                  >
-                    {t("candidates")}
-                  </button>
-                ) : (
-                  <button
-                    className="elemento2"
-                    onClick={() => navigate(`/admin/exams/info/${exam._id}`)}
-                  >
-                    {t("candidate_info")}
-                  </button>
-                )}
+                <h4 className="text-md">
+                  <img
+                    src={candidateNumber}
+                    alt="candidati al test di SkillTest"
+                  />
+                  {exam.candidates.length} / 100
+                </h4>
               </div>
-            );
-          })}
+
+              {isMobile() ? (
+                <button
+                  className="elemento2"
+                  onClick={() => navigate(`/admin/exams/info/${exam._id}`)}
+                >
+                  {t("candidates")}
+                </button>
+              ) : (
+                <button
+                  className="elemento2"
+                  onClick={() => navigate(`/admin/exams/info/${exam._id}`)}
+                >
+                  {t("candidate_info")}
+                </button>
+              )}
+            </div>
+          );
+        })}
       </Row>
       <Tour
         isOpen={openTour && tour === "exam"}

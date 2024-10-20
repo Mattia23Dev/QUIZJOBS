@@ -108,13 +108,12 @@
   }
 .layout-cards > button:first-of-type{
     width: 100%;
-    border: 1px dashed var(--primary);
+    border: 1px dashed black;
     border-radius: 5px;
     padding: 0px 5px;
     text-align: center;
     font-size: 20px;
     cursor: pointer;
-    color: var(--primary);
     background-color: transparent;
 }
 .grid{

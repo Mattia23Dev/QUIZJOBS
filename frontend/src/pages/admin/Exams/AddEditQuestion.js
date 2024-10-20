@@ -31,7 +31,7 @@ export function AddEditQuestion(props) {
       if (selectedQuestion) {
         if (creato) {
           const requiredPayload1 = {
-            id: selectedQuestion.id,
+            id: selectedQuestion?.id,
             question: domandaVisual.domanda,
             id: selectedQuestion.id,
             correctOption:
@@ -53,7 +53,7 @@ export function AddEditQuestion(props) {
           console.log(requiredPayload1, "requiredPayload1");
         } else {
           const requiredPayload1 = {
-            id: selectedQuestion.id,
+            id: selectedQuestion?.id,
             domanda: domandaVisual.domanda,
             rispostaCorretta: {
               lettera: selectedQuestion.rispostaCorretta.lettera,
@@ -225,9 +225,8 @@ export function AddEditQuestion(props) {
       }
       if (creato) {
         const requiredPayload1 = {
-          id: selectedQuestion.id,
+          id: selectedQuestion?.id,
           question: domandaVisual.domanda,
-          id: selectedQuestion.id,
           options: {
             "A)": domandaVisual.opzioni["A)"],
             "B)": domandaVisual.opzioni["B)"],
@@ -238,7 +237,7 @@ export function AddEditQuestion(props) {
         editQuestionInExam(requiredPayload1);
       } else {
         const requiredPayload1 = {
-          id: selectedQuestion.id,
+          id: selectedQuestion?.id,
           domanda: domandaVisual.domanda,
           opzioni: {
             "A)": domandaVisual.opzioni["A)"],
@@ -264,9 +263,8 @@ export function AddEditQuestion(props) {
       }
       if (creato) {
         const requiredPayload1 = {
-          id: selectedQuestion.id,
+          id: selectedQuestion?.id,
           question: values.question,
-          id: selectedQuestion.id,
           options: {
             "A)": values.A,
             "B)": values.B,
@@ -277,9 +275,8 @@ export function AddEditQuestion(props) {
         addQuestionToExam(requiredPayload1);
       } else {
         const requiredPayload1 = {
-          id: selectedQuestion.id,
+          id: selectedQuestion?.id,
           domanda: values.question,
-          id: selectedQuestion.id,
           opzioni: {
             "A)": values.A,
             "B)": values.B,

@@ -75,5 +75,14 @@
   "generateLink": "Puoi generare un link per il test con un nome di tracciamento che imposti tu (es. Linkedin, Indeed, Email ecc..).",
   "createTrackedLink": "Crea link tracciato.",
   "tracking": "Tracciamento.",
-  "next_step":"Prossimo step"
+  "next_step":"Prossimo step",
+  "ai_description_tooltip": "Fornisci una descrizione dettagliata del ruolo lavorativo e delle competenze richieste. Questo aiuta l'IA a generare un test su misura per i candidati, assicurando che corrisponda alle esigenze del lavoro.",
+  "sector_tooltip":"Seleziona il settore lavorativo per cui stai creando il test. Questo aiuta a generare domande specifiche e pertinenti.",
+  "skills_tooltip":"Aggiungi le competenze richieste per questo ruolo. L'IA utilizzerà queste informazioni per creare domande mirate che valutano le competenze dei candidati.",
+  "exam_tour_step_1": "Compila il modulo per fornire all'AI istruzioni su come deve essere il Test.",
+  "exam_tour_step_1_manual": "Inserisci le informazioni dell'annuncio di lavoro.",
+  "exam_tour_step_2": "Modifica le domande a tuo piacimento, puoi aggiungere anche un modulo aggiuntivo con domande non in focus sulle competenze.",
+  "exam_tour_step_3": "Inserisci i moduli che vuoi inserire nel test, crea delle domande oppure scegli le nostre.",
+  "exam_tour_step_4": "Condividi il link del test, e crea dei link appositi per i vari canali che utilizzi.",
+  "search_job":"Cerca lavoro"
 }
