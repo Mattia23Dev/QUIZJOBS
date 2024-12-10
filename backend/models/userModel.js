@@ -32,6 +32,11 @@ const userSchema = new mongoose.Schema(
       required: true,
       default: true,
     },
+    type: {
+      type: String,
+      enum: ["company", "candidate"],
+      default: "company",
+    },
     profileImage: {
       type: String,
     },
@@ -44,15 +49,58 @@ const userSchema = new mongoose.Schema(
     companyName: {
       type: String,
     },
+    country: {
+      type: String,
+    },
     team: [{ type: mongoose.Schema.Types.ObjectId, ref: "Team" }],
+    tests: [{ type: mongoose.Schema.Types.ObjectId, ref: "exams" }],
     companyDescription: {
       type: String,
     },
     companyCity: {
       type: String,
     },
+    cvUrl: {
+      type: String,
+    },
+    gender: {
+      type: String,
+      enum: ["male", "female"],
+    },
     refreshGoogleToken: String,
     accessGoogleToken: String,
+    experience: [
+      {
+        jobTitle: {
+          type: String,
+          required: true,
+        },
+        company: {
+          type: String,
+          required: true,
+        },
+        jobType: {
+          type: String,
+          enum: ["In sede", "Ibrido", "Da remoto"],
+          default: "In sede",
+          required: true,
+        },
+        startedDate: {
+          type: Date,
+          required: true,
+        },
+        endedDate: {
+          type: Date,
+        },
+        isPresent: {
+          type: Boolean,
+          default: false,
+        },
+        description: {
+          type: String,
+        },
+      },
+    ],
   },
   {
     timestamps: true,

@@ -40,11 +40,12 @@
 
 .option{
   display: flex;
+  flex-direction: row;
   justify-content: flex-start;
   gap: 20px;
   align-items: center;
-  padding: 6px 10px;
-  border: 1.3px solid var(--primary);
+  padding: 10px 10px;
+  border: 1.3px solid var(--border-color);
   border-radius: 5px;
   background-color: #edeffa;
   color: var(--primary);
@@ -58,8 +59,8 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 6px 10px;
-    border: 1.3px solid var(--primary);
+    padding: 10px 10px;
+    border: 1.3px solid var(--border-color);
     border-radius: 5px;
     background-color: var(--primary);
     color: #fff;
@@ -75,12 +76,14 @@
     align-items: center;
     color: #fff;
     font-size: 14px;
+    margin: 0px !important;
+
 }
 .selected-option span {
     background-color: #fff;
-    color: var(--primary);
-    width: 25px;
-    height: 25px;
+    color: black;
+    width: 30px;
+    height: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -95,17 +98,18 @@
     gap: 10px;
     align-items: center;
     font-size: 14px;
+    margin: 0px !important;
 }
 .option span {
-    width: 25px;
-    height: 25px;
+    width: 30px;
+    height: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid var(--primary);
+    border: 1px solid var(--border-color);
     border-radius: 5px;
     background-color: white;
-    color: var(--primary);
+    color: black;
     font-size: 12px;
     font-weight: 600;
 }

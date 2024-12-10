@@ -11,7 +11,9 @@
   --dark: #212121;
   --dmo-spacing-6: 0.2rem;
   --border-color: #e3e4e8;
+  --bg-color:#233142;
   --dmo-spacing-12: 0.75rem;
+  --ck-border-radius:8px;
 }
 body::-webkit-scrollbar {
   width: 10px;
@@ -75,6 +77,10 @@ body::-webkit-scrollbar-thumb {
 
 .ant-tooltip-inner {
   padding: 18px !important;
+  border-radius: 8px !important;
+}
+
+.ant-card{
   border-radius: 8px !important;
 }
 

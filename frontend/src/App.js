@@ -6,11 +6,7 @@ import "./stylesheets/custom-components.css";
 import "./stylesheets/form-elements.css";
 import "./stylesheets/layout.css";
 import "./stylesheets/npprogress.css";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/common/Login";
 import RegisterPage from "./pages/common/Register";
 import HomePage from "./pages/admin/Home";
@@ -36,7 +32,12 @@ import Azienda from "./pages/admin/Azienda/Azienda";
 import Automazioni from "./pages/admin/Automazioni";
 import { CallbackComponentGoogle } from "./pages/admin/Automazioni/Auth2.0";
 import ProgressBar from "./components/ProgressBar";
-
+import useAuth from "./utlis/hooks/useAuth";
+import UserHome from "./pages/user";
+import ExamRouteProtector from "./components/user/ExamRouteProtector";
+import CandidateTest from "./pages/user/CandidateTest";
+import CandidateProfile from "./pages/user/CandidateProfile";
+import ForgetPassword from "./pages/common/ForgetPassword";
 
 function App() {
   const { loading } = useSelector((state) => state.loaders);
@@ -48,6 +49,7 @@ function App() {
     setOpenTour(true);
     console.log(tour);
   };
+  const { data } = useAuth();
 
   return (
     <>
@@ -81,269 +83,302 @@ function App() {
       <Router>
         <ProgressBar loading={loading} />
         <Routes>
-          <Route
-            path="/login"
-            element={
-              <PublicRoute>
-                <LoginPage />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="/register"
-            element={
-              <PublicRoute>
-                <RegisterPage />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="/"
-            element={
-              <PublicRoute>
-                <Home />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="/contact"
-            element={
-              <PublicRoute>
-                <Contatti />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="/user/:jobPositionSlug/:uniqueId"
-            element={
-              <PublicRoute>
-                <WriteExam />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="/admin/home"
-            element={
-              <ProtectedRoute
-                handleStartTour={() => handleStartTour("home")}
-                setLoginPopup={setLoginPopup}
-              >
-                <HomePage
-                  tour={whichTour}
-                  openTour={openTour}
-                  setOpenTour={setOpenTour}
-                />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/exams"
-            element={
-              <ProtectedRoute
-                handleStartTour={() => handleStartTour("exam")}
-                setLoginPopup={setLoginPopup}
-              >
-                <ExamsPage
-                  tour={whichTour}
-                  openTour={openTour}
-                  setOpenTour={setOpenTour}
-                />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/team"
-            element={
-              <ProtectedRoute
-                handleStartTour={() => handleStartTour("team")}
-                setLoginPopup={setLoginPopup}
-              >
-                <Team
-                  tour={whichTour}
-                  openTour={openTour}
-                  setOpenTour={setOpenTour}
-                />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/calendar"
-            element={
-              <ProtectedRoute
-                handleStartTour={() => handleStartTour("calendar")}
-                setLoginPopup={setLoginPopup}
-              >
-                <CalendarComponent
-                  tour={whichTour}
-                  openTour={openTour}
-                  setOpenTour={setOpenTour}
-                />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/exams/add/:tag"
-            element={
-              <ProtectedRoute
-                handleStartTour={() => handleStartTour("addexam")}
-                setLoginPopup={setLoginPopup}
-              >
-                <AddEditExam
-                  tour={whichTour}
-                  openTour={openTour}
-                  setOpenTour={setOpenTour}
-                />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/exams/add/preview"
-            element={
-              <ProtectedRoute
-                handleStartTour={() => handleStartTour("preview")}
-                setLoginPopup={setLoginPopup}
-              >
-                <Preview
-                  tour={whichTour}
-                  openTour={openTour}
-                  setOpenTour={setOpenTour}
-                />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/exams/edit/:id"
-            element={
-              <ProtectedRoute
-                handleStartTour={() => handleStartTour("editexam")}
-                setLoginPopup={setLoginPopup}
-              >
-                <AddEditExam
-                  tour={whichTour}
-                  openTour={openTour}
-                  setOpenTour={setOpenTour}
-                />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/exams/info/:id"
-            element={
-              <ProtectedRoute
-                handleStartTour={() => handleStartTour("infoexam")}
-                setLoginPopup={setLoginPopup}
-              >
-                <InfoExam
-                  tour={whichTour}
-                  openTour={openTour}
-                  setOpenTour={setOpenTour}
-                />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/crm"
-            element={
-              <ProtectedRoute
-                handleStartTour={() => handleStartTour("crm")}
-                setLoginPopup={setLoginPopup}
-              >
-                <Crm
-                  tour={whichTour}
-                  openTour={openTour}
-                  setOpenTour={setOpenTour}
-                />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/profile"
-            element={
-              <ProtectedRoute
-                setTour={setWhichTour}
-                tour={whichTour}
-                openTour={openTour}
-                setOpenTour={setOpenTour}
-                handleStartTour={() => handleStartTour("total")}
-                setLoginPopup={setLoginPopup}
-              >
-                <Profile
-                  tour={whichTour}
-                  openTour={openTour}
-                  setOpenTour={setOpenTour}
-                />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/help"
-            element={
-              <ProtectedRoute
-                setTour={setWhichTour}
-                tour={whichTour}
-                openTour={openTour}
-                setOpenTour={setOpenTour}
-                handleStartTour={() => handleStartTour("total")}
-                setLoginPopup={setLoginPopup}
-              >
-                <Assistenza
-                  tour={whichTour}
-                  openTour={openTour}
-                  setOpenTour={setOpenTour}
-                />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/automations"
-            element={
-              <ProtectedRoute
-                setTour={setWhichTour}
-                tour={whichTour}
-                openTour={openTour}
-                setOpenTour={setOpenTour}
-                handleStartTour={() => handleStartTour("automations")}
-                setLoginPopup={setLoginPopup}
-              >
-                <Automazioni
-                  tour={whichTour}
-                  openTour={openTour}
-                  setOpenTour={setOpenTour}
-                />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/user/write-exam/:id"
-            element={
-              <ProtectedRoute
-                handleStartTour={handleStartTour}
-                setLoginPopup={setLoginPopup}
-              >
-                <WriteExam
-                  tour={whichTour}
-                  openTour={openTour}
-                  setOpenTour={setOpenTour}
-                />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/user/azienda/:id"
-            element={
-              <PublicRoute>
-                <Azienda />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="/googleAuth"
-            element={
-              <PublicRoute>
-                <CallbackComponentGoogle />
-              </PublicRoute>
-            }
-          />
+          <>
+            <Route
+              path="/"
+              element={
+                <PublicRoute>
+                  <Home />
+                </PublicRoute>
+              }
+            />
+
+            <Route
+              path="/contact"
+              element={
+                <PublicRoute>
+                  <Contatti />
+                </PublicRoute>
+              }
+            />
+
+            <Route
+              path="/user/:jobPositionSlug/:uniqueId"
+              element={
+                <ExamRouteProtector>
+                  <WriteExam />
+                </ExamRouteProtector>
+              }
+            />
+          </>
+
+          {!data ? (
+            <>
+              <Route
+                path="/login"
+                element={
+                  <PublicRoute>
+                    <LoginPage />
+                  </PublicRoute>
+                }
+              />
+              <Route
+                path="/register"
+                element={
+                  <PublicRoute>
+                    <RegisterPage />
+                  </PublicRoute>
+                }
+              />
+              <Route
+                path="/googleAuth"
+                element={
+                  <PublicRoute>
+                    <CallbackComponentGoogle />
+                  </PublicRoute>
+                }
+              />
+
+              <Route
+                path="/forget-password"
+                element={
+                  <PublicRoute>
+                    <ForgetPassword />
+                  </PublicRoute>
+                }
+              />
+            </>
+          ) : (
+            <>
+              {data?.type === "candidate" && (
+                <>
+                  <Route path="/user" element={<UserHome />} />
+                  <Route path="/user/profile" element={<CandidateProfile />} />
+                  <Route path="/user/test/:id" element={<CandidateTest />} />
+                  <Route
+                    path="/user/azienda/:id"
+                    element={
+                      <PublicRoute>
+                        <Azienda />
+                      </PublicRoute>
+                    }
+                  />
+                </>
+              )}
+              {data?.type === "company" && (
+                <>
+                  <Route
+                    path="/admin/home"
+                    element={
+                      <ProtectedRoute
+                        handleStartTour={() => handleStartTour("home")}
+                        setLoginPopup={setLoginPopup}
+                      >
+                        <HomePage
+                          tour={whichTour}
+                          openTour={openTour}
+                          setOpenTour={setOpenTour}
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/exams"
+                    element={
+                      <ProtectedRoute
+                        handleStartTour={() => handleStartTour("exam")}
+                        setLoginPopup={setLoginPopup}
+                      >
+                        <ExamsPage
+                          tour={whichTour}
+                          openTour={openTour}
+                          setOpenTour={setOpenTour}
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/team"
+                    element={
+                      <ProtectedRoute
+                        handleStartTour={() => handleStartTour("team")}
+                        setLoginPopup={setLoginPopup}
+                      >
+                        <Team
+                          tour={whichTour}
+                          openTour={openTour}
+                          setOpenTour={setOpenTour}
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/calendar"
+                    element={
+                      <ProtectedRoute
+                        handleStartTour={() => handleStartTour("calendar")}
+                        setLoginPopup={setLoginPopup}
+                      >
+                        <CalendarComponent
+                          tour={whichTour}
+                          openTour={openTour}
+                          setOpenTour={setOpenTour}
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/exams/add/:tag"
+                    element={
+                      <ProtectedRoute
+                        handleStartTour={() => handleStartTour("addexam")}
+                        setLoginPopup={setLoginPopup}
+                      >
+                        <AddEditExam
+                          tour={whichTour}
+                          openTour={openTour}
+                          setOpenTour={setOpenTour}
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/exams/add/preview"
+                    element={
+                      <ProtectedRoute
+                        handleStartTour={() => handleStartTour("preview")}
+                        setLoginPopup={setLoginPopup}
+                      >
+                        <Preview
+                          tour={whichTour}
+                          openTour={openTour}
+                          setOpenTour={setOpenTour}
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/exams/edit/:id"
+                    element={
+                      <ProtectedRoute
+                        handleStartTour={() => handleStartTour("editexam")}
+                        setLoginPopup={setLoginPopup}
+                      >
+                        <AddEditExam
+                          tour={whichTour}
+                          openTour={openTour}
+                          setOpenTour={setOpenTour}
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/exams/info/:id"
+                    element={
+                      <ProtectedRoute
+                        handleStartTour={() => handleStartTour("infoexam")}
+                        setLoginPopup={setLoginPopup}
+                      >
+                        <InfoExam
+                          tour={whichTour}
+                          openTour={openTour}
+                          setOpenTour={setOpenTour}
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/crm"
+                    element={
+                      <ProtectedRoute
+                        handleStartTour={() => handleStartTour("crm")}
+                        setLoginPopup={setLoginPopup}
+                      >
+                        <Crm
+                          tour={whichTour}
+                          openTour={openTour}
+                          setOpenTour={setOpenTour}
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/profile"
+                    element={
+                      <ProtectedRoute
+                        setTour={setWhichTour}
+                        tour={whichTour}
+                        openTour={openTour}
+                        setOpenTour={setOpenTour}
+                        handleStartTour={() => handleStartTour("total")}
+                        setLoginPopup={setLoginPopup}
+                      >
+                        <Profile
+                          tour={whichTour}
+                          openTour={openTour}
+                          setOpenTour={setOpenTour}
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/help"
+                    element={
+                      <ProtectedRoute
+                        setTour={setWhichTour}
+                        tour={whichTour}
+                        openTour={openTour}
+                        setOpenTour={setOpenTour}
+                        handleStartTour={() => handleStartTour("total")}
+                        setLoginPopup={setLoginPopup}
+                      >
+                        <Assistenza
+                          tour={whichTour}
+                          openTour={openTour}
+                          setOpenTour={setOpenTour}
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/automations"
+                    element={
+                      <ProtectedRoute
+                        setTour={setWhichTour}
+                        tour={whichTour}
+                        openTour={openTour}
+                        setOpenTour={setOpenTour}
+                        handleStartTour={() => handleStartTour("automations")}
+                        setLoginPopup={setLoginPopup}
+                      >
+                        <Automazioni
+                          tour={whichTour}
+                          openTour={openTour}
+                          setOpenTour={setOpenTour}
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/user/write-exam/:id"
+                    element={
+                      <ProtectedRoute
+                        handleStartTour={handleStartTour}
+                        setLoginPopup={setLoginPopup}
+                      >
+                        <WriteExam
+                          tour={whichTour}
+                          openTour={openTour}
+                          setOpenTour={setOpenTour}
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                </>
+              )}
+              <Route path="/*" element={<h1>Not found</h1>} />
+            </>
+          )}
         </Routes>
       </Router>
     </>

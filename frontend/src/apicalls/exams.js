@@ -80,6 +80,36 @@ export const getExamByUser = async(id) => {
     }
 }
 
+export const getArrivedExams = async(id) => {
+    try{
+       const response = await axiosInstance.get(`/api/exams/getAllArrivedExamsByUser/${id}`)
+       return response.data
+    }
+    catch(error){
+        return error.response.data
+    }
+}
+
+export const markExamFavorite = async(id) => {
+    try{
+       const response = await axiosInstance.put(`/api/exams/${id}`)
+       return response.data
+    }
+    catch(error){
+        return error.response.data
+    }
+}
+
+export const markExamArrived = async(id) => {
+    try{
+       const response = await axiosInstance.put(`/api/exams/arrived/${id}`)
+       return response.data
+    }
+    catch(error){
+        return error.response.data
+    }
+}
+
 export const getCandidateCrm = async(id) => {
     try{
        const response = await axiosInstance.get(`/api/exams/getCandidateCrm/${id}`)
@@ -194,6 +224,26 @@ export const deleteTrackLink = async(payload) => {
 export const changeCandidateStatus = async(payload) => {
     try{
         const response = await axiosInstance.post(`/api/users/changeCandidateStatus`,payload)
+        return response.data
+    }
+    catch(error){
+        return error.response
+    }
+}
+
+export const getCandidateTests = async() => {
+    try{
+        const response = await axiosInstance.get(`/api/exams/get-candidate-tests`);
+        return response.data
+    }
+    catch(error){
+        return error.response
+    }
+}
+
+export const getCandidateTestDetails = async(id) => {
+    try{
+        const response = await axiosInstance.get(`/api/exams/get-candidate-test/${id}`);
         return response.data
     }
     catch(error){

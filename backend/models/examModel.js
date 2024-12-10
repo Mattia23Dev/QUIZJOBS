@@ -1,125 +1,138 @@
-const mongoose = require('mongoose')
-const Question = require("./questionModel")
+const mongoose = require("mongoose");
+const Question = require("./questionModel");
 
-const examSchema = new mongoose.Schema({
+const examSchema = new mongoose.Schema(
+  {
     numOfQuestions: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true,
     },
     difficulty: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     generalSector: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     description: {
-        type: String,
+      type: String,
     },
     tag: {
-        type: String,
+      type: String,
     },
     jobPosition: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     testLanguage: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     skills: {
-        type: [String],
-        required: true
+      type: [String],
+      required: true,
     },
     questions: {
-        type: [Object],
-        required: true,
+      type: [Object],
+      required: true,
     },
     questionsPersonal: {
-        type: [Object],
+      type: [Object],
     },
     idEsame: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     deadline: {
-        type: Date,
+      type: Date,
     },
     active: {
-        type: Boolean,
-        default: true
+      type: Boolean,
+      default: true,
     },
-    candidates: [{
+    candidates: [
+      {
         candidate: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "candidates"
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "candidates",
         },
         report: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "reports"
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "reports",
         },
         status: {
-            type: String,
-            default: "Da contattare"
+          type: String,
+          default: "Da contattare",
         },
         trackLink: {
-            type: String
+          type: String,
         },
         skills: {
-            type: String,
+          type: String,
         },
         education: {
-            type: String,
+          type: String,
         },
         workExperience: {
-            type: String,
+          type: String,
         },
         preferito: {
-            type: Boolean,
-            default: false,
+          type: Boolean,
+          default: false,
         },
         note: {
-            type: String,
+          type: String,
         },
         date: {
-            type: Date,
-            default: new Date()
+          type: Date,
+          default: new Date(),
         },
         summary: {
-            type: String,
+          type: String,
         },
-    }],
+      },
+    ],
     examLink: {
-        type: String,
+      type: String,
     },
     trackLink: [String],
     company: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "users",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
     },
     jobDescription: {
-        type: String
+      type: String,
     },
     jobCity: {
-        type: String,
+      type: String,
     },
     jobContract: {
-        type: String,
+      type: String,
     },
     jobTypeWork: {
-        type: String,
-    }
-}, {
-    timestamps: true
-});
+      type: String,
+    },
+    is_favorite: {
+      type: Boolean,
+      default: false,
+    },
+    is_arrived: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 // remove all the questions associated with an exam if that exam is deleted
-examSchema.post('remove',async function(res, next){
-    await Question.deleteMany({exam: this._id});
-    next();
-})
+examSchema.post("remove", async function (res, next) {
+  await Question.deleteMany({ exam: this._id });
+  next();
+});
 
-const examModel = mongoose.model("exams", examSchema)
+const examModel = mongoose.model("exams", examSchema);
 
-module.exports = examModel
+module.exports = examModel;

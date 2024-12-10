@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
 
 const candidateSchema = new mongoose.Schema({
+    user:{
+        type:mongoose.Types.ObjectId,
+        ref:"users"
+    },
     date: {
         type: Date,
         default: new Date()

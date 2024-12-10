@@ -87,6 +87,56 @@ export const getExampleQuestionsAiPrompt = (config) => {
       - C) create_post_type()
       - D) new_post_type()
       - **Risposta corretta: B) register_post_type()**
-       E Prendi in considerazione questa ulteriore descrizione che specifica meglio l'obiettivo del test o una descrizione generica: ${config.description}
+       E Prendi in considerazione questa ulteriore descrizione che specifica meglio l'obiettivo del test o una descrizione generica: ${
+         config.description
+       }
        `;
+};
+
+function formatAMPM(date) {
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12;
+  hours = hours ? hours : 12; // The hour '0' should be '12'
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+  const strTime = `${hours}:${minutes} ${ampm}`;
+  return strTime;
+}
+
+export function timeAgoWithAMPM(dateString) {
+  const now = new Date();
+  const providedDate = new Date(dateString);
+  const differenceInSeconds = Math.floor((now - providedDate) / 1000);
+
+  if (differenceInSeconds < 60) {
+    return `${differenceInSeconds} secs ago`;
+  }
+
+  const differenceInMinutes = Math.floor(differenceInSeconds / 60);
+  if (differenceInMinutes < 60) {
+    return `${differenceInMinutes} mins ago`;
+  }
+
+  const differenceInHours = Math.floor(differenceInMinutes / 60);
+  if (differenceInHours < 24) {
+    return `${differenceInHours} hrs ago`;
+  }
+
+  const differenceInDays = Math.floor(differenceInHours / 24);
+  if (differenceInDays < 7) {
+    return `${differenceInDays} days ago at ${formatAMPM(providedDate)}`;
+  }
+
+  const differenceInMonths = Math.floor(differenceInDays / 30);
+  if (differenceInMonths < 12) {
+    return `${differenceInMonths} mons ago at ${formatAMPM(providedDate)}`;
+  }
+
+  const differenceInYears = Math.floor(differenceInMonths / 12);
+  return `${differenceInYears} yrs ago at ${formatAMPM(providedDate)}`;
+}
+
+export const formatDate = (isoDate) => {
+  return new Date(isoDate).toISOString().split("T")[0];
 };

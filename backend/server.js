@@ -52,7 +52,6 @@ app.post("/api/upload-image", upload.single("image"), (req, res) => {
   }
 });
 
-//app.use(express.urlencoded({ extended: true }))
 const _dirname = path.resolve();
 app.use(express.static(path.join(_dirname, "/frontend/build")));
 app.use("/images", express.static(path.join(__dirname, "images")));

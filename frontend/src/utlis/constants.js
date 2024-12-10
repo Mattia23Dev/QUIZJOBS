@@ -2,6 +2,8 @@ import skilltest from "../imgs/skilltest.png";
 import manual from "../imgs/manual.png";
 import mix from "../imgs/mix.png";
 import skt from "../imgs/skt.png";
+import jobpositions from "./jobpositions.json";
+
 
 export const provinceItaliane = [
   "Agrigento",
@@ -118,26 +120,79 @@ export const provinceItaliane = [
 
 export const GenerateTestOptions = [
   {
-    title:"skillTestAITitle",
-    description:"skillTestAIDes",
-    image:skilltest,
-    path:"/admin/exams/add/ai",
+    title: "skillTestAITitle",
+    description: "skillTestAIDes",
+    image: skilltest,
+    path: "/admin/exams/add/ai",
   },
   {
-    title:"mixedTestTitle",
-    description:"mixedTestDes",
-    image:mix,
-    badgeImage:skt,
-    badgeText:"recommended",
-    path:"/admin/exams/add/mix",
+    title: "mixedTestTitle",
+    description: "mixedTestDes",
+    image: mix,
+    badgeImage: skt,
+    badgeText: "recommended",
+    path: "/admin/exams/add/mix",
   },
   {
-    title:"manualTestTitle",
-    description:"manualTestDes",
-    image:manual,
-    path:"/admin/exams/add/manual"
+    title: "manualTestTitle",
+    description: "manualTestDes",
+    image: manual,
+    path: "/admin/exams/add/manual",
   },
-]
+];
+
+export const DegreeOptions = [
+  {
+    value: "",
+    label: "select",
+  },
+  {
+    value: "Scuola media",
+    label: "middle_school",
+  },
+  {
+    value: "Diploma",
+    label: "diploma",
+  },
+  {
+    value: "Istituto professionale",
+    label: "professional_institute",
+  },
+  {
+    value: "Laurea triennale",
+    label: "three_year_degree",
+  },
+  {
+    value: "Laurea magistrale",
+    label: "master_degree",
+  },
+  {
+    value: "Dottorato",
+    label: "doctorate",
+  },
+];
+
+export const getClassTour = (paths, tour) => {
+  if (tour === "total") {
+    if (paths === "Home") {
+      return "elemento1";
+    } else if (paths === "Test") {
+      return "elemento2";
+    } else if (paths === "Candidati") {
+      return "elemento3";
+    } else if (paths === "Calendar") {
+      return "elemento4";
+    } else if (paths === "Team") {
+      return "elemento5";
+    } else if (paths === "Profilo") {
+      return "elemento6";
+    }
+  }
+};
+
+export const getJobPosition = (value)=>{
+  return jobpositions?.find((item)=>item.value === value)?.label ?? ""
+}
 
 // const exampleFormat = `
 //      Crea delle domande inerenti a queste competenze: ${config.skills.join(
